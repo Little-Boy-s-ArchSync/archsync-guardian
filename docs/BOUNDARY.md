@@ -9,8 +9,7 @@
 
 ## Does not own
 
-- Architecture schema and graph primitives: `archloop-core`.
-- Benchmark data: `archloop-benchmark`.
-- MCP transport: `archloop-mcp`.
-- Example projects and generated views: `archloop-examples`.
-
+- Architecture schema and graph primitives: `archsync-core`.
+- Benchmark data: `archsync-benchmark`.
+- MCP transport: `archsync-mcp`.
+- Example projects and generated views: `archsync-examples`.
