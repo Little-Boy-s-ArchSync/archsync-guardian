@@ -50,7 +50,7 @@ const evidence = {
     source_sha256: sourceHashes,
   },
   core_dependency: {
-    repository_commit: "f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
+    repository_commit: "304f4ac48137e011ec5f7fd85071a89502c02ada",
     vendored_package: "vendor/archsync-core-0.1.0.tgz",
     vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz"))),
     consumption_contract: "peerDependency ^0.1.0",
@@ -97,6 +97,8 @@ const evidence = {
       repository: "archsync-benchmark",
       command: "pnpm phase2:verify",
       cases: 10,
+      minimum_node_precision: 0.85,
+      minimum_node_recall: 0.85,
       minimum_edge_precision: 0.85,
       minimum_edge_recall: 0.85,
       exact_classification_required: true,

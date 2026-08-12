@@ -16,6 +16,10 @@ export interface Phase2CaseResult {
     expected_rule_ids: string[];
     actual_rule_ids: string[];
     rule_match: boolean;
+    expected_added_nodes: string[];
+    actual_added_nodes: string[];
+    expected_removed_nodes: string[];
+    actual_removed_nodes: string[];
     expected_added_edges: string[];
     actual_added_edges: string[];
     expected_removed_edges: string[];
@@ -41,7 +45,9 @@ export interface Phase2BenchmarkResult {
         classification: string;
     };
     metrics: {
+        full_graph_nodes: DetectionCounts;
         full_graph_edges: DetectionCounts;
+        changed_nodes: DetectionCounts;
         changed_edges: DetectionCounts;
         classification_accuracy: number;
         evidence_file_accuracy: number;

@@ -25,7 +25,7 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 - Observed Graph contract v0.1.
 - Finding contract v0.1 with source and model evidence.
 - Full-repository `scan`, `check` and `check-json` commands.
-- Ten-case benchmark evaluation with edge, classification, evidence and determinism metrics.
+- Ten-case benchmark evaluation with node, edge, classification, evidence and determinism metrics.
 
 ## Out of scope
 
@@ -49,14 +49,15 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 
 1. Baseline source reconstructs five components and five relationships.
 2. All ten patches are applied independently to the clean baseline.
-3. Full-graph edge precision and recall are each at least 0.85.
-4. Changed-edge precision and recall are each at least 0.85.
-5. All ten classifications match ground truth.
-6. Violation rule IDs match ground truth.
-7. Expected source evidence files and exact lines match.
-8. Repeated analysis produces byte-identical JSON for baseline and all cases.
-9. Statement, line and function coverage are at least 90%; branch coverage is at least 85%.
-10. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
+3. Full-graph node and edge precision/recall are each at least 0.85.
+4. Changed-node and changed-edge precision/recall are each at least 0.85.
+5. `deny`, `allow`, direct `require` and multi-hop `require-path` rules are deterministic.
+6. All ten classifications match ground truth.
+7. Violation rule IDs match ground truth.
+8. Expected source evidence files and exact lines match.
+9. Repeated analysis produces byte-identical JSON for baseline and all cases.
+10. Statement, line and function coverage are at least 90%; branch coverage is at least 85%.
+11. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
 
 ## Authoritative commands
 

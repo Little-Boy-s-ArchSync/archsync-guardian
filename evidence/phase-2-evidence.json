@@ -9,13 +9,13 @@
       "src/contracts.ts": "65ced3725e69c8e034c829cefb2abea6f4a6ba535080e2e8913e5e3ee1b0f704",
       "src/analyzer.ts": "5ccc7f72bd3e7c5511471279d69c29e0dc5c171f417b6a38a32221408ea4e011",
       "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
-      "src/benchmark.ts": "34f5fbf384c1450f65f909f03c448850ac51f96c402e1226b958ae5efff69c3a"
+      "src/benchmark.ts": "e17e69120f61f0855f081a7230c55576130225666d9cc1e64cfddea36d42a59e"
     }
   },
   "core_dependency": {
-    "repository_commit": "f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
+    "repository_commit": "304f4ac48137e011ec5f7fd85071a89502c02ada",
     "vendored_package": "vendor/archsync-core-0.1.0.tgz",
-    "vendored_package_sha256": "967c2fe1d93ac370276d0aa18d0a3c69f79ee53b02bd67946f45fbf1a1dfd69b",
+    "vendored_package_sha256": "ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e",
     "consumption_contract": "peerDependency ^0.1.0"
   },
   "analyzer": {
@@ -71,6 +71,8 @@
       "repository": "archsync-benchmark",
       "command": "pnpm phase2:verify",
       "cases": 10,
+      "minimum_node_precision": 0.85,
+      "minimum_node_recall": 0.85,
       "minimum_edge_precision": 0.85,
       "minimum_edge_recall": 0.85,
       "exact_classification_required": true,

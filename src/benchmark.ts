@@ -31,6 +31,10 @@ export interface Phase2CaseResult {
   expected_rule_ids: string[];
   actual_rule_ids: string[];
   rule_match: boolean;
+  expected_added_nodes: string[];
+  actual_added_nodes: string[];
+  expected_removed_nodes: string[];
+  actual_removed_nodes: string[];
   expected_added_edges: string[];
   actual_added_edges: string[];
   expected_removed_edges: string[];
@@ -54,7 +58,9 @@ export interface Phase2BenchmarkResult {
     classification: string;
   };
   metrics: {
+    full_graph_nodes: DetectionCounts;
     full_graph_edges: DetectionCounts;
+    changed_nodes: DetectionCounts;
     changed_edges: DetectionCounts;
     classification_accuracy: number;
     evidence_file_accuracy: number;
@@ -174,7 +180,9 @@ export async function evaluatePhase2Benchmark(
   }
   if (!baselineDeterministic) issues.push("baseline: analyzer output is nondeterministic");
 
-  const fullGraphCounts: DetectionCounts[] = [];
+  const fullGraphNodeCounts: DetectionCounts[] = [];
+  const fullGraphEdgeCounts: DetectionCounts[] = [];
+  const changedNodeCounts: DetectionCounts[] = [];
   const changedEdgeCounts: DetectionCounts[] = [];
   const cases: Phase2CaseResult[] = [];
   let evidenceCases = 0;
@@ -199,9 +207,26 @@ export async function evaluatePhase2Benchmark(
       const repeated = await checkRepository(expected, temporary);
       const deterministic = JSON.stringify(actual) === JSON.stringify(repeated);
       const expectedObserved = applyBenchmarkDelta(expected, scenario.delta);
+      const expectedFullNodes = new Set(Object.keys(expectedObserved.components));
+      const actualFullNodes = new Set(Object.keys(actual.observed.components));
+      fullGraphNodeCounts.push(metricCounts(expectedFullNodes, actualFullNodes));
       const expectedFullEdges = new Set(expectedObserved.relationships.map(edgeKey));
       const actualFullEdges = new Set(actual.observed.relationships.map(edgeKey));
-      fullGraphCounts.push(metricCounts(expectedFullEdges, actualFullEdges));
+      fullGraphEdgeCounts.push(metricCounts(expectedFullEdges, actualFullEdges));
+
+      const expectedAddedNodes = sorted(Object.keys(scenario.delta.components_added ?? {}));
+      const expectedRemovedNodes = sorted(scenario.delta.components_removed ?? []);
+      const actualAddedNodes = sorted(actual.diff.added_nodes);
+      const actualRemovedNodes = sorted(actual.diff.removed_nodes);
+      const expectedChangedNodes = new Set([
+        ...expectedAddedNodes.map((id) => `added:${id}`),
+        ...expectedRemovedNodes.map((id) => `removed:${id}`),
+      ]);
+      const actualChangedNodes = new Set([
+        ...actualAddedNodes.map((id) => `added:${id}`),
+        ...actualRemovedNodes.map((id) => `removed:${id}`),
+      ]);
+      changedNodeCounts.push(metricCounts(expectedChangedNodes, actualChangedNodes));
 
       const expectedAdded = sorted((scenario.delta.relationships_added ?? []).map(edgeKey));
       const expectedRemoved = sorted((scenario.delta.relationships_removed ?? []).map(edgeKey));
@@ -244,6 +269,10 @@ export async function evaluatePhase2Benchmark(
         expected_rule_ids: expectedRules,
         actual_rule_ids: actualRules,
         rule_match: ruleMatch,
+        expected_added_nodes: expectedAddedNodes,
+        actual_added_nodes: actualAddedNodes,
+        expected_removed_nodes: expectedRemovedNodes,
+        actual_removed_nodes: actualRemovedNodes,
         expected_added_edges: expectedAdded,
         actual_added_edges: actualAdded,
         expected_removed_edges: expectedRemoved,
@@ -265,10 +294,18 @@ export async function evaluatePhase2Benchmark(
     }
   }
 
-  const fullGraph = mergeCounts(fullGraphCounts);
+  const fullGraphNodes = mergeCounts(fullGraphNodeCounts);
+  const fullGraphEdges = mergeCounts(fullGraphEdgeCounts);
+  const changedNodes = mergeCounts(changedNodeCounts);
   const changedEdges = mergeCounts(changedEdgeCounts);
-  if (fullGraph.precision < 0.85 || fullGraph.recall < 0.85) {
+  if (fullGraphNodes.precision < 0.85 || fullGraphNodes.recall < 0.85) {
+    issues.push("metrics: full graph node precision/recall is below 0.85");
+  }
+  if (fullGraphEdges.precision < 0.85 || fullGraphEdges.recall < 0.85) {
     issues.push("metrics: full graph edge precision/recall is below 0.85");
+  }
+  if (changedNodes.precision < 0.85 || changedNodes.recall < 0.85) {
+    issues.push("metrics: changed node precision/recall is below 0.85");
   }
   if (changedEdges.precision < 0.85 || changedEdges.recall < 0.85) {
     issues.push("metrics: changed edge precision/recall is below 0.85");
@@ -286,7 +323,9 @@ export async function evaluatePhase2Benchmark(
       classification: baselineResult.classification,
     },
     metrics: {
-      full_graph_edges: roundedCounts(fullGraph),
+      full_graph_nodes: roundedCounts(fullGraphNodes),
+      full_graph_edges: roundedCounts(fullGraphEdges),
+      changed_nodes: roundedCounts(changedNodes),
       changed_edges: roundedCounts(changedEdges),
       classification_accuracy: round(classificationMatches / groundTruth.cases.length),
       evidence_file_accuracy: round(evidenceCases === 0 ? 1 : evidenceFileMatches / evidenceCases),
@@ -303,7 +342,9 @@ export function formatBenchmarkResult(result: Phase2BenchmarkResult): string {
   const lines = [
     `${status} PHASE 2 BENCHMARK ${result.benchmark}`,
     `- baseline: ${result.baseline.components} components, ${result.baseline.relationships} relationships, ${result.baseline.classification}`,
+    `- full graph nodes: precision ${result.metrics.full_graph_nodes.precision.toFixed(3)}, recall ${result.metrics.full_graph_nodes.recall.toFixed(3)}, F1 ${result.metrics.full_graph_nodes.f1.toFixed(3)}`,
     `- full graph edges: precision ${result.metrics.full_graph_edges.precision.toFixed(3)}, recall ${result.metrics.full_graph_edges.recall.toFixed(3)}, F1 ${result.metrics.full_graph_edges.f1.toFixed(3)}`,
+    `- changed nodes: precision ${result.metrics.changed_nodes.precision.toFixed(3)}, recall ${result.metrics.changed_nodes.recall.toFixed(3)}, F1 ${result.metrics.changed_nodes.f1.toFixed(3)}`,
     `- changed edges: precision ${result.metrics.changed_edges.precision.toFixed(3)}, recall ${result.metrics.changed_edges.recall.toFixed(3)}, F1 ${result.metrics.changed_edges.f1.toFixed(3)}`,
     `- classification accuracy: ${result.metrics.classification_accuracy.toFixed(3)}`,
     `- source evidence: file ${result.metrics.evidence_file_accuracy.toFixed(3)}, exact line ${result.metrics.evidence_line_accuracy.toFixed(3)}`,

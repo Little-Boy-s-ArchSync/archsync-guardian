@@ -120,7 +120,9 @@ describe("Phase 2 benchmark evaluator", () => {
       deterministic_cases: 1,
       total_cases: 1,
     });
+    expect(result.metrics.full_graph_nodes).toMatchObject({ precision: 1, recall: 1, f1: 1 });
     expect(result.metrics.full_graph_edges).toMatchObject({ precision: 1, recall: 1, f1: 1 });
+    expect(result.metrics.changed_nodes).toMatchObject({ precision: 1, recall: 1, f1: 1 });
     expect(result.metrics.changed_edges).toMatchObject({ precision: 1, recall: 1, f1: 1 });
     expect(result.cases[0]).toMatchObject({
       classification_match: true,
@@ -170,6 +172,23 @@ describe("Phase 2 benchmark evaluator", () => {
     expect(result.metrics.changed_edges.precision).toBeLessThan(0.85);
     expect(result.issues).toContain("metrics: full graph edge precision/recall is below 0.85");
     expect(result.issues).toContain("metrics: changed edge precision/recall is below 0.85");
+  });
+
+  it("fails node precision and recall gates for an incorrect component delta", async () => {
+    const manifestPath = await writeBenchmark();
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.cases[0].delta.components_added = {
+      redis: { type: "cache", layer: "data" },
+    };
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const result = await evaluatePhase2Benchmark(manifestPath);
+
+    expect(result.valid).toBe(false);
+    expect(result.metrics.full_graph_nodes.recall).toBeLessThan(0.85);
+    expect(result.metrics.changed_nodes.recall).toBeLessThan(0.85);
+    expect(result.issues).toContain("metrics: full graph node precision/recall is below 0.85");
+    expect(result.issues).toContain("metrics: changed node precision/recall is below 0.85");
   });
 
   it("reports evidence that does not match the expected file and line", async () => {

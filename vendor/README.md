@@ -3,13 +3,13 @@
 `archsync-core-0.1.0.tgz` is the `pnpm pack` output of private repository `archsync-core` at commit:
 
 ```text
-f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6
+304f4ac48137e011ec5f7fd85071a89502c02ada
 ```
 
 SHA-256:
 
 ```text
-967c2fe1d93ac370276d0aa18d0a3c69f79ee53b02bd67946f45fbf1a1dfd69b
+ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e
 ```
 
 Guardian declares Core as a peer dependency for consumers. This tarball is a reproducible package artifact used only so Guardian's own clean-clone CI can install and test without a cross-repository credential.

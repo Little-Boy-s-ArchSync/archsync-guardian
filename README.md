@@ -10,7 +10,7 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 
 - Scan a TypeScript/Node.js repository into Observed Graph v0.1.
 - Detect HTTP, PostgreSQL, Redis and AMQP relationships through AST signals.
-- Call Core's deterministic graph diff and deny/require conformance engine.
+- Call Core's deterministic graph diff and `deny`/`allow`/`require`/`require-path` conformance engine.
 - Classify `no-impact`, `violation` and `evolution`.
 - Emit Finding v0.1 with relative file, line, column, detector and confidence evidence.
 - Evaluate the ten-case Order Platform benchmark with precision/recall and reproducibility metrics.
@@ -53,7 +53,7 @@ pnpm guardian benchmark \
   ../archsync-benchmark/order-platform/ground-truth.json
 ```
 
-The expected result is 10/10 deterministic cases with `1.000` full-graph edge precision/recall, changed-edge precision/recall, classification accuracy and exact source evidence accuracy.
+The expected result is 10/10 deterministic cases with `1.000` full-graph and changed-graph node/edge precision/recall, classification accuracy and exact source evidence accuracy.
 
 ## Repository map
 

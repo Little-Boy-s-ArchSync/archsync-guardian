@@ -71,6 +71,57 @@ export async function load(): Promise<void> {
     expect(finding?.model_evidence).toEqual({ document: "expected", path: "/rules/1" });
   });
 
+  it("blocks an allowlist violation with the disallowed call site", async () => {
+    const expected = testArchitecture();
+    expected.rules = [
+      { id: "ALLOW-001", type: "allow", from: "frontend", to: "gateway", relationship_type: "http", severity: "error" },
+    ];
+    await writeSources(repository, {
+      ...baselineSources,
+      "frontend/src/direct.ts": `export async function bypass(): Promise<void> {
+  await fetch("http://service:3001/internal");
+}
+`,
+    });
+
+    const result = await checkRepository(expected, repository);
+    const finding = result.findings.find(({ rule_id }) => rule_id === "ALLOW-001");
+
+    expect(result.decision).toBe("BLOCK");
+    expect(finding).toMatchObject({
+      kind: "allow-rule",
+      edge: { key: "frontend|http|service" },
+      source_evidence: [{ file: "frontend/src/direct.ts", line: 2 }],
+    });
+  });
+
+  it("checks a multi-hop required path and anchors a break to its source", async () => {
+    const expected = testArchitecture();
+    expected.rules = [
+      { id: "PATH-001", type: "require-path", from: "frontend", to: "postgres", severity: "critical" },
+    ];
+    await writeSources(repository, baselineSources);
+    const passing = await checkRepository(expected, repository);
+    const { "gateway/src/server.ts": _removed, ...withoutGatewayCall } = baselineSources;
+    await writeSources(repository, {
+      ...withoutGatewayCall,
+      "gateway/src/server.ts": `export async function forward(): Promise<void> {
+  console.info("no service call");
+}
+`,
+    });
+
+    const failing = await checkRepository(expected, repository);
+    const finding = failing.findings.find(({ rule_id }) => rule_id === "PATH-001");
+
+    expect(passing.classification).toBe("no-impact");
+    expect(finding).toMatchObject({
+      kind: "required-path",
+      source_evidence: [{ file: "frontend/src/app.ts", detector: "component-root" }],
+      model_evidence: { document: "expected", path: "/rules/0" },
+    });
+  });
+
   it("reviews an unruled Redis evolution", async () => {
     await writeSources(repository, {
       ...baselineSources,
