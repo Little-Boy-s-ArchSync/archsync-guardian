@@ -2,6 +2,8 @@
 
 **Target release:** ArchSync v0.1
 
+**Status:** Complete (2026-08-12)
+
 ## Objective
 
 Build a deterministic path from `architecture.yaml` and a TypeScript/Node.js repository to an Observed Graph, graph drift classification and source-backed findings.

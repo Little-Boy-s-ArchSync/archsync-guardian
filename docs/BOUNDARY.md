@@ -15,4 +15,4 @@
 - MCP transport: `archsync-mcp`.
 - Example projects and generated views: `archsync-examples`.
 
-Guardian calls Core's conformance functions. It must not fork or duplicate deny/require semantics.
+Guardian calls Core's conformance functions. It must not fork or duplicate `deny`, `allow`, `require` or `require-path` semantics.

@@ -2,6 +2,8 @@
 
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phase 2.
 
+**Phase 2 status:** complete and reproducible as of 2026-08-12.
+
 ## Repository boundary
 
 Guardian depends on `@archsync/core`. It does not own the Architecture Model schema and does not treat draw.io or runtime observations as a source of truth.
