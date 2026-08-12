@@ -8,13 +8,13 @@ importers:
 
   .:
     dependencies:
-      '@archsync/core':
-        specifier: git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6
-        version: git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
     devDependencies:
+      '@archsync/core':
+        specifier: git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6
+        version: git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3

@@ -37,10 +37,13 @@
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify"
   },
   "dependencies": {
-    "@archsync/core": "git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
     "typescript": "^5.9.2"
   },
+  "peerDependencies": {
+    "@archsync/core": "^0.1.0"
+  },
   "devDependencies": {
+    "@archsync/core": "git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
     "@types/node": "^24.0.0",
     "@vitest/coverage-v8": "3.2.7",
     "tsx": "^4.20.5",
