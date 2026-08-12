@@ -26,6 +26,7 @@ The first analyzer supports one stack only: TypeScript/Node.js. Full repository 
 ## Consequences
 
 - Guardian depends on Core and does not copy rule matching code.
+- Guardian consumes Core as a peer dependency. Its own private-repository CI uses a pinned `pnpm pack` artifact of Core so no cross-repository token is required.
 - Source evidence stays separate from approved `architecture.yaml`.
 - Missing required edges use a deterministic source-component anchor plus the Core model-rule location.
 - Same repository and model must serialize to the same Observed Graph and Finding output.

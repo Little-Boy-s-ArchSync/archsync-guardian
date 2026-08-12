@@ -12,6 +12,12 @@
       "src/benchmark.ts": "34f5fbf384c1450f65f909f03c448850ac51f96c402e1226b958ae5efff69c3a"
     }
   },
+  "core_dependency": {
+    "repository_commit": "f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
+    "vendored_package": "vendor/archsync-core-0.1.0.tgz",
+    "vendored_package_sha256": "967c2fe1d93ac370276d0aa18d0a3c69f79ee53b02bd67946f45fbf1a1dfd69b",
+    "consumption_contract": "peerDependency ^0.1.0"
+  },
   "analyzer": {
     "id": "archsync-typescript",
     "version": "0.1",

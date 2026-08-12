@@ -49,6 +49,12 @@ const evidence = {
     finding_contract_version: violation.contract_version,
     source_sha256: sourceHashes,
   },
+  core_dependency: {
+    repository_commit: "f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
+    vendored_package: "vendor/archsync-core-0.1.0.tgz",
+    vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz"))),
+    consumption_contract: "peerDependency ^0.1.0",
+  },
   analyzer: {
     id: baseline.analyzer.id,
     version: baseline.analyzer.version,
