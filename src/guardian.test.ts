@@ -1,0 +1,108 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { checkRepository, evaluateObservedArchitecture, formatGuardianResult } from "./guardian.js";
+import { baselineSources, testArchitecture, writeSources } from "./test-helpers.js";
+
+let repository: string;
+
+beforeEach(async () => {
+  repository = await mkdtemp(join(tmpdir(), "archsync-guardian-test-"));
+});
+
+afterEach(async () => {
+  await rm(repository, { recursive: true, force: true });
+});
+
+describe("Guardian orchestration", () => {
+  it("passes an observed repository that conforms to the expected graph", async () => {
+    await writeSources(repository, baselineSources);
+
+    const result = await checkRepository(testArchitecture(), repository);
+
+    expect(result.classification).toBe("no-impact");
+    expect(result.decision).toBe("PASS");
+    expect(result.findings).toEqual([]);
+    expect(formatGuardianResult(result)).toContain("NO-IMPACT / PASS");
+  });
+
+  it("blocks a deny-rule violation with exact source evidence", async () => {
+    await writeSources(repository, {
+      ...baselineSources,
+      "frontend/src/database.ts": `import { Client } from "pg";
+const database = new Client({ connectionString: process.env.DATABASE_URL });
+export async function load(): Promise<void> {
+  await database.query("select 1");
+}
+`,
+    });
+
+    const result = await checkRepository(testArchitecture(), repository);
+    const finding = result.findings.find(({ rule_id }) => rule_id === "ARCH-001");
+
+    expect(result.classification).toBe("violation");
+    expect(result.decision).toBe("BLOCK");
+    expect(finding).toMatchObject({
+      severity: "critical",
+      edge: { key: "frontend|data|postgres" },
+      source_evidence: [{ file: "frontend/src/database.ts", line: 4 }],
+    });
+    expect(formatGuardianResult(result)).toContain("frontend/src/database.ts:4");
+  });
+
+  it("anchors a missing required edge to the source component", async () => {
+    const { "gateway/src/server.ts": _removed, ...withoutGatewayCall } = baselineSources;
+    await writeSources(repository, {
+      ...withoutGatewayCall,
+      "gateway/src/server.ts": `export async function forward(): Promise<void> {
+  console.info("no service call");
+}
+`,
+    });
+
+    const result = await checkRepository(testArchitecture(), repository);
+    const finding = result.findings.find(({ rule_id }) => rule_id === "ARCH-002");
+
+    expect(finding?.source_evidence).toEqual([
+      expect.objectContaining({ file: "gateway/src/server.ts", line: 2, detector: "component-root" }),
+    ]);
+    expect(finding?.model_evidence).toEqual({ document: "expected", path: "/rules/1" });
+  });
+
+  it("reviews an unruled Redis evolution", async () => {
+    await writeSources(repository, {
+      ...baselineSources,
+      "service/src/cache.ts": `import { createClient } from "redis";
+const redis = createClient({ url: "redis://redis:6379" });
+export async function cache(): Promise<void> { await redis.set("a", "b"); }
+`,
+    });
+
+    const result = await checkRepository(testArchitecture(), repository);
+
+    expect(result.classification).toBe("evolution");
+    expect(result.decision).toBe("REVIEW");
+    expect(result.diff.added_nodes).toEqual(["redis"]);
+    expect(result.diff.added_edges).toEqual(["service|data|redis"]);
+    expect(result.findings.some(({ source_evidence }) => source_evidence.some(({ file }) => file.endsWith("cache.ts")))).toBe(true);
+  });
+
+  it("preserves model evidence when source evidence is unavailable", () => {
+    const expected = testArchitecture();
+    const observed = {
+      version: "0.1" as const,
+      analyzer: { id: "archsync-typescript" as const, version: "0.1" as const, stack: "typescript-node" as const },
+      metadata: { name: "empty", scanned_files: 0 },
+      components: {},
+      relationships: [],
+    };
+
+    const result = evaluateObservedArchitecture(expected, observed);
+
+    expect(result.classification).toBe("evolution");
+    expect(result.findings.some(({ source_evidence }) => source_evidence.length === 0)).toBe(true);
+    expect(formatGuardianResult(result)).toContain("expected:/components/frontend");
+  });
+});

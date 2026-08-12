@@ -1,0 +1,42 @@
+name: Phase 2 verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm phase2:verify
+      - name: Ensure committed build and evidence are current
+        run: git diff --exit-code -- dist evidence
+      - name: Upload Phase 2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-2-evidence-${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            evidence/phase-2-evidence.json
+            coverage/coverage-summary.json
+            coverage/index.html

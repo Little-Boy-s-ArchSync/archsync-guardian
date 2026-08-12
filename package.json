@@ -1,0 +1,49 @@
+{
+  "name": "@archsync/guardian",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "packageManager": "pnpm@11.16.0",
+  "description": "Deterministic source analyzer and architecture conformance control plane for ArchSync.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Little-Boy-s-ArchSync/archsync-guardian.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "bin": {
+    "archsync-guardian": "dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false && tsc -p tsconfig.test.json --noEmit --pretty false",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "guardian": "tsx src/bin.ts",
+    "cli:smoke": "node scripts/cli-smoke.mjs",
+    "evidence:update": "pnpm build && node scripts/phase2-evidence.mjs --write",
+    "evidence:verify": "node scripts/phase2-evidence.mjs",
+    "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify"
+  },
+  "dependencies": {
+    "@archsync/core": "git+https://github.com/Little-Boy-s-ArchSync/archsync-core.git#f2ffb1ae72f02822b2f8d39c5c6a8d5c0acf98c6",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "3.2.7",
+    "tsx": "^4.20.5",
+    "vitest": "^3.2.4"
+  }
+}
