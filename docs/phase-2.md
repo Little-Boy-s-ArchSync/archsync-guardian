@@ -1,8 +1,8 @@
 # Phase 2 - Deterministic Guardian Core
 
-**Target release:** ArchSync v0.1
+**Target release:** ArchSync v0.2
 
-**Status:** Complete (2026-08-12)
+**Status:** Strengthened and reproducible (2026-08-14)
 
 ## Objective
 
@@ -27,7 +27,8 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 - Observed Graph contract v0.1.
 - Finding contract v0.1 with source and model evidence.
 - Full-repository `scan`, `check` and `check-json` commands.
-- Ten-case benchmark evaluation with node, edge, classification, evidence and determinism metrics.
+- Twenty-case end-to-end benchmark evaluation with node, edge, classification, evidence and determinism metrics.
+- Forty-signal detector challenge evaluation: 20 positive signals and 20 hard negatives.
 
 ## Out of scope
 
@@ -42,24 +43,25 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 | Detector | Source signal | Observed relationship |
 | --- | --- | --- |
 | `typescript-fetch` | `fetch()` plus an HTTP(S) endpoint | source component -> endpoint host (`http`) |
-| `typescript-pg` | `pg` client and `query()` | source component -> PostgreSQL host (`data`) |
-| `typescript-redis` | `redis` client and data operation | source component -> Redis host (`data`) |
-| `typescript-amqp-publish` | `amqplib` `publish()` / `sendToQueue()` | producer -> queue (`async`) |
-| `typescript-amqp-consume` | `amqplib` `consume()` | queue -> consumer (`async`) |
+| `typescript-pg` | `query()` on a client created from a tracked `pg` import | source component -> PostgreSQL host (`data`) |
+| `typescript-redis` | supported data operation on a client created from a tracked `redis` import | source component -> Redis host (`data`) |
+| `typescript-amqp-publish` | `publish()` / `sendToQueue()` on a channel derived from a tracked `amqplib` connection | producer -> queue (`async`) |
+| `typescript-amqp-consume` | `consume()` on a channel derived from a tracked `amqplib` connection | queue -> consumer (`async`) |
 
 ## Exit gate
 
 1. Baseline source reconstructs five components and five relationships.
-2. All ten patches are applied independently to the clean baseline.
+2. All 20 patches are applied independently to the clean baseline.
 3. Full-graph node and edge precision/recall are each at least 0.85.
 4. Changed-node and changed-edge precision/recall are each at least 0.85.
 5. `deny`, `allow`, direct `require` and multi-hop `require-path` rules are deterministic.
-6. All ten classifications match ground truth.
+6. All 20 classifications match ground truth.
 7. Violation rule IDs match ground truth.
 8. Expected source evidence files and exact lines match.
 9. Repeated analysis produces byte-identical JSON for baseline and all cases.
-10. Statement, line and function coverage are at least 90%; branch coverage is at least 85%.
-11. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
+10. The detector challenge corpus classifies all 20 positive and 20 hard-negative signals exactly and deterministically.
+11. Statement, line and function coverage are at least 90%; branch coverage is at least 85%.
+12. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
 
 ## Authoritative commands
 

@@ -42,7 +42,7 @@ const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async 
 
 const evidence = {
   phase: 2,
-  release: "v0.1",
+  release: "v0.2",
   objective: "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   contracts: {
     observed_graph_version: baseline.version,
@@ -96,13 +96,21 @@ const evidence = {
     canonical_benchmark: {
       repository: "archsync-benchmark",
       command: "pnpm phase2:verify",
-      cases: 10,
+      cases: 20,
       minimum_node_precision: 0.85,
       minimum_node_recall: 0.85,
       minimum_edge_precision: 0.85,
       minimum_edge_recall: 0.85,
       exact_classification_required: true,
       source_file_and_line_required: true,
+    },
+    detector_challenge_corpus: {
+      repository: "archsync-benchmark",
+      command: "pnpm patterns:verify",
+      positive_signals: 20,
+      hard_negative_signals: 20,
+      exact_signal_classification_required: true,
+      repeated_analysis_required: true,
     },
   },
   exclusions: [

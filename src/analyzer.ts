@@ -32,6 +32,35 @@ interface RelationshipAccumulator {
   evidence: SourceEvidence[];
 }
 
+interface ImportBindings {
+  pgConstructors: Set<string>;
+  pgNamespaces: Set<string>;
+  redisFactories: Set<string>;
+  redisNamespaces: Set<string>;
+  amqpConnectors: Set<string>;
+  amqpNamespaces: Set<string>;
+}
+
+const redisOperations = new Set([
+  "get",
+  "set",
+  "del",
+  "mGet",
+  "mSet",
+  "hGet",
+  "hSet",
+  "hDel",
+  "lPush",
+  "rPush",
+  "lPop",
+  "rPop",
+  "sAdd",
+  "sRem",
+  "zAdd",
+  "zRem",
+  "expire",
+]);
+
 const ignoredDirectories = new Set([
   ".git",
   "coverage",
@@ -185,14 +214,80 @@ function objectPropertyExpression(
   return undefined;
 }
 
-function importPackages(sourceFile: ts.SourceFile): Set<string> {
-  return new Set(
-    sourceFile.statements
-      .filter(ts.isImportDeclaration)
-      .map((statement) => statement.moduleSpecifier)
-      .filter(ts.isStringLiteral)
-      .map((specifier) => specifier.text),
-  );
+function importBindings(sourceFile: ts.SourceFile): ImportBindings {
+  const bindings: ImportBindings = {
+    pgConstructors: new Set(),
+    pgNamespaces: new Set(),
+    redisFactories: new Set(),
+    redisNamespaces: new Set(),
+    amqpConnectors: new Set(),
+    amqpNamespaces: new Set(),
+  };
+
+  for (const statement of sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
+    const packageName = statement.moduleSpecifier.text;
+    if (!['pg', 'redis', 'amqplib'].includes(packageName)) continue;
+    const clause = statement.importClause;
+    if (!clause) continue;
+
+    if (clause.name) {
+      if (packageName === "pg") bindings.pgNamespaces.add(clause.name.text);
+      if (packageName === "redis") bindings.redisNamespaces.add(clause.name.text);
+      if (packageName === "amqplib") bindings.amqpNamespaces.add(clause.name.text);
+    }
+
+    const namedBindings = clause.namedBindings;
+    if (namedBindings && ts.isNamespaceImport(namedBindings)) {
+      if (packageName === "pg") bindings.pgNamespaces.add(namedBindings.name.text);
+      if (packageName === "redis") bindings.redisNamespaces.add(namedBindings.name.text);
+      if (packageName === "amqplib") bindings.amqpNamespaces.add(namedBindings.name.text);
+      continue;
+    }
+    if (!namedBindings || !ts.isNamedImports(namedBindings)) continue;
+
+    for (const element of namedBindings.elements) {
+      const imported = element.propertyName?.text ?? element.name.text;
+      const local = element.name.text;
+      if (packageName === "pg" && ["Client", "Pool"].includes(imported)) {
+        bindings.pgConstructors.add(local);
+      }
+      if (packageName === "redis" && imported === "createClient") {
+        bindings.redisFactories.add(local);
+      }
+      if (packageName === "amqplib" && imported === "connect") {
+        bindings.amqpConnectors.add(local);
+      }
+    }
+  }
+  return bindings;
+}
+
+function unwrapExpression(expression: ts.Expression): ts.Expression {
+  let current = expression;
+  while (
+    ts.isAwaitExpression(current) ||
+    ts.isParenthesizedExpression(current) ||
+    ts.isAsExpression(current) ||
+    ts.isTypeAssertionExpression(current) ||
+    ts.isNonNullExpression(current)
+  ) {
+    current = current.expression;
+  }
+  return current;
+}
+
+function matchesBoundMember(
+  expression: ts.Expression,
+  identifiers: ReadonlySet<string>,
+  namespaces: ReadonlySet<string>,
+  member: string,
+): boolean {
+  if (ts.isIdentifier(expression)) return identifiers.has(expression.text);
+  return ts.isPropertyAccessExpression(expression) &&
+    ts.isIdentifier(expression.expression) &&
+    namespaces.has(expression.expression.text) &&
+    expression.name.text === member;
 }
 
 function lineEvidence(
@@ -248,10 +343,18 @@ function relationshipKey(from: string, to: string, type: RelationshipType): stri
 
 function variableEndpoints(
   sourceFile: ts.SourceFile,
-  packages: ReadonlySet<string>,
-): { endpoints: Map<string, EndpointTarget>; resources: Map<string, EndpointTarget> } {
+  bindings: ImportBindings,
+): {
+  endpoints: Map<string, EndpointTarget>;
+  pgResources: Map<string, EndpointTarget>;
+  redisResources: Map<string, EndpointTarget>;
+  amqpChannels: Map<string, EndpointTarget>;
+} {
   const endpoints = new Map<string, EndpointTarget>();
-  const resources = new Map<string, EndpointTarget>();
+  const pgResources = new Map<string, EndpointTarget>();
+  const redisResources = new Map<string, EndpointTarget>();
+  const amqpConnections = new Map<string, EndpointTarget>();
+  const amqpChannels = new Map<string, EndpointTarget>();
   const declarations: ts.VariableDeclaration[] = [];
   const collect = (node: ts.Node): void => {
     if (ts.isVariableDeclaration(node)) declarations.push(node);
@@ -259,35 +362,65 @@ function variableEndpoints(
   };
   collect(sourceFile);
 
-  for (let pass = 0; pass < 3; pass += 1) {
+  for (let pass = 0; pass < 4; pass += 1) {
     for (const declaration of declarations) {
       if (!ts.isIdentifier(declaration.name) || !declaration.initializer) continue;
       const name = declaration.name.text;
       const direct = expressionEndpoint(declaration.initializer, endpoints);
       if (direct) endpoints.set(name, direct);
+      const initializer = unwrapExpression(declaration.initializer);
 
-      if (packages.has("pg") && ts.isNewExpression(declaration.initializer)) {
-        const [options] = declaration.initializer.arguments ?? [];
+      if (
+        ts.isNewExpression(initializer) &&
+        (
+          matchesBoundMember(initializer.expression, bindings.pgConstructors, bindings.pgNamespaces, "Client") ||
+          matchesBoundMember(initializer.expression, bindings.pgConstructors, bindings.pgNamespaces, "Pool")
+        )
+      ) {
+        const [options] = initializer.arguments ?? [];
         const connection = options && objectPropertyExpression(options, "connectionString");
         const target = connection && expressionEndpoint(connection, endpoints);
         if (target) {
           endpoints.set(name, target);
-          resources.set(name, target);
+          pgResources.set(name, target);
         }
       }
 
-      if (packages.has("redis") && ts.isCallExpression(declaration.initializer)) {
-        const [options] = declaration.initializer.arguments;
+      if (
+        ts.isCallExpression(initializer) &&
+        matchesBoundMember(initializer.expression, bindings.redisFactories, bindings.redisNamespaces, "createClient")
+      ) {
+        const [options] = initializer.arguments;
         const connection = options && objectPropertyExpression(options, "url");
         const target = connection && expressionEndpoint(connection, endpoints);
         if (target) {
           endpoints.set(name, target);
-          resources.set(name, target);
+          redisResources.set(name, target);
+        }
+      }
+
+      if (
+        ts.isCallExpression(initializer) &&
+        matchesBoundMember(initializer.expression, bindings.amqpConnectors, bindings.amqpNamespaces, "connect")
+      ) {
+        const [connection] = initializer.arguments;
+        const target = connection && expressionEndpoint(connection, endpoints);
+        if (target?.relationshipType === "async") amqpConnections.set(name, target);
+      }
+
+      if (ts.isCallExpression(initializer) && ts.isPropertyAccessExpression(initializer.expression)) {
+        const receiver = initializer.expression.expression;
+        if (
+          initializer.expression.name.text === "createChannel" &&
+          ts.isIdentifier(receiver) &&
+          amqpConnections.has(receiver.text)
+        ) {
+          amqpChannels.set(name, amqpConnections.get(receiver.text)!);
         }
       }
     }
   }
-  return { endpoints, resources };
+  return { endpoints, pgResources, redisResources, amqpChannels };
 }
 
 export async function analyzeTypeScriptRepository(
@@ -357,9 +490,8 @@ export async function analyzeTypeScriptRepository(
     }
     ensureComponent(sourceId, anchor);
 
-    const packages = importPackages(sourceFile);
-    const { endpoints, resources } = variableEndpoints(sourceFile, packages);
-    const amqpTarget = [...endpoints.values()].find((target) => target.relationshipType === "async");
+    const bindings = importBindings(sourceFile);
+    const { endpoints, pgResources, redisResources, amqpChannels } = variableEndpoints(sourceFile, bindings);
 
     const visit = (node: ts.Node): void => {
       if (ts.isCallExpression(node)) {
@@ -375,17 +507,15 @@ export async function analyzeTypeScriptRepository(
           const method = node.expression.name.text;
           const receiver = node.expression.expression;
           const receiverName = ts.isIdentifier(receiver) ? receiver.text : undefined;
-          const resource = receiverName ? resources.get(receiverName) : undefined;
-          if (packages.has("pg") && method === "query" && resource?.relationshipType === "data") {
-            addRelationship(sourceId, resource, lineEvidence(sourceFile, node, file, "typescript-pg", 0.99));
+          const pgResource = receiverName ? pgResources.get(receiverName) : undefined;
+          if (method === "query" && pgResource) {
+            addRelationship(sourceId, pgResource, lineEvidence(sourceFile, node, file, "typescript-pg", 0.99));
           }
-          if (
-            packages.has("redis") &&
-            ["get", "set", "del", "mGet", "mSet"].includes(method) &&
-            resource?.componentType === "cache"
-          ) {
-            addRelationship(sourceId, resource, lineEvidence(sourceFile, node, file, "typescript-redis", 0.99));
+          const redisResource = receiverName ? redisResources.get(receiverName) : undefined;
+          if (redisOperations.has(method) && redisResource) {
+            addRelationship(sourceId, redisResource, lineEvidence(sourceFile, node, file, "typescript-redis", 0.99));
           }
+          const amqpTarget = receiverName ? amqpChannels.get(receiverName) : undefined;
           if (amqpTarget && ["publish", "sendToQueue"].includes(method)) {
             addRelationship(sourceId, amqpTarget, lineEvidence(sourceFile, node, file, "typescript-amqp-publish", 0.98));
           }
@@ -406,7 +536,7 @@ export async function analyzeTypeScriptRepository(
 
   return {
     version: "0.1",
-    analyzer: { id: "archsync-typescript", version: "0.1", stack: "typescript-node" },
+    analyzer: { id: "archsync-typescript", version: "0.2", stack: "typescript-node" },
     metadata: { name: `${expected.metadata.name}-observed`, scanned_files: files.length },
     components: Object.fromEntries([...components.entries()].sort(([a], [b]) => a.localeCompare(b))),
     relationships: [...relationships.entries()]

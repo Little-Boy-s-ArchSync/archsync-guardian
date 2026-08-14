@@ -9,4 +9,4 @@ pnpm evidence:update
 pnpm phase2:verify
 ```
 
-The canonical ten-case precision/recall result is generated and verified in `archsync-benchmark`, which owns the source patches and ground truth.
+The canonical 20-case end-to-end result and 40-signal detector challenge result are generated and verified in `archsync-benchmark`, which owns the source patches, annotated source signals and ground truth.

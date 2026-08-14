@@ -22,7 +22,7 @@ export interface ObservedArchitecture {
     version: typeof observedGraphVersion;
     analyzer: {
         id: "archsync-typescript";
-        version: "0.1";
+        version: "0.2";
         stack: "typescript-node";
     };
     metadata: {

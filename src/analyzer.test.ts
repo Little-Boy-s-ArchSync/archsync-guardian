@@ -175,4 +175,64 @@ export async function read(): Promise<void> { await redis.get("key"); }
     expect(observed.relationships.map(({ to }) => to)).toEqual(["secure-cache", "remote-service"]);
     expect(observed.components.utility?.component.type).toBe("service");
   });
+
+  it("tracks aliased and namespace client bindings", async () => {
+    await writeSources(repository, {
+      "service/src/postgres.ts": `import { Pool as PgPool } from "pg";
+const database = new PgPool({ connectionString: "postgres://postgres:5432/orders" });
+export async function read(): Promise<void> { await database.query("select 1"); }
+`,
+      "service/src/cache.ts": `import * as redis from "redis";
+const cache = redis.createClient({ url: "redis://redis:6379" });
+export async function write(): Promise<void> { await cache.hSet("orders", "1", "ok"); }
+`,
+      "service/src/events.ts": `import * as amqp from "amqplib";
+const eventsUrl = "amqp://order-events:5672";
+export async function publish(): Promise<void> {
+  const connection = await amqp.connect(eventsUrl);
+  const channel = await connection.createChannel();
+  channel.sendToQueue("orders", Buffer.from("{}"));
+}
+`,
+    });
+
+    const observed = await analyzeTypeScriptRepository(repository, testArchitecture());
+
+    expect(observed.relationships.map(({ from, type, to }) => `${from}|${type}|${to}`)).toEqual([
+      "service|async|order-events",
+      "service|data|postgres",
+      "service|data|redis",
+    ]);
+  });
+
+  it("does not treat unrelated query, cache or publish methods as infrastructure access", async () => {
+    await writeSources(repository, {
+      "service/src/lookalikes.ts": `import { Client } from "pg";
+import { createClient } from "redis";
+import { connect } from "amqplib";
+
+const fakeDatabase = new CustomClient({ connectionString: "postgres://postgres:5432/orders" });
+const localCache = { get: async (_key: string) => "value" };
+const logger = { publish: (_message: string) => undefined };
+
+export async function run(): Promise<void> {
+  await fakeDatabase.query("select 1");
+  await localCache.get("key");
+  logger.publish("amqp://order-events:5672");
+  void Client;
+  void createClient;
+  void connect;
+}
+
+declare class CustomClient {
+  constructor(options: { connectionString: string });
+  query(statement: string): Promise<void>;
+}
+`,
+    });
+
+    const observed = await analyzeTypeScriptRepository(repository, testArchitecture());
+
+    expect(observed.relationships).toEqual([]);
+  });
 });

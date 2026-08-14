@@ -2,7 +2,7 @@
 
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phase 2.
 
-**Phase 2 status:** complete and reproducible as of 2026-08-12.
+**Phase 2 status:** strengthened v0.2 gate, reproducible as of 2026-08-14.
 
 ## Repository boundary
 
@@ -11,11 +11,12 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 ## Phase 2 capabilities
 
 - Scan a TypeScript/Node.js repository into Observed Graph v0.1.
-- Detect HTTP, PostgreSQL, Redis and AMQP relationships through AST signals.
+- Detect HTTP, PostgreSQL, Redis and AMQP relationships through provenance-aware AST signals.
+- Track named aliases and namespace imports for `pg`, `redis` and `amqplib`, while rejecting method-name lookalikes that are not derived from those packages.
 - Call Core's deterministic graph diff and `deny`/`allow`/`require`/`require-path` conformance engine.
 - Classify `no-impact`, `violation` and `evolution`.
 - Emit Finding v0.1 with relative file, line, column, detector and confidence evidence.
-- Evaluate the ten-case Order Platform benchmark with precision/recall and reproducibility metrics.
+- Evaluate 20 independent Order Platform patches and a separate 40-signal detector challenge corpus with precision/recall, specificity and reproducibility metrics.
 
 ## Setup
 
@@ -55,7 +56,7 @@ pnpm guardian benchmark \
   ../archsync-benchmark/order-platform/ground-truth.json
 ```
 
-The expected result is 10/10 deterministic cases with `1.000` full-graph and changed-graph node/edge precision/recall, classification accuracy and exact source evidence accuracy.
+The expected end-to-end result is 20/20 deterministic cases with `1.000` full-graph and changed-graph node/edge precision/recall, classification accuracy and exact source evidence accuracy. The detector challenge corpus separately evaluates 20 positive and 20 hard-negative source signals.
 
 ## Repository map
 

@@ -144,7 +144,7 @@ export async function cache(): Promise<void> { await redis.set("a", "b"); }
     const expected = testArchitecture();
     const observed = {
       version: "0.1" as const,
-      analyzer: { id: "archsync-typescript" as const, version: "0.1" as const, stack: "typescript-node" as const },
+      analyzer: { id: "archsync-typescript" as const, version: "0.2" as const, stack: "typescript-node" as const },
       metadata: { name: "empty", scanned_files: 0 },
       components: {},
       relationships: [],
