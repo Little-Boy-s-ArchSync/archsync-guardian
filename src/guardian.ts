@@ -26,7 +26,7 @@ function uniqueEvidence(values: SourceEvidence[]): SourceEvidence[] {
 }
 
 function evidenceRank(value: SourceEvidence): number {
-  const name = value.file.split("/").at(-1) ?? value.file;
+  const name = value.file.split("/").at(-1)!;
   if (["app.ts", "server.ts", "service.ts", "worker.ts"].includes(name)) return 0;
   if (["index.ts", "main.ts"].includes(name)) return 1;
   return 10;
@@ -34,9 +34,8 @@ function evidenceRank(value: SourceEvidence): number {
 
 function preferredComponentEvidence(
   observed: ObservedArchitecture,
-  component: string | undefined,
+  component: string,
 ): SourceEvidence[] {
-  if (!component) return [];
   const candidates = observed.components[component]?.evidence ?? [];
   const anchors = candidates.filter((candidate) => candidate.detector === "component-root");
   return [...(anchors.length > 0 ? anchors : candidates)].sort((a, b) =>
@@ -53,7 +52,7 @@ function findingSourceEvidence(
     : [];
   if (edgeEvidence.length > 0) return uniqueEvidence(edgeEvidence);
   if (finding.component) return preferredComponentEvidence(observed, finding.component);
-  return preferredComponentEvidence(observed, finding.from);
+  return preferredComponentEvidence(observed, finding.from!);
 }
 
 function guardianFinding(

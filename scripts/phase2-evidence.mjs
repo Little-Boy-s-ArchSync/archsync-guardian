@@ -52,6 +52,23 @@ async function treeSha256(directory) {
   };
 }
 
+async function readMeasuredCoverage() {
+  const summary = JSON.parse(await readFile(join(root, "coverage", "coverage-summary.json"), "utf8"));
+  const measured = {};
+  for (const metric of ["statements", "branches", "functions", "lines"]) {
+    const value = summary.total?.[metric];
+    assert.ok(value, `Coverage summary is missing '${metric}'`);
+    assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
+    assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
+    measured[metric] = {
+      covered: value.covered,
+      total: value.total,
+      percent: value.pct,
+    };
+  }
+  return measured;
+}
+
 const architectureResult = await loadArchitecture(join(fixtures, "architecture.yaml"));
 assert.equal(architectureResult.valid, true);
 assert.ok(architectureResult.value);
@@ -69,6 +86,7 @@ assert.deepEqual(
   arch001.source_evidence.map(({ file, line, detector }) => ({ file, line, detector })),
   [{ file: "frontend/src/database.ts", line: 6, detector: "typescript-pg" }],
 );
+const measuredCoverage = await readMeasuredCoverage();
 
 const sourceFiles = [
   "contracts.ts",
@@ -79,6 +97,8 @@ const sourceFiles = [
   "demo.ts",
   "doctor.ts",
   "model-cli.ts",
+  "phase3-git.ts",
+  "phase3.ts",
   "index.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
@@ -91,7 +111,11 @@ const verificationSource = await hashFiles([
   join(root, "scripts", "phase2-evidence.mjs"),
   join(root, "src", "analyzer.test.ts"),
   join(root, "src", "benchmark.test.ts"),
+  join(root, "src", "doctor.test.ts"),
   join(root, "src", "guardian.test.ts"),
+  join(root, "src", "model-cli.test.ts"),
+  join(root, "src", "phase3-git.test.ts"),
+  join(root, "src", "phase3.test.ts"),
   join(root, "src", "test-helpers.ts"),
   join(root, "tsconfig.json"),
   join(root, "tsconfig.test.json"),
@@ -121,7 +145,7 @@ const evidence = {
     source_sha256: sourceHashes,
   },
   core_dependency: {
-    repository_commit: "304f4ac48137e011ec5f7fd85071a89502c02ada",
+    repository_commit: "2affbbb0da859a32b9b9079b4bf718fc7b14993b",
     vendored_package: "vendor/archsync-core-0.1.0.tgz",
     vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz"))),
     consumption_contract: "peerDependency ^0.1.0",
@@ -158,12 +182,13 @@ const evidence = {
   },
   enforced_gates: {
     coverage_thresholds_percent: {
-      statements: 90,
-      branches: 85,
-      functions: 90,
-      lines: 90,
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100,
     },
-    cli_smoke_checks: 7,
+    measured_engine_coverage: measuredCoverage,
+    cli_smoke_checks: 22,
     canonical_benchmark: {
       repository: "archsync-benchmark",
       command: "pnpm phase2:verify",

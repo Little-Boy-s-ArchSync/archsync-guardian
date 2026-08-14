@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { evaluatePhase2Benchmark, formatBenchmarkResult } from "./benchmark.js";
+import { checkRepository } from "./guardian.js";
 import { baselineSources, writeSources } from "./test-helpers.js";
 
 let root: string;
@@ -206,5 +207,89 @@ describe("Phase 2 benchmark evaluator", () => {
     expect(result.metrics.evidence_line_accuracy).toBe(0);
     expect(result.issues.join("\n")).toMatch(/source evidence file does not match/);
     expect(result.issues.join("\n")).toMatch(/source evidence line does not match/);
+  });
+
+  it("reports a missing expected evidence location without crashing", async () => {
+    const manifestPath = await writeBenchmark();
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.cases[0].expected.evidence = [];
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const result = await evaluatePhase2Benchmark(manifestPath);
+
+    expect(result.valid).toBe(false);
+    expect(result.cases[0]).toMatchObject({ evidence_file_match: false, evidence_line_match: false });
+  });
+
+  it("reports when no actual finding matches the expected finding identity", async () => {
+    const manifestPath = await writeBenchmark();
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.cases[0].expected.findings[0] = {
+      id: "ARCH-404",
+      kind: "deny-rule",
+      severity: "critical",
+      from: "gateway",
+      to: "service",
+    };
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const result = await evaluatePhase2Benchmark(manifestPath);
+
+    expect(result.cases[0]).toMatchObject({ actual_evidence: [], evidence_file_match: false });
+  });
+
+  it("matches evidence by finding kind and edge when the declared rule id differs", async () => {
+    const manifestPath = await writeBenchmark();
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.cases[0].expected.findings[0].id = "RENAMED-RULE";
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const result = await evaluatePhase2Benchmark(manifestPath);
+
+    expect(result.cases[0]).toMatchObject({ evidence_file_match: true, evidence_line_match: true });
+  });
+
+  it("calculates zero F1 for disjoint expected and actual changed-edge sets", async () => {
+    const manifestPath = await writeBenchmark();
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    manifest.cases[0].delta.relationships_added = [
+      { from: "service", to: "gateway", type: "http" },
+    ];
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const result = await evaluatePhase2Benchmark(manifestPath);
+
+    expect(result.metrics.changed_edges).toMatchObject({ precision: 0, recall: 0, f1: 0 });
+  });
+
+  it("detects nondeterminism in both baseline and patched-case replays", async () => {
+    const manifestPath = await writeBenchmark();
+    let invocation = 0;
+    const nondeterministicChecker: typeof checkRepository = async (expected, repository) => {
+      invocation += 1;
+      const result = await checkRepository(expected, repository);
+      if (invocation === 1) {
+        return { ...result, classification: "violation", decision: "BLOCK" };
+      }
+      if (invocation === 4) {
+        return {
+          ...result,
+          observed: {
+            ...result.observed,
+            metadata: { ...result.observed.metadata, name: "nondeterministic-repeat" },
+          },
+        };
+      }
+      return result;
+    };
+
+    const result = await evaluatePhase2Benchmark(manifestPath, {
+      checkRepository: nondeterministicChecker,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.issues).toContain("baseline: expected no-impact, found violation");
+    expect(result.issues).toContain("baseline: analyzer output is nondeterministic");
+    expect(result.issues).toContain("case-01: analyzer output is nondeterministic");
   });
 });

@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "c3a308268dc57ebbc557df0a478a826b9631c4299d62e0d2b28deb9ee32c7ae0",
+    "implementation_source_sha256": "cac1f45f105ccf6d6d6a3a7e99eaceb30549242adf6134ab1911ec8f4d98f515",
     "fixture_tree": {
       "files": [
         {
@@ -68,19 +68,35 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a573e4a20dd56a5bb5d45ae12dacffe0bb4d2aad5bb032cb84cc298235bca4b"
+        "sha256": "e3376c769ea20971cb6df60aa27dd94cd16c30c98b3a68b57234f8addea55df6"
       },
       {
         "file": "src/analyzer.test.ts",
-        "sha256": "9eb7c15344e60409c798b318a3444a3d8ede0014cd25235b8f67e3e9c532698b"
+        "sha256": "6741123975be918ee4f4544a6c20e7f6e2bfe48116b173397a6eb7d96883a23d"
       },
       {
         "file": "src/benchmark.test.ts",
-        "sha256": "947016930de89840b1fcf6e180cfd9318f4395b6d767a729d2f848521d397a5f"
+        "sha256": "a5ef771855cd3a0aa0357cb563991da55957301d23aef9a29d3fb3beff3e61ee"
+      },
+      {
+        "file": "src/doctor.test.ts",
+        "sha256": "4dbc241c77994780bf6d10b0fe93886059063cef31c595226ba23917af0646d1"
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "92e6c96a12f6a9774b806eb5d5f9a5fc8d2c12dd721a90853641539628665d22"
+        "sha256": "8f4d1e13a11cd029b2a4575d9565957cedf58a17a2f87830c74ff75902f2eeb9"
+      },
+      {
+        "file": "src/model-cli.test.ts",
+        "sha256": "38240e2e18cba4c9d61ece59daf64998d1d655cc0b1c1d04b187829e4267cd81"
+      },
+      {
+        "file": "src/phase3-git.test.ts",
+        "sha256": "20bf6a791445df28733a0840d4eb53ca340250d765856eee481130ab38fe713c"
+      },
+      {
+        "file": "src/phase3.test.ts",
+        "sha256": "cd8906f42b30e00bf05afdc2e15e05bedb6d6a08c8e497ed31ec8bcd81d49e6f"
       },
       {
         "file": "src/test-helpers.ts",
@@ -96,45 +112,47 @@
       },
       {
         "file": "vitest.config.ts",
-        "sha256": "240ffad59d2e741199b65901c382dcbdbf2e9b04e1a966322ca2b8941fed3408"
+        "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "f000c39e5d0ea03e2cc601724ab2fc293eb9d78d7d0e4d001a0a7564e59c376a",
+    "verification_source_sha256": "649d47b5c151b86d422a02260c5a0a6fc87e13f9aa0946153233d5b9d058fc19",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "48490ae5462630cc1a2f47ceb8f5b98b8ad292cd205254e5b778d880bb3c72f3"
+        "sha256": "c1e971b519b395ae0916d55c6cb8b30066f49afb7eda9eca44c3b6e1ca97da79"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "8aea091e8044960162557374655fb2f2ade329eb5fba60b01d19f5b4a451374e"
+        "sha256": "4e119df161b5432d7baf3e4bd4da43631c6b564ac52233d9130acdc00e8a480a"
       },
       {
         "file": "vendor/archsync-core-0.1.0.tgz",
-        "sha256": "ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e"
+        "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "9cb6c32694a8eb686604577177a2183b3132326e838ea854ab8fc64ca3678d1e"
+    "dependency_source_sha256": "c60a9127c493a8b2d69c7f41ac45f9a26bdca3f0542fbc3918f20e038f41eaa1"
   },
   "contracts": {
     "observed_graph_version": "0.1",
     "finding_contract_version": "0.1",
     "source_sha256": {
       "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
-      "src/analyzer.ts": "b29b981a95fe2ad72af39512d97037810bb37be0d68318a7554e51abf6c38d08",
-      "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
-      "src/benchmark.ts": "e17e69120f61f0855f081a7230c55576130225666d9cc1e64cfddea36d42a59e",
+      "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
+      "src/guardian.ts": "6fad7a3bc7e469ee2bf19433957aeed7e4c4237e25adb01922a4c8c79a6314fa",
+      "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "bfe710df6e4aeec26d87f95b6ae86e45b6a16cd0d59e20b0698c39c3bbeb588b",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
-      "src/doctor.ts": "5a06fd04e061f9e5862040941484a49cf6b2cbf23aaa4c08e32ce1b3eb0fb0f1",
+      "src/doctor.ts": "6a32e99d4a3950bb5885a4c81fb2a029cdd124a47de9b681a77da17c43c4816d",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+      "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
+      "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/index.ts": "64066b941d64ccdbc45ab73a6b5763a4e8e7c995d3ed19634c467b3d3c768b67"
     }
   },
   "core_dependency": {
-    "repository_commit": "304f4ac48137e011ec5f7fd85071a89502c02ada",
+    "repository_commit": "2affbbb0da859a32b9b9079b4bf718fc7b14993b",
     "vendored_package": "vendor/archsync-core-0.1.0.tgz",
-    "vendored_package_sha256": "ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e",
+    "vendored_package_sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176",
     "consumption_contract": "peerDependency ^0.1.0"
   },
   "analyzer": {
@@ -180,12 +198,34 @@
   },
   "enforced_gates": {
     "coverage_thresholds_percent": {
-      "statements": 90,
-      "branches": 85,
-      "functions": 90,
-      "lines": 90
+      "statements": 100,
+      "branches": 100,
+      "functions": 100,
+      "lines": 100
     },
-    "cli_smoke_checks": 7,
+    "measured_engine_coverage": {
+      "statements": {
+        "covered": 1694,
+        "total": 1694,
+        "percent": 100
+      },
+      "branches": {
+        "covered": 706,
+        "total": 706,
+        "percent": 100
+      },
+      "functions": {
+        "covered": 80,
+        "total": 80,
+        "percent": 100
+      },
+      "lines": {
+        "covered": 1694,
+        "total": 1694,
+        "percent": 100
+      }
+    },
+    "cli_smoke_checks": 22,
     "canonical_benchmark": {
       "repository": "archsync-benchmark",
       "command": "pnpm phase2:verify",

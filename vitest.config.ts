@@ -8,17 +8,15 @@ export default defineConfig({
       exclude: [
         "src/bin.ts",
         "src/demo.ts",
-        "src/doctor.ts",
         "src/index.ts",
-        "src/model-cli.ts",
         "src/test-helpers.ts"
       ],
       reporter: ["text", "json-summary", "html"],
       thresholds: {
-        statements: 90,
-        branches: 85,
-        functions: 90,
-        lines: 90
+        statements: 100,
+        branches: 100,
+        functions: 100,
+        lines: 100
       }
     }
   }

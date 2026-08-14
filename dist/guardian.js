@@ -8,7 +8,7 @@ function uniqueEvidence(values) {
     return [...new Map(values.map((value) => [sourceEvidenceKey(value), value])).values()].sort((a, b) => sourceEvidenceKey(a).localeCompare(sourceEvidenceKey(b)));
 }
 function evidenceRank(value) {
-    const name = value.file.split("/").at(-1) ?? value.file;
+    const name = value.file.split("/").at(-1);
     if (["app.ts", "server.ts", "service.ts", "worker.ts"].includes(name))
         return 0;
     if (["index.ts", "main.ts"].includes(name))
@@ -16,8 +16,6 @@ function evidenceRank(value) {
     return 10;
 }
 function preferredComponentEvidence(observed, component) {
-    if (!component)
-        return [];
     const candidates = observed.components[component]?.evidence ?? [];
     const anchors = candidates.filter((candidate) => candidate.detector === "component-root");
     return [...(anchors.length > 0 ? anchors : candidates)].sort((a, b) => evidenceRank(a) - evidenceRank(b) || sourceEvidenceKey(a).localeCompare(sourceEvidenceKey(b))).slice(0, 1);

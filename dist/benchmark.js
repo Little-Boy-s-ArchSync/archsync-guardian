@@ -56,8 +56,6 @@ function expectedEvidenceMatch(scenario, result) {
     if (!expectedLocation)
         return { file: false, line: false, actual: [] };
     const expectedFinding = scenario.expected.findings[0];
-    if (!expectedFinding)
-        return { file: false, line: false, actual: [] };
     const actual = result.findings.find((finding) => finding.rule_id === expectedFinding.id ||
         (finding.kind === expectedFinding.kind &&
             finding.edge?.from === expectedFinding.from &&
@@ -82,7 +80,7 @@ function roundedCounts(value) {
         f1: round(value.f1),
     };
 }
-export async function evaluatePhase2Benchmark(manifestPath) {
+export async function evaluatePhase2Benchmark(manifestPath, dependencies = {}) {
     const absoluteManifest = resolve(manifestPath);
     const baseDirectory = dirname(absoluteManifest);
     const groundTruth = JSON.parse(await readFile(absoluteManifest, "utf8"));
@@ -92,8 +90,9 @@ export async function evaluatePhase2Benchmark(manifestPath) {
     }
     const expected = architectureResult.value;
     const repository = resolve(baseDirectory, groundTruth.benchmark.repository);
-    const baselineResult = await checkRepository(expected, repository);
-    const baselineRepeat = await checkRepository(expected, repository);
+    const checker = dependencies.checkRepository ?? checkRepository;
+    const baselineResult = await checker(expected, repository);
+    const baselineRepeat = await checker(expected, repository);
     const baselineDeterministic = JSON.stringify(baselineResult) === JSON.stringify(baselineRepeat);
     const issues = [];
     if (baselineResult.classification !== "no-impact") {
@@ -123,8 +122,8 @@ export async function evaluatePhase2Benchmark(manifestPath) {
             if (applied.status !== 0) {
                 throw new Error(`${scenario.id}: patch failed: ${applied.stderr.trim()}`);
             }
-            const actual = await checkRepository(expected, temporary);
-            const repeated = await checkRepository(expected, temporary);
+            const actual = await checker(expected, temporary);
+            const repeated = await checker(expected, temporary);
             const deterministic = JSON.stringify(actual) === JSON.stringify(repeated);
             const expectedObserved = applyBenchmarkDelta(expected, scenario.delta);
             const expectedFullNodes = new Set(Object.keys(expectedObserved.components));

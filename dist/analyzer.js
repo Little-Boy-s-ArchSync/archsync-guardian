@@ -58,8 +58,7 @@ function sourceComponentId(repositoryPath, filePath, expected) {
         .find((id) => file === id || file.startsWith(`${id}/`));
     if (known)
         return known;
-    const [first] = file.split("/");
-    return first || expected.metadata.name;
+    return file.split("/")[0];
 }
 function inferredComponent(id, target) {
     if (target) {
@@ -235,7 +234,7 @@ function matchesBoundMember(expression, identifiers, namespaces, member) {
 }
 function lineEvidence(sourceFile, node, file, detector, confidence) {
     const position = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
-    const firstLine = node.getText(sourceFile).split(/\r?\n/, 1)[0]?.trim() ?? "";
+    const firstLine = node.getText(sourceFile).split(/\r?\n/, 1)[0].trim();
     return {
         kind: "source-location",
         file,
@@ -249,12 +248,12 @@ function lineEvidence(sourceFile, node, file, detector, confidence) {
 function anchorNode(sourceFile) {
     const preferredFunction = sourceFile.statements.find((statement) => ts.isFunctionDeclaration(statement) && statement.body && statement.body.statements.length > 0);
     if (preferredFunction && ts.isFunctionDeclaration(preferredFunction)) {
-        return preferredFunction.body?.statements[0] ?? preferredFunction;
+        return preferredFunction.body.statements[0];
     }
     return sourceFile.statements[0] ?? sourceFile;
 }
 function anchorRank(file) {
-    const name = file.split("/").at(-1) ?? file;
+    const name = file.split("/").at(-1);
     if (["app.ts", "server.ts", "service.ts", "worker.ts"].includes(name))
         return 0;
     if (["index.ts", "main.ts"].includes(name))

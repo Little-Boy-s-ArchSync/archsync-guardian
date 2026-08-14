@@ -1,4 +1,5 @@
 import { type BenchmarkCase } from "@archsync/core";
+import { checkRepository } from "./guardian.js";
 import type { SourceEvidence } from "./contracts.js";
 export interface DetectionCounts {
     true_positive: number;
@@ -57,6 +58,8 @@ export interface Phase2BenchmarkResult {
     };
     cases: Phase2CaseResult[];
 }
-export declare function evaluatePhase2Benchmark(manifestPath: string): Promise<Phase2BenchmarkResult>;
+export declare function evaluatePhase2Benchmark(manifestPath: string, dependencies?: {
+    checkRepository?: typeof checkRepository;
+}): Promise<Phase2BenchmarkResult>;
 export declare function formatBenchmarkResult(result: Phase2BenchmarkResult): string;
 //# sourceMappingURL=benchmark.d.ts.map

@@ -8,6 +8,19 @@ export interface DoctorResult {
     platform: NodeJS.Platform;
     checks: DoctorCheck[];
 }
-export declare function runDoctor(): DoctorResult;
+export interface DoctorEnvironment {
+    nodeVersion: string;
+    platform: NodeJS.Platform;
+    architecture: string;
+    runGit: (command: string, args: string[], options: {
+        encoding: "utf8";
+        shell: false;
+        windowsHide: true;
+    }) => {
+        status: number | null;
+        stdout: string;
+    };
+}
+export declare function runDoctor(environment?: DoctorEnvironment): DoctorResult;
 export declare function formatDoctorResult(result: DoctorResult): string;
 //# sourceMappingURL=doctor.d.ts.map

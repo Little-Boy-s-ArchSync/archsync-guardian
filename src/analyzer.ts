@@ -115,8 +115,7 @@ function sourceComponentId(
     .sort((a, b) => b.length - a.length)
     .find((id) => file === id || file.startsWith(`${id}/`));
   if (known) return known;
-  const [first] = file.split("/");
-  return first || expected.metadata.name;
+  return file.split("/")[0]!;
 }
 
 function inferredComponent(id: string, target?: EndpointTarget): ArchitectureComponent {
@@ -307,7 +306,7 @@ function lineEvidence(
   confidence: number,
 ): SourceEvidence {
   const position = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
-  const firstLine = node.getText(sourceFile).split(/\r?\n/, 1)[0]?.trim() ?? "";
+  const firstLine = node.getText(sourceFile).split(/\r?\n/, 1)[0]!.trim();
   return {
     kind: "source-location",
     file,
@@ -324,13 +323,13 @@ function anchorNode(sourceFile: ts.SourceFile): ts.Node {
     ts.isFunctionDeclaration(statement) && statement.body && statement.body.statements.length > 0,
   );
   if (preferredFunction && ts.isFunctionDeclaration(preferredFunction)) {
-    return preferredFunction.body?.statements[0] ?? preferredFunction;
+    return preferredFunction.body!.statements[0]!;
   }
   return sourceFile.statements[0] ?? sourceFile;
 }
 
 function anchorRank(file: string): number {
-  const name = file.split("/").at(-1) ?? file;
+  const name = file.split("/").at(-1)!;
   if (["app.ts", "server.ts", "service.ts", "worker.ts"].includes(name)) return 0;
   if (["index.ts", "main.ts"].includes(name)) return 1;
   return 10;

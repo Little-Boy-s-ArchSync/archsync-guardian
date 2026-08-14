@@ -36,9 +36,9 @@
     "doctor": "tsx src/bin.ts doctor",
     "demo": "tsx src/bin.ts demo --benchmark ../archsync-benchmark/order-platform --scenario all",
     "cli:smoke": "node scripts/cli-smoke.mjs",
-    "evidence:update": "pnpm build && node scripts/phase2-evidence.mjs --write",
+    "evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase2-evidence.mjs --write",
     "evidence:verify": "node scripts/phase2-evidence.mjs",
-    "phase3:evidence:update": "pnpm build && node scripts/phase3-evidence.mjs --write",
+    "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
     "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify && pnpm phase3:evidence:verify"

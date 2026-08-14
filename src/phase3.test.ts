@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm, unlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -11,6 +11,7 @@ import {
   formatGitHubAnnotations,
   formatPhase3Markdown,
   formatPhase3Result,
+  mergeIncrementalObservedArchitecture,
 } from "./phase3.js";
 import { baselineSources, testArchitecture, writeSources } from "./test-helpers.js";
 
@@ -47,7 +48,7 @@ describe("Phase 3 Git diff architecture gate", () => {
       "utf8",
     );
 
-    const cold = await checkRepositoryDiff(testArchitecture(), repository, { base_ref: "." });
+    const cold = await checkRepositoryDiff(testArchitecture(), repository);
     const warm = await checkRepositoryDiff(testArchitecture(), repository, { base_ref: "." });
 
     expect(cold.decision).toBe("PASS");
@@ -67,6 +68,10 @@ describe("Phase 3 Git diff architecture gate", () => {
     expect(warm.analysis.incremental_scanned_files).toBe(2);
     expect(warm.analysis.head_scanned_files).toBe(4);
     expect(formatPhase3Result(warm)).toContain("Baseline cache: HIT");
+    expect(formatPhase3Markdown(cold)).toContain("No new architecture finding was introduced");
+    expect(formatPhase3Markdown(cold)).toContain("Baseline cache: **miss**");
+    expect(formatPhase3Markdown(warm)).toContain("Baseline cache: **hit**");
+    expect(formatPhase3Markdown(warm)).toContain("**Decision: PASS**");
   });
 
   it("passes a documentation-only diff without parsing a source component", async () => {
@@ -162,6 +167,8 @@ export async function cache(): Promise<void> {
     expect(result.introduced_findings).toHaveLength(2);
     expect(formatGitHubAnnotations(result)).toContain("::warning");
     expect(formatPhase3Markdown(result)).toContain("**Decision: REVIEW**");
+    expect(formatPhase3Result(result)).toContain("Request architecture approval");
+    expect(formatPhase3Result(result)).toContain("EXIT CODE: 3 (REVIEW)");
   });
 
   it("writes a GitHub step summary and supports model-only evidence", async () => {
@@ -271,5 +278,76 @@ export async function bypass(): Promise<void> { await database.query("select 1")
     expect(result.resolved_findings.some(({ rule_id }) => rule_id === "ARCH-001")).toBe(true);
     expect(result.architecture_delta.removed_edges).toEqual(["frontend|data|postgres"]);
     expect(formatPhase3Result(result)).toContain("RESOLVED FINDINGS");
+  });
+
+  it("tracks modified and empty untracked TypeScript files in a newly inferred component", async () => {
+    await commitBaseline();
+    await writeFile(
+      join(repository, "service", "src", "service.ts"),
+      `${baselineSources["service/src/service.ts"]}\nexport const changed = true;\n`,
+      "utf8",
+    );
+    await mkdir(join(repository, "new-tool", "src"), { recursive: true });
+    await writeFile(join(repository, "new-tool", "src", "main.ts"), "export const tool = true;\n", "utf8");
+    await writeFile(join(repository, "new-tool", "src", "empty.ts"), "", "utf8");
+
+    const result = await checkRepositoryDiff(testArchitecture(), repository, { base_ref: "." });
+
+    expect(result.affected_components).toEqual(["new-tool", "service"]);
+    expect(result.changed_files).toEqual(expect.arrayContaining([
+      expect.objectContaining({ path: "service/src/service.ts", status: "modified" }),
+      expect.objectContaining({ path: "new-tool/src/main.ts", status: "added", additions: 1 }),
+      expect.objectContaining({ path: "new-tool/src/empty.ts", status: "added", additions: 0, changed_lines: [] }),
+    ]));
+    expect(result.architecture_delta.added_nodes).toContain("new-tool");
+  });
+
+  it("merges retained and incremental evidence for the same relationship deterministically", () => {
+    const rootEvidence = {
+      kind: "source-location" as const,
+      line: 1,
+      column: 1,
+      snippet: "source",
+      detector: "component-root" as const,
+      confidence: 1,
+    };
+    const baseline = {
+      version: "0.1" as const,
+      analyzer: { id: "archsync-typescript" as const, version: "0.2" as const, stack: "typescript-node" as const },
+      metadata: { name: "baseline", scanned_files: 1 },
+      components: {
+        postgres: {
+          component: { type: "database" as const, layer: "data" as const },
+          evidence: [{ ...rootEvidence, file: "gateway/src/shared.ts" }],
+        },
+      },
+      relationships: [{
+        from: "service",
+        to: "postgres",
+        type: "data" as const,
+        evidence: [{ ...rootEvidence, file: "gateway/src/shared.ts", detector: "typescript-pg" as const }],
+      }],
+    };
+    const partial = {
+      ...baseline,
+      metadata: { name: "partial", scanned_files: 1 },
+      components: {
+        postgres: {
+          component: { type: "database" as const, layer: "data" as const },
+          evidence: [{ ...rootEvidence, file: "service/src/service.ts" }],
+        },
+      },
+      relationships: [{
+        from: "service",
+        to: "postgres",
+        type: "data" as const,
+        evidence: [{ ...rootEvidence, file: "service/src/service.ts", detector: "typescript-pg" as const }],
+      }],
+    };
+
+    const merged = mergeIncrementalObservedArchitecture(baseline, partial, ["service"]);
+
+    expect(merged.components.postgres?.evidence).toHaveLength(2);
+    expect(merged.relationships[0]?.evidence).toHaveLength(2);
   });
 });

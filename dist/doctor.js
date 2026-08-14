@@ -1,8 +1,13 @@
 import { spawnSync } from "node:child_process";
-export function runDoctor() {
-    const nodeMajor = Number.parseInt(process.versions.node.split(".")[0] ?? "0", 10);
-    const supportedPlatform = ["win32", "darwin", "linux"].includes(process.platform);
-    const git = spawnSync("git", ["--version"], {
+export function runDoctor(environment = {
+    nodeVersion: process.versions.node,
+    platform: process.platform,
+    architecture: process.arch,
+    runGit: spawnSync,
+}) {
+    const nodeMajor = Number.parseInt(environment.nodeVersion.split(".")[0], 10);
+    const supportedPlatform = ["win32", "darwin", "linux"].includes(environment.platform);
+    const git = environment.runGit("git", ["--version"], {
         encoding: "utf8",
         shell: false,
         windowsHide: true,
@@ -11,12 +16,12 @@ export function runDoctor() {
         {
             name: "Node.js",
             status: nodeMajor >= 22 ? "PASS" : "FAIL",
-            detail: `${process.versions.node} (required: >=22)`,
+            detail: `${environment.nodeVersion} (required: >=22)`,
         },
         {
             name: "Operating system",
             status: supportedPlatform ? "PASS" : "FAIL",
-            detail: `${process.platform}/${process.arch} (supported: Windows, macOS, Linux)`,
+            detail: `${environment.platform}/${environment.architecture} (supported: Windows, macOS, Linux)`,
         },
         {
             name: "Git",
@@ -36,7 +41,7 @@ export function runDoctor() {
     ];
     return {
         ok: checks.every(({ status }) => status === "PASS"),
-        platform: process.platform,
+        platform: environment.platform,
         checks,
     };
 }

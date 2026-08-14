@@ -7,11 +7,10 @@ import {
   readFile,
   rename,
   rm,
-  stat,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, isAbsolute, resolve, sep } from "node:path";
+import { dirname, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { promisify } from "node:util";
 
@@ -30,9 +29,17 @@ import {
   toArchitectureDocument,
 } from "./contracts.js";
 import { evaluateObservedArchitecture } from "./guardian.js";
+import {
+  parseChangedLines,
+  parseNameStatus,
+  parseNumStat,
+  portablePath,
+  repositoryRelativePath,
+  sourceComponent,
+  sourceExtensions,
+} from "./phase3-git.js";
 
 const execFileAsync = promisify(execFile);
-const sourceExtensions = [".ts", ".tsx", ".mts", ".cts"];
 
 export interface ChangedLineRange {
   start: number;
@@ -112,10 +119,6 @@ interface CacheEnvelope {
   observed: ObservedArchitecture;
 }
 
-function portablePath(value: string): string {
-  return value.split(sep).join("/");
-}
-
 function roundMilliseconds(value: number): number {
   return Math.round(value * 100) / 100;
 }
@@ -131,17 +134,6 @@ async function git(repository: string, args: string[]): Promise<string> {
 
 function architectureHash(expected: ArchitectureDocument): string {
   return createHash("sha256").update(JSON.stringify(expected)).digest("hex");
-}
-
-function sourceComponent(file: string, expected: ArchitectureDocument): string | undefined {
-  if (!sourceExtensions.some((extension) => file.endsWith(extension)) || file.endsWith(".d.ts")) {
-    return undefined;
-  }
-  const known = Object.keys(expected.components)
-    .sort((a, b) => b.length - a.length)
-    .find((id) => file === id || file.startsWith(`${id}/`));
-  if (known) return known;
-  return file.split("/")[0];
 }
 
 function findingKey(finding: GuardianFinding): string {
@@ -251,87 +243,6 @@ export function mergeIncrementalObservedArchitecture(
   };
 }
 
-function repositoryRelativePath(
-  gitPath: string,
-  repositoryRelative: string,
-): string | undefined {
-  const normalized = portablePath(gitPath);
-  if (!repositoryRelative) return normalized;
-  const prefix = `${repositoryRelative}/`;
-  return normalized.startsWith(prefix) ? normalized.slice(prefix.length) : undefined;
-}
-
-function statusName(value: string): ChangedFile["status"] {
-  if (value.startsWith("A")) return "added";
-  if (value.startsWith("D")) return "deleted";
-  if (value.startsWith("R")) return "renamed";
-  return "modified";
-}
-
-function parseNameStatus(output: string, repositoryRelative: string): Map<string, ChangedFile> {
-  const files = new Map<string, ChangedFile>();
-  for (const line of output.split(/\r?\n/u).filter(Boolean)) {
-    const [rawStatus, first, second] = line.split("\t");
-    if (!rawStatus || !first) continue;
-    const renamed = rawStatus.startsWith("R") && second;
-    const currentPath = repositoryRelativePath(renamed ? second : first, repositoryRelative);
-    if (!currentPath) continue;
-    const previousPath = renamed
-      ? repositoryRelativePath(first, repositoryRelative)
-      : undefined;
-    files.set(currentPath, {
-      path: currentPath,
-      status: statusName(rawStatus),
-      ...(previousPath ? { previous_path: previousPath } : {}),
-      additions: 0,
-      deletions: 0,
-      changed_lines: [],
-    });
-  }
-  return files;
-}
-
-function parseNumStat(
-  output: string,
-  repositoryRelative: string,
-  files: Map<string, ChangedFile>,
-): void {
-  for (const line of output.split(/\r?\n/u).filter(Boolean)) {
-    const [added, deleted, ...pathParts] = line.split("\t");
-    const rawPath = pathParts.at(-1);
-    if (!rawPath) continue;
-    const path = repositoryRelativePath(rawPath, repositoryRelative);
-    if (!path) continue;
-    const file = files.get(path);
-    if (!file) continue;
-    file.additions = Number.parseInt(added ?? "0", 10) || 0;
-    file.deletions = Number.parseInt(deleted ?? "0", 10) || 0;
-  }
-}
-
-function parseChangedLines(
-  patch: string,
-  repositoryRelative: string,
-  files: Map<string, ChangedFile>,
-): void {
-  let currentPath: string | undefined;
-  for (const line of patch.split(/\r?\n/u)) {
-    if (line.startsWith("+++ ")) {
-      const raw = line.slice(4);
-      currentPath = raw === "/dev/null"
-        ? undefined
-        : repositoryRelativePath(raw.replace(/^b\//u, ""), repositoryRelative);
-      continue;
-    }
-    if (!currentPath || !line.startsWith("@@")) continue;
-    const match = line.match(/\+(\d+)(?:,(\d+))?/u);
-    if (!match?.[1]) continue;
-    const start = Number.parseInt(match[1], 10);
-    const count = Number.parseInt(match[2] ?? "1", 10);
-    if (count > 0) files.get(currentPath)?.changed_lines.push({ start, end: start + count - 1 });
-  }
-}
-
 async function addUntrackedFiles(
   repositoryPath: string,
   gitRoot: string,
@@ -341,11 +252,8 @@ async function addUntrackedFiles(
   const pathspec = repositoryRelative || ".";
   const output = await git(gitRoot, ["ls-files", "--others", "--exclude-standard", "--", pathspec]);
   for (const raw of output.split(/\r?\n/u).filter(Boolean)) {
-    const path = repositoryRelativePath(raw, repositoryRelative);
-    if (!path || files.has(path)) continue;
+    const path = repositoryRelativePath(raw, repositoryRelative)!;
     const absolute = resolve(repositoryPath, ...path.split("/"));
-    const info = await stat(absolute);
-    if (!info.isFile()) continue;
     const source = await readFile(absolute, "utf8");
     const additions = source.length === 0
       ? 0
@@ -398,8 +306,7 @@ async function materializeBaseSnapshot(
     sourceExtensions.some((extension) => file.endsWith(extension)) && !file.endsWith(".d.ts"),
   );
   for (const gitPath of files) {
-    const path = repositoryRelativePath(gitPath, repositoryRelative);
-    if (!path) continue;
+    const path = repositoryRelativePath(gitPath, repositoryRelative)!;
     const source = await git(gitRoot, ["show", `${baseSha}:${portablePath(gitPath)}`]);
     const outputPath = resolve(snapshot, ...path.split("/"));
     await mkdir(dirname(outputPath), { recursive: true });
@@ -423,9 +330,7 @@ async function baselineObserved(
   const gitCachePath = (await git(gitRoot, ["rev-parse", "--git-path", "archsync-cache"])).trim();
   const cacheDirectory = options.cache_dir
     ? resolve(repositoryPath, options.cache_dir)
-    : isAbsolute(gitCachePath)
-      ? gitCachePath
-      : resolve(gitRoot, gitCachePath);
+    : resolve(gitRoot, gitCachePath);
   const cachePath = resolve(cacheDirectory, `${cacheKey}.json`);
 
   if (options.use_cache !== false) {

@@ -76,7 +76,7 @@ archsync demo --benchmark ../archsync-benchmark/order-platform --scenario all --
 
 Running `archsync demo` in an interactive terminal shows a numbered menu. In CI or with `--scenario all`, it runs one real Git-diff case for each decision. Expected `BLOCK` and `REVIEW` decisions do not make the demo command fail; the command exits `0` only when every actual decision, changed-file set, cache transition and ground-truth label match. `--json` emits a machine-readable result and `--verbose` reveals the complete technical gate output.
 
-The deterministic analyzer and Git-gate libraries remain under the repository's 90% statement/line/function and 85% branch coverage thresholds. CLI orchestration modules are exercised by a separate built-binary smoke suite because they run child processes, temporary Git repositories and terminal I/O; that suite is mandatory on every supported operating system.
+The deterministic analyzer, conformance, benchmark, Git-gate, doctor and model-command adapter modules are enforced at 100% statement, branch, function and line coverage. The thin terminal entry point and demo process orchestrator are additionally exercised by a mandatory 22-command built-binary smoke suite on every supported operating system because they cross process, temporary-Git and terminal boundaries.
 
 ## Repository scan
 

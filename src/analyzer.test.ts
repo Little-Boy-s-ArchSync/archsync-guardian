@@ -235,4 +235,71 @@ declare class CustomClient {
 
     expect(observed.relationships).toEqual([]);
   });
+
+  it("covers default, namespace and side-effect imports plus defensive endpoint syntax", async () => {
+    await writeSources(repository, {
+      "api-gateway/src/main.tsx": `import defaultPg from "pg";
+import * as pgNamespace from "pg";
+import defaultRedis from "redis";
+import defaultAmqp from "amqplib";
+import "pg";
+import ignored from "node:fs";
+
+const [destructured] = ["value"];
+let unset;
+const suffix = "v1";
+const config = { connectionString: "postgres://ignored:5432/db" };
+const spreadConfig = { url: "redis://ignored:6379" };
+const noOptions = new defaultPg.Client;
+const ignoredDatabase = new defaultPg.Client(config);
+const database = new pgNamespace.Pool({ connectionString: "postgresql://secure-postgres:5432/db" });
+const ignoredCache = defaultRedis.createClient(spreadConfig);
+const spreadCache = defaultRedis.createClient({ ...spreadConfig });
+const cache = defaultRedis.createClient({ url: process.env.REDIS_URL });
+const connection = defaultAmqp.connect("amqps://secure-events:5671");
+const channel = connection.createChannel();
+
+export async function exercise(): Promise<void> {
+  await fetch("not a URL");
+  await fetch("file:///tmp/no-host");
+  await fetch(process.env.UNRELATED);
+  await fetch("http://binary-left:3000" + suffix);
+  await fetch(\`https://template-service/\${suffix}\`);
+  await database.query("select 1");
+  await cache.get("key");
+  channel.publish("events", "created", Buffer.from("{}"));
+  factory().query("select 1");
+  factory().get("key");
+  factory().publish("event");
+  void destructured;
+  void unset;
+  void noOptions;
+  void ignoredDatabase;
+  void ignoredCache;
+  void spreadCache;
+  void ignored;
+}
+
+declare function factory(): { query(value: string): void; get(value: string): void; publish(value: string): void };
+`,
+      "api-gateway/src/index.ts": "export const index = true;\n",
+      "api-gateway/src/helper.ts": "export const helper = true;\n",
+      "empty-service/src/empty.ts": "",
+      "root.ts": "export const root = true;\n",
+    });
+
+    const observed = await analyzeTypeScriptRepository(repository, testArchitecture());
+    const edges = observed.relationships.map(({ from, type, to }) => `${from}|${type}|${to}`);
+
+    expect(observed.components["api-gateway"]?.component).toMatchObject({ type: "gateway", layer: "edge" });
+    expect(observed.metadata.scanned_files).toBe(5);
+    expect(edges).toEqual(expect.arrayContaining([
+      "api-gateway|http|binary-left",
+      "api-gateway|http|template-service",
+      "api-gateway|data|secure-postgres",
+      "api-gateway|data|redis",
+      "api-gateway|async|secure-events",
+    ]));
+    expect(edges).not.toContain("api-gateway|http|unrelated");
+  });
 });

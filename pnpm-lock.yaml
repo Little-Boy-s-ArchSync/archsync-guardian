@@ -35,7 +35,7 @@ packages:
     engines: {node: '>=6.0.0'}
 
   '@archsync/core@file:vendor/archsync-core-0.1.0.tgz':
-    resolution: {integrity: sha512-WtGZT+Xl2nsblEmZbFNMfEOKyPu+exWBlYksFWyeEFHoCu6MzfJr/eRINKvzW1Vgvw5fQ0IaDkZaNyAZ/l4Rkg==, tarball: file:vendor/archsync-core-0.1.0.tgz}
+    resolution: {integrity: sha512-haIminTHW+CDy/zF5HNR2KinVXJLXyFIzQPXP4SyWeZl48GW72CtUP8cVBdB/K8ONrDmFsOxson28gDqLaf2EQ==, tarball: file:vendor/archsync-core-0.1.0.tgz}
     version: 0.1.0
     engines: {node: '>=22'}
     hasBin: true

@@ -127,8 +127,7 @@ function expectedEvidenceMatch(
   if (scenario.expected.findings.length === 0) return { file: true, line: true, actual: [] };
   const expectedLocation = scenario.expected.evidence[0];
   if (!expectedLocation) return { file: false, line: false, actual: [] };
-  const expectedFinding = scenario.expected.findings[0];
-  if (!expectedFinding) return { file: false, line: false, actual: [] };
+  const expectedFinding = scenario.expected.findings[0]!;
   const actual = result.findings.find((finding) =>
     finding.rule_id === expectedFinding.id ||
     (
@@ -161,6 +160,7 @@ function roundedCounts(value: DetectionCounts): DetectionCounts {
 
 export async function evaluatePhase2Benchmark(
   manifestPath: string,
+  dependencies: { checkRepository?: typeof checkRepository } = {},
 ): Promise<Phase2BenchmarkResult> {
   const absoluteManifest = resolve(manifestPath);
   const baseDirectory = dirname(absoluteManifest);
@@ -171,8 +171,9 @@ export async function evaluatePhase2Benchmark(
   }
   const expected = architectureResult.value;
   const repository = resolve(baseDirectory, groundTruth.benchmark.repository);
-  const baselineResult = await checkRepository(expected, repository);
-  const baselineRepeat = await checkRepository(expected, repository);
+  const checker = dependencies.checkRepository ?? checkRepository;
+  const baselineResult = await checker(expected, repository);
+  const baselineRepeat = await checker(expected, repository);
   const baselineDeterministic = JSON.stringify(baselineResult) === JSON.stringify(baselineRepeat);
   const issues: string[] = [];
   if (baselineResult.classification !== "no-impact") {
@@ -203,8 +204,8 @@ export async function evaluatePhase2Benchmark(
       if (applied.status !== 0) {
         throw new Error(`${scenario.id}: patch failed: ${applied.stderr.trim()}`);
       }
-      const actual = await checkRepository(expected, temporary);
-      const repeated = await checkRepository(expected, temporary);
+      const actual = await checker(expected, temporary);
+      const repeated = await checker(expected, temporary);
       const deterministic = JSON.stringify(actual) === JSON.stringify(repeated);
       const expectedObserved = applyBenchmarkDelta(expected, scenario.delta);
       const expectedFullNodes = new Set(Object.keys(expectedObserved.components));

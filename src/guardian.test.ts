@@ -52,6 +52,28 @@ export async function load(): Promise<void> {
     expect(formatGuardianResult(result)).toContain("frontend/src/database.ts:4");
   });
 
+  it("deduplicates and sorts multiple source locations for the same forbidden edge", async () => {
+    const databaseSource = (functionName: string) => `import { Client } from "pg";
+const database = new Client({ connectionString: process.env.DATABASE_URL });
+export async function ${functionName}(): Promise<void> {
+  await database.query("select 1");
+}
+`;
+    await writeSources(repository, {
+      ...baselineSources,
+      "frontend/src/z-database.ts": databaseSource("loadZ"),
+      "frontend/src/a-database.ts": databaseSource("loadA"),
+    });
+
+    const result = await checkRepository(testArchitecture(), repository);
+    const finding = result.findings.find(({ rule_id }) => rule_id === "ARCH-001");
+
+    expect(finding?.source_evidence.map(({ file }) => file)).toEqual([
+      "frontend/src/a-database.ts",
+      "frontend/src/z-database.ts",
+    ]);
+  });
+
   it("anchors a missing required edge to the source component", async () => {
     const { "gateway/src/server.ts": _removed, ...withoutGatewayCall } = baselineSources;
     await writeSources(repository, {
@@ -60,15 +82,36 @@ export async function load(): Promise<void> {
   console.info("no service call");
 }
 `,
+      "gateway/src/index.ts": "export const gatewayIndex = true;\n",
+      "gateway/src/helper.ts": "export const gatewayHelper = true;\n",
+      "gateway/src/app.ts": "export const gatewayApp = true;\n",
     });
 
     const result = await checkRepository(testArchitecture(), repository);
     const finding = result.findings.find(({ rule_id }) => rule_id === "ARCH-002");
 
     expect(finding?.source_evidence).toEqual([
-      expect.objectContaining({ file: "gateway/src/server.ts", line: 2, detector: "component-root" }),
+      expect.objectContaining({ file: "gateway/src/app.ts", line: 1, detector: "component-root" }),
     ]);
     expect(finding?.model_evidence).toEqual({ document: "expected", path: "/rules/1" });
+  });
+
+  it("uses the 'other' relationship type for an untyped required-edge finding", async () => {
+    const expected = testArchitecture();
+    expected.rules = [
+      { id: "ARCH-UNTYPED", type: "require", from: "gateway", to: "service", severity: "error" },
+    ];
+    const { "gateway/src/server.ts": _removed, ...withoutGatewayCall } = baselineSources;
+    await writeSources(repository, {
+      ...withoutGatewayCall,
+      "gateway/src/server.ts": "export const gateway = true;\n",
+    });
+
+    const result = await checkRepository(expected, repository);
+
+    expect(result.findings.find(({ rule_id }) => rule_id === "ARCH-UNTYPED")).toMatchObject({
+      edge: { key: "gateway|other|service", type: "other" },
+    });
   });
 
   it("blocks an allowlist violation with the disallowed call site", async () => {

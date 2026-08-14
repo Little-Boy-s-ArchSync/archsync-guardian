@@ -41,6 +41,23 @@ async function treeSha256(directory) {
   return digest.digest("hex");
 }
 
+async function readMeasuredCoverage() {
+  const summary = JSON.parse(await readFile(join(root, "coverage", "coverage-summary.json"), "utf8"));
+  const measured = {};
+  for (const metric of ["statements", "branches", "functions", "lines"]) {
+    const value = summary.total?.[metric];
+    assert.ok(value, `Coverage summary is missing '${metric}'`);
+    assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
+    assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
+    measured[metric] = {
+      covered: value.covered,
+      total: value.total,
+      percent: value.pct,
+    };
+  }
+  return measured;
+}
+
 function git(repository, args) {
   const result = spawnSync("git", ["-C", repository, ...args], {
     encoding: "utf8",
@@ -192,6 +209,7 @@ const measured = {};
 for (const definition of cases) {
   measured[definition.id] = await runCase(expected, definition, writeMode);
 }
+const measuredCoverage = await readMeasuredCoverage();
 
 const sourceFiles = [
   "analyzer.ts",
@@ -202,6 +220,7 @@ const sourceFiles = [
   "guardian.ts",
   "index.ts",
   "model-cli.ts",
+  "phase3-git.ts",
   "phase3.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
@@ -244,7 +263,14 @@ const staticEvidence = {
     markdown_report: true,
     baseline_cache_required: true,
     component_incremental_scan_required: true,
-    cli_smoke_checks: 10,
+    coverage_thresholds_percent: {
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+    },
+    measured_engine_coverage: measuredCoverage,
+    cli_smoke_checks: 22,
   },
   exclusions: [
     "Automatic architecture baseline updates",

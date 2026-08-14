@@ -72,7 +72,7 @@ Options:
 - `--cache-dir <directory>` overrides the Git-internal cache location.
 - `--no-cache` forces baseline reconstruction.
 
-The CLI also provides `archsync doctor` for Node/Git/platform preflight checks and `archsync demo` for a real PASS/BLOCK/REVIEW benchmark demonstration. Both use Node child processes with `shell: false`; no Bash or PowerShell script is required. The verification matrix runs the complete CLI smoke suite on Windows, macOS and Ubuntu.
+The CLI also provides `archsync doctor` for Node/Git/platform preflight checks and `archsync demo` for a real PASS/BLOCK/REVIEW benchmark demonstration. Both use Node child processes with `shell: false`; no Bash or PowerShell script is required. Deterministic engine, doctor and model-command adapter modules must reach 100% statement, branch, function and line coverage. The verification matrix additionally runs all 22 built-CLI smoke checks on Windows, macOS and Ubuntu.
 
 ## Exit gate
 
