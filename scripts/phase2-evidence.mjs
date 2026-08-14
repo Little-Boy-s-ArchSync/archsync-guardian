@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { readFile, readdir, writeFile } from "node:fs/promises";
+import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadArchitecture } from "@archsync/core";
@@ -14,6 +14,42 @@ const writeMode = process.argv.includes("--write");
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function relativePath(filePath) {
+  return relative(root, filePath).replaceAll("\\", "/");
+}
+
+async function hashFiles(filePaths) {
+  const entries = [];
+  for (const filePath of [...filePaths].sort()) {
+    entries.push({
+      file: relativePath(filePath),
+      sha256: sha256(await readFile(filePath)),
+    });
+  }
+  return entries;
+}
+
+async function treeSha256(directory) {
+  const files = [];
+  async function visit(currentDirectory) {
+    const entries = await readdir(currentDirectory, { withFileTypes: true });
+    for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
+      const entryPath = join(currentDirectory, entry.name);
+      if (entry.isDirectory()) {
+        await visit(entryPath);
+      } else if (entry.isFile()) {
+        files.push(entryPath);
+      }
+    }
+  }
+  await visit(directory);
+  const manifest = await hashFiles(files);
+  return {
+    files: manifest,
+    sha256: sha256(JSON.stringify(manifest)),
+  };
 }
 
 const architectureResult = await loadArchitecture(join(fixtures, "architecture.yaml"));
@@ -34,16 +70,41 @@ assert.deepEqual(
   [{ file: "frontend/src/database.ts", line: 6, detector: "typescript-pg" }],
 );
 
-const sourceFiles = ["contracts.ts", "analyzer.ts", "guardian.ts", "benchmark.ts"];
+const sourceFiles = ["contracts.ts", "analyzer.ts", "guardian.ts", "benchmark.ts", "bin.ts", "index.ts"];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
   sha256(await readFile(join(root, "src", file))),
 ])));
+const fixtureTree = await treeSha256(fixtures);
+const verificationSource = await hashFiles([
+  join(root, "scripts", "cli-smoke.mjs"),
+  join(root, "scripts", "phase2-evidence.mjs"),
+  join(root, "src", "analyzer.test.ts"),
+  join(root, "src", "benchmark.test.ts"),
+  join(root, "src", "guardian.test.ts"),
+  join(root, "src", "test-helpers.ts"),
+  join(root, "tsconfig.json"),
+  join(root, "tsconfig.test.json"),
+  join(root, "vitest.config.ts"),
+]);
+const dependencySource = await hashFiles([
+  join(root, "package.json"),
+  join(root, "pnpm-lock.yaml"),
+  join(root, "vendor", "archsync-core-0.1.0.tgz"),
+]);
 
 const evidence = {
   phase: 2,
   release: "v0.2",
   objective: "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
+  provenance: {
+    implementation_source_sha256: sha256(JSON.stringify(sourceHashes)),
+    fixture_tree: fixtureTree,
+    verification_source: verificationSource,
+    verification_source_sha256: sha256(JSON.stringify(verificationSource)),
+    dependency_source: dependencySource,
+    dependency_source_sha256: sha256(JSON.stringify(dependencySource)),
+  },
   contracts: {
     observed_graph_version: baseline.version,
     finding_contract_version: violation.contract_version,

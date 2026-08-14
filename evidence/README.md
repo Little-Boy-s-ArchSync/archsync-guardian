@@ -1,6 +1,6 @@
 # Guardian evidence
 
-`phase-2-evidence.json` binds the supported analyzer contract, deterministic fixture outputs, finding evidence and enforced quality gates to source hashes.
+`phase-2-evidence.json` binds the supported analyzer contract, deterministic fixture outputs, finding evidence and enforced quality gates to SHA-256 manifests for implementation source, the complete fixture tree, verification source/configuration, package metadata, lockfile and the vendored Core runtime artifact.
 
 Regenerate only after an intentional Phase 2 contract or analyzer change:
 
@@ -8,6 +8,8 @@ Regenerate only after an intentional Phase 2 contract or analyzer change:
 pnpm evidence:update
 pnpm phase2:verify
 ```
+
+Any change to a bound implementation, input, verifier or dependency makes the committed Phase 2 manifest stale until the complete gate is rerun and the regenerated evidence is reviewed.
 
 The canonical 20-case end-to-end result and 40-signal detector challenge result are generated and verified in `archsync-benchmark`, which owns the source patches, annotated source signals and ground truth.
 

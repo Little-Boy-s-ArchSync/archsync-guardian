@@ -2,6 +2,104 @@
   "phase": 2,
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
+  "provenance": {
+    "implementation_source_sha256": "d9d2bd7f4e0645f52f3175c0e89b2193562d968139083042a74021aeb7fe9344",
+    "fixture_tree": {
+      "files": [
+        {
+          "file": "test/fixtures/architecture.yaml",
+          "sha256": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573"
+        },
+        {
+          "file": "test/fixtures/baseline/frontend/src/app.ts",
+          "sha256": "072b513d4c3e39dd9989dfa9dad5c83210a588e97669da2d688448194c1091b9"
+        },
+        {
+          "file": "test/fixtures/baseline/gateway/src/server.ts",
+          "sha256": "16483e573b292c02c0900a5e49a8bef061efef03250d909ecda723ab33942f85"
+        },
+        {
+          "file": "test/fixtures/baseline/service/src/service.ts",
+          "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
+        },
+        {
+          "file": "test/fixtures/invalid.architecture.yaml",
+          "sha256": "d91d9ad4ff7b1fb8a747f58f7cf401cff84f03a424d8f1e1b147c6b1997d6e39"
+        },
+        {
+          "file": "test/fixtures/violation/frontend/src/app.ts",
+          "sha256": "072b513d4c3e39dd9989dfa9dad5c83210a588e97669da2d688448194c1091b9"
+        },
+        {
+          "file": "test/fixtures/violation/frontend/src/database.ts",
+          "sha256": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
+        },
+        {
+          "file": "test/fixtures/violation/gateway/src/server.ts",
+          "sha256": "16483e573b292c02c0900a5e49a8bef061efef03250d909ecda723ab33942f85"
+        },
+        {
+          "file": "test/fixtures/violation/service/src/service.ts",
+          "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
+        }
+      ],
+      "sha256": "dabdf3bb10d844d7d7009ded29894b3fba7bdf79e6bcd96b1f141557c3cace4e"
+    },
+    "verification_source": [
+      {
+        "file": "scripts/cli-smoke.mjs",
+        "sha256": "d68841c89c26e2bda41c8e650ca453b51b995f1ec167c2c21e279ebc44e6519a"
+      },
+      {
+        "file": "scripts/phase2-evidence.mjs",
+        "sha256": "1903cdeda53319b8f9de429ae86608a6d0239d8c02c7688dd6cfc981c371007f"
+      },
+      {
+        "file": "src/analyzer.test.ts",
+        "sha256": "9eb7c15344e60409c798b318a3444a3d8ede0014cd25235b8f67e3e9c532698b"
+      },
+      {
+        "file": "src/benchmark.test.ts",
+        "sha256": "947016930de89840b1fcf6e180cfd9318f4395b6d767a729d2f848521d397a5f"
+      },
+      {
+        "file": "src/guardian.test.ts",
+        "sha256": "92e6c96a12f6a9774b806eb5d5f9a5fc8d2c12dd721a90853641539628665d22"
+      },
+      {
+        "file": "src/test-helpers.ts",
+        "sha256": "4acbb03530827ddd930f433d2bde48e926e476500fe18702e98697a0f7fa7b31"
+      },
+      {
+        "file": "tsconfig.json",
+        "sha256": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c"
+      },
+      {
+        "file": "tsconfig.test.json",
+        "sha256": "04910a31dc7be48c03671a814ed81ebc5095f21d4150cf08f613f0c8f1b8ce13"
+      },
+      {
+        "file": "vitest.config.ts",
+        "sha256": "c55842d37153cc75df340485c4371ff5496d48b25c6976c22726bb8542baa86c"
+      }
+    ],
+    "verification_source_sha256": "255751b0549ca6b0915363d9fcddeb86ca64feb64189a0ca65c17266202582df",
+    "dependency_source": [
+      {
+        "file": "package.json",
+        "sha256": "a26de0c694359415bbc8e911e48827569d76f5eaebdb8eb5cdc471371e1ab6da"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "sha256": "8aea091e8044960162557374655fb2f2ade329eb5fba60b01d19f5b4a451374e"
+      },
+      {
+        "file": "vendor/archsync-core-0.1.0.tgz",
+        "sha256": "ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e"
+      }
+    ],
+    "dependency_source_sha256": "5848ff16d98f42327728982fbd70bd41c4cae08545bb7755eb34f41aa775b16c"
+  },
   "contracts": {
     "observed_graph_version": "0.1",
     "finding_contract_version": "0.1",
@@ -9,7 +107,9 @@
       "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
       "src/analyzer.ts": "b29b981a95fe2ad72af39512d97037810bb37be0d68318a7554e51abf6c38d08",
       "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
-      "src/benchmark.ts": "e17e69120f61f0855f081a7230c55576130225666d9cc1e64cfddea36d42a59e"
+      "src/benchmark.ts": "e17e69120f61f0855f081a7230c55576130225666d9cc1e64cfddea36d42a59e",
+      "src/bin.ts": "96600a0c648e91f7a4668198be2cf9c42139aa6cfd1da23ed88032463a7a314e",
+      "src/index.ts": "46ee8451210601a10810d70f96b70b48971d9daef16b996f2e461b849535355e"
     }
   },
   "core_dependency": {

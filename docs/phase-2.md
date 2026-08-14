@@ -62,6 +62,7 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 10. The detector challenge corpus classifies all 20 positive and 20 hard-negative signals exactly and deterministically.
 11. Statement, line and function coverage are at least 90%; branch coverage is at least 85%.
 12. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
+13. The committed Phase 2 evidence binds implementation source, the complete fixture tree, verification source/configuration, package metadata, lockfile and vendored Core runtime by SHA-256.
 
 ## Authoritative commands
 
@@ -85,3 +86,5 @@ archsync-guardian benchmark ground-truth.json phase-2-results.json
 ```
 
 Exit codes are `0` for no-impact, `1` for violation, `2` for invalid input/usage and `3` for evolution requiring review.
+
+The roadmap calls this milestone analyzer v0.1. The frozen research baseline remains recorded as v0.1 in the benchmark; the hardened implementation documented here is Guardian v0.2. Guardian v0.3 adds the Phase 3 incremental Git/CI layer without changing the deterministic Phase 2 decision semantics.
