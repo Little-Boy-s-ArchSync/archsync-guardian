@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { appendFile, mkdir, mkdtemp, readFile, rename, rm, stat, writeFile, } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, resolve, sep } from "node:path";
 import { performance } from "node:perf_hooks";
 import { promisify } from "node:util";
 import { buildGraph, diffGraphs, edgeKey, } from "@archsync/core";
@@ -308,10 +308,7 @@ export async function checkRepositoryDiff(expected, repositoryPath, options = {}
     const started = performance.now();
     const repository = resolve(repositoryPath);
     const gitRoot = resolve((await git(repository, ["rev-parse", "--show-toplevel"])).trim());
-    const repositoryRelative = portablePath(relative(gitRoot, repository));
-    if (repositoryRelative.startsWith("..")) {
-        throw new Error(`Repository path must be inside Git worktree: ${repository}`);
-    }
+    const repositoryRelative = portablePath((await git(repository, ["rev-parse", "--show-prefix"])).trim().replace(/\/$/u, ""));
     const baseRef = options.base_ref ?? ".";
     const headSha = (await git(gitRoot, ["rev-parse", "HEAD"])).trim();
     const baseSha = baseRef === "."

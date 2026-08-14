@@ -8,7 +8,7 @@
     "src/bin.ts": "96600a0c648e91f7a4668198be2cf9c42139aa6cfd1da23ed88032463a7a314e",
     "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
     "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
-    "src/phase3.ts": "de4651198f4446ecc56bd08e23934549d2b34fcf041eae3377ef16e982b6e64e"
+    "src/phase3.ts": "9bbb2b1d47f6c037c67ea4be4b70cdcb67cb01d2a7d224a847c9c2850a4a0f7b"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -215,43 +215,43 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 361.85,
+      "cold_total_ms": 406.63,
       "warm_total_ms": [
-        230.92,
-        227.38,
-        222.39,
-        222.62,
-        220.32
+        250.85,
+        266.64,
+        274.2,
+        259,
+        254.18
       ],
-      "warm_median_total_ms": 222.62,
-      "warm_median_baseline_load_ms": 26.57,
-      "warm_median_incremental_scan_ms": 2.39
+      "warm_median_total_ms": 259,
+      "warm_median_baseline_load_ms": 27.11,
+      "warm_median_incremental_scan_ms": 2.17
     },
     "violation": {
-      "cold_total_ms": 349.2,
+      "cold_total_ms": 385.51,
       "warm_total_ms": [
-        221.35,
-        219.85,
-        220.09,
-        221.5,
-        224.54
+        272.01,
+        256.88,
+        257.66,
+        263.26,
+        244.17
       ],
-      "warm_median_total_ms": 221.35,
-      "warm_median_baseline_load_ms": 26.37,
-      "warm_median_incremental_scan_ms": 1.98
+      "warm_median_total_ms": 257.66,
+      "warm_median_baseline_load_ms": 27.09,
+      "warm_median_incremental_scan_ms": 1.93
     },
     "evolution": {
-      "cold_total_ms": 339.8,
+      "cold_total_ms": 375.03,
       "warm_total_ms": [
-        218.65,
-        218.3,
-        218.62,
-        224.91,
-        220.01
+        247.56,
+        247.43,
+        249.72,
+        259.01,
+        245.24
       ],
-      "warm_median_total_ms": 218.65,
-      "warm_median_baseline_load_ms": 26.06,
-      "warm_median_incremental_scan_ms": 1.97
+      "warm_median_total_ms": 247.56,
+      "warm_median_baseline_load_ms": 27.4,
+      "warm_median_incremental_scan_ms": 1.91
     }
   }
 }
