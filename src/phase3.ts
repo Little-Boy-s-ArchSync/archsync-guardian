@@ -94,7 +94,9 @@ export interface Phase3Result {
   };
   analysis: {
     strategy: "cached-component-incremental";
-    scanned_files: number;
+    baseline_scanned_files: number;
+    incremental_scanned_files: number;
+    head_scanned_files: number;
     analyzed_components: number;
     baseline_load_ms: number;
     incremental_scan_ms: number;
@@ -585,7 +587,9 @@ export async function checkRepositoryDiff(
     cache: { hit: baseline.cacheHit, key: baseline.cacheKey },
     analysis: {
       strategy: "cached-component-incremental",
-      scanned_files: headObserved.metadata.scanned_files,
+      baseline_scanned_files: baseline.observed.metadata.scanned_files,
+      incremental_scanned_files: partial?.metadata.scanned_files ?? 0,
+      head_scanned_files: headObserved.metadata.scanned_files,
       analyzed_components: affectedComponents.length,
       baseline_load_ms: roundMilliseconds(baselineLoadMs),
       incremental_scan_ms: roundMilliseconds(incrementalScanMs),
@@ -634,6 +638,7 @@ export function formatPhase3Result(result: Phase3Result): string {
     "",
     "INCREMENTAL ANALYSIS",
     `Components analyzed: ${result.analysis.analyzed_components}`,
+    `TypeScript files parsed: ${result.analysis.incremental_scanned_files} of ${result.analysis.head_scanned_files}`,
     `Baseline cache: ${result.cache.hit ? "HIT" : "MISS"}`,
     `Total time: ${result.analysis.total_ms.toFixed(2)} ms`,
     "",

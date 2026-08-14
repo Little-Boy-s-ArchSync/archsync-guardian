@@ -8,7 +8,7 @@
     "src/bin.ts": "96600a0c648e91f7a4668198be2cf9c42139aa6cfd1da23ed88032463a7a314e",
     "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
     "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
-    "src/phase3.ts": "bd80febb468a783a674294c77ef21ef675fbe4168922571280275a3f3e94d820"
+    "src/phase3.ts": "de4651198f4446ecc56bd08e23934549d2b34fcf041eae3377ef16e982b6e64e"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -48,7 +48,9 @@
       "resolved_findings": [],
       "pre_existing_findings": 0,
       "analyzed_components": 1,
-      "scanned_files": 4
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
     },
     "violation": {
       "classification": "violation",
@@ -112,7 +114,9 @@
       "resolved_findings": [],
       "pre_existing_findings": 0,
       "analyzed_components": 1,
-      "scanned_files": 4
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
     },
     "evolution": {
       "classification": "evolution",
@@ -178,7 +182,9 @@
       "resolved_findings": [],
       "pre_existing_findings": 0,
       "analyzed_components": 1,
-      "scanned_files": 4
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
     }
   },
   "gates": {
@@ -209,43 +215,43 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 380.02,
+      "cold_total_ms": 361.85,
       "warm_total_ms": [
-        223.77,
-        214.38,
-        222.6,
-        229.86,
-        234.81
+        230.92,
+        227.38,
+        222.39,
+        222.62,
+        220.32
       ],
-      "warm_median_total_ms": 223.77,
-      "warm_median_baseline_load_ms": 26.64,
-      "warm_median_incremental_scan_ms": 2.05
+      "warm_median_total_ms": 222.62,
+      "warm_median_baseline_load_ms": 26.57,
+      "warm_median_incremental_scan_ms": 2.39
     },
     "violation": {
-      "cold_total_ms": 346.46,
+      "cold_total_ms": 349.2,
       "warm_total_ms": [
-        225.58,
-        223.6,
-        221.98,
-        230.13,
-        226.36
+        221.35,
+        219.85,
+        220.09,
+        221.5,
+        224.54
       ],
-      "warm_median_total_ms": 225.58,
-      "warm_median_baseline_load_ms": 26.44,
-      "warm_median_incremental_scan_ms": 2
+      "warm_median_total_ms": 221.35,
+      "warm_median_baseline_load_ms": 26.37,
+      "warm_median_incremental_scan_ms": 1.98
     },
     "evolution": {
-      "cold_total_ms": 344.37,
+      "cold_total_ms": 339.8,
       "warm_total_ms": [
-        224.24,
-        228.35,
-        225.84,
-        223.58,
-        223.22
+        218.65,
+        218.3,
+        218.62,
+        224.91,
+        220.01
       ],
-      "warm_median_total_ms": 224.24,
-      "warm_median_baseline_load_ms": 26.86,
-      "warm_median_incremental_scan_ms": 1.95
+      "warm_median_total_ms": 218.65,
+      "warm_median_baseline_load_ms": 26.06,
+      "warm_median_incremental_scan_ms": 1.97
     }
   }
 }

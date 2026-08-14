@@ -57,7 +57,9 @@ export interface Phase3Result {
     };
     analysis: {
         strategy: "cached-component-incremental";
-        scanned_files: number;
+        baseline_scanned_files: number;
+        incremental_scanned_files: number;
+        head_scanned_files: number;
         analyzed_components: number;
         baseline_load_ms: number;
         incremental_scan_ms: number;

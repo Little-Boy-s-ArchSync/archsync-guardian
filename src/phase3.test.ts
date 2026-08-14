@@ -64,6 +64,8 @@ describe("Phase 3 Git diff architecture gate", () => {
     expect(cold.cache.hit).toBe(false);
     expect(warm.cache.hit).toBe(true);
     expect(warm.analysis.analyzed_components).toBe(1);
+    expect(warm.analysis.incremental_scanned_files).toBe(2);
+    expect(warm.analysis.head_scanned_files).toBe(4);
     expect(formatPhase3Result(warm)).toContain("Baseline cache: HIT");
   });
 
@@ -79,6 +81,7 @@ describe("Phase 3 Git diff architecture gate", () => {
     expect(result.decision).toBe("PASS");
     expect(result.affected_components).toEqual([]);
     expect(result.analysis.analyzed_components).toBe(0);
+    expect(result.analysis.incremental_scanned_files).toBe(0);
     expect(result.cache.hit).toBe(false);
   });
 

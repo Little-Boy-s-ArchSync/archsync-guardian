@@ -88,6 +88,7 @@ Updating the model in the same pull request is allowed only as an explicit archi
 - controlled `PASS`, `BLOCK` and `REVIEW` diff cases;
 - exact changed file and source-line findings;
 - component-scoped incremental analysis;
+- the exact number of TypeScript files parsed incrementally versus files represented in the head graph;
 - cache miss and five cache-hit timing samples on the recorded machine.
 
 Run:

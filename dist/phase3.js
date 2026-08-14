@@ -390,7 +390,9 @@ export async function checkRepositoryDiff(expected, repositoryPath, options = {}
         cache: { hit: baseline.cacheHit, key: baseline.cacheKey },
         analysis: {
             strategy: "cached-component-incremental",
-            scanned_files: headObserved.metadata.scanned_files,
+            baseline_scanned_files: baseline.observed.metadata.scanned_files,
+            incremental_scanned_files: partial?.metadata.scanned_files ?? 0,
+            head_scanned_files: headObserved.metadata.scanned_files,
             analyzed_components: affectedComponents.length,
             baseline_load_ms: roundMilliseconds(baselineLoadMs),
             incremental_scan_ms: roundMilliseconds(incrementalScanMs),
@@ -424,7 +426,7 @@ export function formatPhase3Result(result) {
         for (const finding of result.resolved_findings)
             lines.push(`- [${finding.id}] ${finding.message}`);
     }
-    lines.push("", "ARCHITECTURE DELTA", `Components: +${result.architecture_delta.added_nodes.length}, -${result.architecture_delta.removed_nodes.length}, ~${result.architecture_delta.changed_nodes.length}`, `Relationships: +${result.architecture_delta.added_edges.length}, -${result.architecture_delta.removed_edges.length}`, "", "INCREMENTAL ANALYSIS", `Components analyzed: ${result.analysis.analyzed_components}`, `Baseline cache: ${result.cache.hit ? "HIT" : "MISS"}`, `Total time: ${result.analysis.total_ms.toFixed(2)} ms`, "", result.decision === "BLOCK"
+    lines.push("", "ARCHITECTURE DELTA", `Components: +${result.architecture_delta.added_nodes.length}, -${result.architecture_delta.removed_nodes.length}, ~${result.architecture_delta.changed_nodes.length}`, `Relationships: +${result.architecture_delta.added_edges.length}, -${result.architecture_delta.removed_edges.length}`, "", "INCREMENTAL ANALYSIS", `Components analyzed: ${result.analysis.analyzed_components}`, `TypeScript files parsed: ${result.analysis.incremental_scanned_files} of ${result.analysis.head_scanned_files}`, `Baseline cache: ${result.cache.hit ? "HIT" : "MISS"}`, `Total time: ${result.analysis.total_ms.toFixed(2)} ms`, "", result.decision === "BLOCK"
         ? "NEXT STEP: Fix the new rule violations before merging."
         : result.decision === "REVIEW"
             ? "NEXT STEP: Request architecture approval before merging or updating the model."

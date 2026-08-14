@@ -78,7 +78,9 @@ function stableResult(result) {
     })),
     pre_existing_findings: result.pre_existing_findings,
     analyzed_components: result.analysis.analyzed_components,
-    scanned_files: result.analysis.scanned_files,
+    baseline_scanned_files: result.analysis.baseline_scanned_files,
+    incremental_scanned_files: result.analysis.incremental_scanned_files,
+    head_scanned_files: result.analysis.head_scanned_files,
   };
 }
 
