@@ -34,7 +34,7 @@ jobs:
 
       - name: Check architecture impact
         run: >-
-          pnpm guardian check architecture.yaml .
+          pnpm exec archsync-guardian check architecture.yaml .
           --diff origin/${{ github.base_ref }}
           --github
           --report archsync-pr-report.md
