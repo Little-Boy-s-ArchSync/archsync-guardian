@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { cpus, platform, release } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,28 @@ const writeMode = process.argv.includes("--write");
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+async function treeSha256(directory) {
+  const files = [];
+  async function visit(current) {
+    for (const entry of (await readdir(current, { withFileTypes: true })).sort((a, b) =>
+      a.name.localeCompare(b.name),
+    )) {
+      const path = join(current, entry.name);
+      if (entry.isDirectory()) await visit(path);
+      else if (entry.isFile()) files.push(path);
+    }
+  }
+  await visit(directory);
+  const digest = createHash("sha256");
+  for (const path of files) {
+    digest.update(relative(directory, path).replaceAll("\\", "/"));
+    digest.update("\0");
+    digest.update(await readFile(path));
+    digest.update("\0");
+  }
+  return digest.digest("hex");
 }
 
 function git(repository, args) {
@@ -109,6 +131,8 @@ async function runCase(expected, definition, collectPerformance) {
       performance: {
         cold_total_ms: cold.analysis.total_ms,
         warm_total_ms: warmRuns.map((result) => result.analysis.total_ms),
+        warm_baseline_load_ms: warmRuns.map((result) => result.analysis.baseline_load_ms),
+        warm_incremental_scan_ms: warmRuns.map((result) => result.analysis.incremental_scan_ms),
         warm_median_total_ms: median(warmRuns.map((result) => result.analysis.total_ms)),
         warm_median_baseline_load_ms: median(warmRuns.map((result) => result.analysis.baseline_load_ms)),
         warm_median_incremental_scan_ms: median(warmRuns.map((result) => result.analysis.incremental_scan_ms)),
@@ -169,17 +193,33 @@ for (const definition of cases) {
   measured[definition.id] = await runCase(expected, definition, writeMode);
 }
 
-const sourceFiles = ["analyzer.ts", "bin.ts", "contracts.ts", "guardian.ts", "phase3.ts"];
+const sourceFiles = ["analyzer.ts", "bin.ts", "contracts.ts", "guardian.ts", "index.ts", "phase3.ts"];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
   sha256(await readFile(join(root, "src", file)), "utf8"),
 ])));
+const inputHashes = {
+  "test/fixtures/architecture.yaml": sha256(await readFile(fixture("architecture.yaml"))),
+  "test/fixtures/baseline": await treeSha256(fixture("baseline")),
+  "test/fixtures/violation/frontend/src/database.ts": sha256(
+    await readFile(fixture("violation", "frontend", "src", "database.ts")),
+  ),
+};
+const dependencyHashes = {
+  "vendor/archsync-core-0.1.0.tgz": sha256(
+    await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz")),
+  ),
+  "package.json": sha256(await readFile(join(root, "package.json"))),
+  "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
+};
 const staticEvidence = {
   phase: 3,
   release: "v0.3",
   objective: "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
   contract_version: "0.1",
   source_sha256: sourceHashes,
+  input_sha256: inputHashes,
+  dependency_sha256: dependencyHashes,
   strategy: {
     baseline: "Observed Graph cached by base commit, architecture contract and analyzer version",
     head: "Only source components touched by the Git diff are rescanned and merged into the cached baseline",
@@ -226,7 +266,14 @@ if (writeMode) {
     const item = performance?.[definition.id];
     assert.ok(item?.cold_total_ms > 0, `${definition.id} cold performance measurement is missing`);
     assert.equal(item.warm_total_ms.length, 5, `${definition.id} requires five warm measurements`);
+    assert.equal(item.warm_baseline_load_ms.length, 5, `${definition.id} requires five cache-load measurements`);
+    assert.equal(item.warm_incremental_scan_ms.length, 5, `${definition.id} requires five incremental-scan measurements`);
     assert.ok(item.warm_total_ms.every((value) => value > 0));
+    assert.ok(item.warm_baseline_load_ms.every((value) => value >= 0));
+    assert.ok(item.warm_incremental_scan_ms.every((value) => value >= 0));
+    assert.equal(item.warm_median_total_ms, median(item.warm_total_ms));
+    assert.equal(item.warm_median_baseline_load_ms, median(item.warm_baseline_load_ms));
+    assert.equal(item.warm_median_incremental_scan_ms, median(item.warm_incremental_scan_ms));
   }
   console.log(`VALID PHASE 3 EVIDENCE ${evidencePath}`);
 }

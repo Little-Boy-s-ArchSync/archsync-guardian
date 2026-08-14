@@ -15,6 +15,10 @@ no introduced drift -> PASS
 
 The approved architecture model remains the source of truth. Phase 3 never rewrites `architecture.yaml`, accepts a topology change, repairs code or merges a pull request automatically.
 
+## Version note
+
+The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. This is a package-version adjustment, not a scope change: Phase 3 remains the roadmap's Git-diff and CI milestone.
+
 ## Why the decision is diff-scoped
 
 A full repository scan is still the source of the baseline graph. For a pull request, ArchSync compares stable finding identities between the base commit and the proposed head:
@@ -85,11 +89,14 @@ Updating the model in the same pull request is allowed only as an explicit archi
 `evidence/phase-3-evidence.json` records:
 
 - source hashes for the implementation that produced the evidence;
+- hashes for the architecture, baseline fixture, violation fixture, package metadata, lockfile and pinned Core runtime artifact;
 - controlled `PASS`, `BLOCK` and `REVIEW` diff cases;
 - exact changed file and source-line findings;
 - component-scoped incremental analysis;
 - the exact number of TypeScript files parsed incrementally versus files represented in the head graph;
 - cache miss and five cache-hit timing samples on the recorded machine.
+
+The timing verifier recomputes every stored median from the raw samples. The larger benchmark additionally compares each incremental result with a separate full scan of the same patched head repository.
 
 Run:
 
