@@ -7,7 +7,10 @@ import { loadArchitecture } from "@archsync/core";
 
 import { analyzeTypeScriptRepository } from "./analyzer.js";
 import { evaluatePhase2Benchmark, formatBenchmarkResult } from "./benchmark.js";
+import { formatDemoResult, runDemo } from "./demo.js";
+import { formatDoctorResult, runDoctor } from "./doctor.js";
 import { checkRepository, formatGuardianResult } from "./guardian.js";
+import { runModelCommand } from "./model-cli.js";
 import {
   appendGitHubStepSummary,
   checkRepositoryDiff,
@@ -16,13 +19,43 @@ import {
   formatPhase3Result,
 } from "./phase3.js";
 
-function usage(): never {
-  console.error(`Usage:
-  archsync-guardian scan <architecture.yaml> <repository> [observed.json]
-  archsync-guardian check <architecture.yaml> <repository> [--diff <base-ref>] [--github] [--report <file>]
-  archsync-guardian check-json <architecture.yaml> <repository> [--diff <base-ref>]
-  archsync-guardian benchmark <ground-truth.json> [result.json]`);
-  process.exit(2);
+const cliVersion = "0.3.1";
+
+function usage(error = true): number {
+  const output = `ArchSync CLI ${cliVersion}
+
+Usage:
+  archsync <command> [options]
+
+Source and Git commands:
+  archsync scan <architecture.yaml> <repository> [observed.json]
+  archsync check <architecture.yaml> <repository> [--diff <base-ref>] [--json] [--github] [--report <file>]
+  archsync check-json <architecture.yaml> <repository> [--diff <base-ref>]
+  archsync benchmark <ground-truth.json> [result.json]
+
+Architecture Model commands:
+  archsync model validate <architecture.yaml>
+  archsync model validate-dir <directory>
+  archsync model graph <architecture.yaml>
+  archsync model diff <expected.yaml> <observed.yaml>
+  archsync model check <expected.yaml> <observed.yaml>
+  archsync model check-json <expected.yaml> <observed.yaml>
+  archsync model report <expected.yaml> <observed.yaml> <output.mmd|output.drawio>
+  archsync model mermaid <architecture.yaml> [output.mmd]
+  archsync model drawio <architecture.yaml> [output.drawio]
+  archsync model benchmark <ground-truth.json>
+
+Demo and diagnostics:
+  archsync demo [--benchmark <directory>] [--scenario pass|block|review|all] [--report <file>] [--json] [--verbose]
+  archsync doctor [--json]
+  archsync version
+  archsync help
+
+Compatibility:
+  archsync-guardian remains available. Model-only commands such as validate,
+  graph, diff, report, mermaid and drawio also work without the 'model' prefix.`;
+  (error ? console.error : console.log)(output);
+  return error ? 2 : 0;
 }
 
 async function writeJson(output: string, value: unknown): Promise<void> {
@@ -58,8 +91,84 @@ async function requiredArchitecture(filePath: string) {
 }
 
 async function main(): Promise<void> {
-  const [, , command, input, repository, ...args] = process.argv;
-  if (!command || !input) usage();
+  const [command, ...commandArgs] = process.argv.slice(2);
+  if (!command) {
+    process.exitCode = usage();
+    return;
+  }
+
+  if (["help", "--help", "-h"].includes(command)) {
+    process.exitCode = usage(false);
+    return;
+  }
+
+  if (["version", "--version", "-v"].includes(command)) {
+    console.log(`ArchSync CLI ${cliVersion} (Core Model 0.1, Guardian Analyzer 0.2, Git Gate 0.3)`);
+    return;
+  }
+
+  if (command === "doctor") {
+    const result = runDoctor();
+    console.log(commandArgs.includes("--json")
+      ? JSON.stringify(result, null, 2)
+      : formatDoctorResult(result));
+    process.exitCode = result.ok ? 0 : 2;
+    return;
+  }
+
+  if (command === "demo") {
+    const benchmark = optionValue(commandArgs, "--benchmark");
+    const scenario = optionValue(commandArgs, "--scenario");
+    const report = optionValue(commandArgs, "--report");
+    const result = await runDemo({
+      ...(benchmark ? { benchmark } : {}),
+      ...(scenario ? { scenario } : {}),
+      ...(report ? { report } : {}),
+      json: commandArgs.includes("--json"),
+      verbose: commandArgs.includes("--verbose"),
+      interactive: !commandArgs.includes("--no-interactive"),
+    });
+    console.log(commandArgs.includes("--json")
+      ? JSON.stringify(result, null, 2)
+      : formatDemoResult(result, commandArgs.includes("--verbose")));
+    process.exitCode = result.ok ? 0 : 2;
+    return;
+  }
+
+  if (command === "model") {
+    const [modelCommand, ...modelArgs] = commandArgs;
+    if (!modelCommand) {
+      process.exitCode = usage();
+      return;
+    }
+    const exitCode = await runModelCommand(modelCommand, modelArgs);
+    process.exitCode = exitCode ?? usage();
+    return;
+  }
+
+  const modelAliases = new Set(["validate", "validate-dir", "graph", "diff", "report", "mermaid", "drawio"]);
+  if (modelAliases.has(command) || command === "validate-benchmark") {
+    const exitCode = await runModelCommand(
+      command === "validate-benchmark" ? "benchmark" : command,
+      commandArgs,
+    );
+    process.exitCode = exitCode ?? usage();
+    return;
+  }
+
+  const [input, repository, ...args] = commandArgs;
+  const modelCheckCompatibility = ["check", "check-json"].includes(command) &&
+    repository !== undefined && /\.ya?ml$/i.test(repository);
+  if (modelCheckCompatibility) {
+    const exitCode = await runModelCommand(command, commandArgs);
+    process.exitCode = exitCode ?? usage();
+    return;
+  }
+
+  if (!input) {
+    process.exitCode = usage();
+    return;
+  }
 
   if (command === "benchmark") {
     const result = await evaluatePhase2Benchmark(input);
@@ -69,7 +178,10 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (!repository) usage();
+  if (!repository) {
+    process.exitCode = usage();
+    return;
+  }
   const architecture = await requiredArchitecture(input);
   if (!architecture) return;
 
@@ -84,9 +196,13 @@ async function main(): Promise<void> {
   }
 
   if (command === "check" || command === "check-json") {
+    const jsonOutput = command === "check-json" || args.includes("--json");
     if (args.includes("--diff")) {
       const baseRef = optionValue(args, "--diff");
-      if (!baseRef) usage();
+      if (!baseRef) {
+        process.exitCode = usage();
+        return;
+      }
       const cacheDirectory = optionValue(args, "--cache-dir");
       const result = await checkRepositoryDiff(architecture, repository, {
         base_ref: baseRef,
@@ -100,12 +216,12 @@ async function main(): Promise<void> {
         if (annotations) console.log(annotations);
         await appendGitHubStepSummary(result);
       }
-      console.log(command === "check-json" ? JSON.stringify(result, null, 2) : formatPhase3Result(result));
+      console.log(jsonOutput ? JSON.stringify(result, null, 2) : formatPhase3Result(result));
       process.exitCode = result.decision === "PASS" ? 0 : result.decision === "BLOCK" ? 1 : 3;
       return;
     }
     const result = await checkRepository(architecture, repository);
-    console.log(command === "check-json" ? JSON.stringify(result, null, 2) : formatGuardianResult(result));
+    console.log(jsonOutput ? JSON.stringify(result, null, 2) : formatGuardianResult(result));
     process.exitCode = result.classification === "no-impact"
       ? 0
       : result.classification === "violation"
@@ -114,7 +230,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  usage();
+  process.exitCode = usage();
 }
 
 try {

@@ -1,0 +1,91 @@
+{
+  "version": "0.1",
+  "benchmark": {
+    "id": "guardian-cli-demo",
+    "architecture": "architecture.yaml",
+    "repository": "baseline",
+    "stack": "TypeScript/Node.js",
+    "expected_distribution": {
+      "no-impact": 1,
+      "violation": 1,
+      "evolution": 1
+    }
+  },
+  "cases": [
+    {
+      "id": "case-pass",
+      "title": "Internal service refactor",
+      "owner": "service-team",
+      "category": "no-impact",
+      "risk": "low",
+      "description": "An internal helper is added without changing architecture.",
+      "patch": "changes/case-pass.patch",
+      "changed_files": ["service/src/internal.ts"],
+      "delta": {},
+      "acceptance_criteria": ["The pull request passes without a topology change."],
+      "expected": {
+        "classification": "no-impact",
+        "findings": [],
+        "evidence": [{ "file": "service/src/internal.ts", "line": 1, "kind": "source-location" }],
+        "approval_required": false
+      }
+    },
+    {
+      "id": "case-block",
+      "title": "Frontend accesses PostgreSQL directly",
+      "owner": "frontend-team",
+      "category": "violation",
+      "risk": "high",
+      "description": "The frontend bypasses the approved service boundary.",
+      "patch": "changes/case-block.patch",
+      "changed_files": ["frontend/src/database.ts"],
+      "delta": {
+        "relationships_added": [{ "from": "frontend", "to": "postgres", "type": "data" }]
+      },
+      "acceptance_criteria": ["ARCH-001 blocks the pull request with source evidence."],
+      "expected": {
+        "classification": "violation",
+        "findings": [{
+          "id": "ARCH-001",
+          "kind": "deny-rule",
+          "severity": "critical",
+          "from": "frontend",
+          "to": "postgres"
+        }],
+        "evidence": [{ "file": "frontend/src/database.ts", "line": 6, "kind": "source-location" }],
+        "approval_required": false
+      }
+    },
+    {
+      "id": "case-review",
+      "title": "Service adds Redis cache",
+      "owner": "service-team",
+      "category": "evolution",
+      "risk": "medium",
+      "description": "A non-forbidden cache dependency changes the observed topology.",
+      "patch": "changes/case-review.patch",
+      "changed_files": ["service/src/cache.ts"],
+      "delta": {
+        "components_added": {
+          "redis": { "type": "database", "layer": "data" }
+        },
+        "relationships_added": [{ "from": "service", "to": "redis", "type": "data" }]
+      },
+      "acceptance_criteria": ["The pull request requests architecture review."],
+      "expected": {
+        "classification": "evolution",
+        "findings": [
+          {
+            "id": "EVOLUTION-001",
+            "kind": "architecture-evolution",
+            "severity": "warning",
+            "from": "service",
+            "to": "redis"
+          }
+        ],
+        "evidence": [{ "file": "service/src/cache.ts", "line": 6, "kind": "source-location" }],
+        "approval_required": true
+      }
+    }
+  ]
+}

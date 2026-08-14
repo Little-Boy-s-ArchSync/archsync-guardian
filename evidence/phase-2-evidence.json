@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "d9d2bd7f4e0645f52f3175c0e89b2193562d968139083042a74021aeb7fe9344",
+    "implementation_source_sha256": "c3a308268dc57ebbc557df0a478a826b9631c4299d62e0d2b28deb9ee32c7ae0",
     "fixture_tree": {
       "files": [
         {
@@ -21,6 +21,22 @@
         {
           "file": "test/fixtures/baseline/service/src/service.ts",
           "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
+        },
+        {
+          "file": "test/fixtures/changes/case-block.patch",
+          "sha256": "d16cac1d050a736a5d57fd99d8056e8a7b774c6251c211ab00e63df0f3281205"
+        },
+        {
+          "file": "test/fixtures/changes/case-pass.patch",
+          "sha256": "fba608029c97274a3bb3539f057281ad196e128035d5bd56a6e8dd92710f8592"
+        },
+        {
+          "file": "test/fixtures/changes/case-review.patch",
+          "sha256": "ca23d436c7b0c8978577de7be74ebdbf5c0b8b7334ed50f12eddda52510060b1"
+        },
+        {
+          "file": "test/fixtures/ground-truth.json",
+          "sha256": "16f6cccef877ce9c0ac7f79082cad184edf4656f8eaa2608461de83cb5193213"
         },
         {
           "file": "test/fixtures/invalid.architecture.yaml",
@@ -43,16 +59,16 @@
           "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
         }
       ],
-      "sha256": "dabdf3bb10d844d7d7009ded29894b3fba7bdf79e6bcd96b1f141557c3cace4e"
+      "sha256": "283afe52d9a9a27cf6351e54619935dfb4f1bf1330622841d600c67f813530c3"
     },
     "verification_source": [
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "d68841c89c26e2bda41c8e650ca453b51b995f1ec167c2c21e279ebc44e6519a"
+        "sha256": "2d361d5fbac228d20b027248cf8848c29e1ab4a5316151052339c6b27f559f7b"
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "1903cdeda53319b8f9de429ae86608a6d0239d8c02c7688dd6cfc981c371007f"
+        "sha256": "8a573e4a20dd56a5bb5d45ae12dacffe0bb4d2aad5bb032cb84cc298235bca4b"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -80,14 +96,14 @@
       },
       {
         "file": "vitest.config.ts",
-        "sha256": "c55842d37153cc75df340485c4371ff5496d48b25c6976c22726bb8542baa86c"
+        "sha256": "240ffad59d2e741199b65901c382dcbdbf2e9b04e1a966322ca2b8941fed3408"
       }
     ],
-    "verification_source_sha256": "255751b0549ca6b0915363d9fcddeb86ca64feb64189a0ca65c17266202582df",
+    "verification_source_sha256": "f000c39e5d0ea03e2cc601724ab2fc293eb9d78d7d0e4d001a0a7564e59c376a",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "a26de0c694359415bbc8e911e48827569d76f5eaebdb8eb5cdc471371e1ab6da"
+        "sha256": "48490ae5462630cc1a2f47ceb8f5b98b8ad292cd205254e5b778d880bb3c72f3"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -98,7 +114,7 @@
         "sha256": "ea2727f9d5646b85385b67f60b83d5eed8ee39af590667722e197873b23d5a2e"
       }
     ],
-    "dependency_source_sha256": "5848ff16d98f42327728982fbd70bd41c4cae08545bb7755eb34f41aa775b16c"
+    "dependency_source_sha256": "9cb6c32694a8eb686604577177a2183b3132326e838ea854ab8fc64ca3678d1e"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -108,8 +124,11 @@
       "src/analyzer.ts": "b29b981a95fe2ad72af39512d97037810bb37be0d68318a7554e51abf6c38d08",
       "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
       "src/benchmark.ts": "e17e69120f61f0855f081a7230c55576130225666d9cc1e64cfddea36d42a59e",
-      "src/bin.ts": "96600a0c648e91f7a4668198be2cf9c42139aa6cfd1da23ed88032463a7a314e",
-      "src/index.ts": "46ee8451210601a10810d70f96b70b48971d9daef16b996f2e461b849535355e"
+      "src/bin.ts": "bfe710df6e4aeec26d87f95b6ae86e45b6a16cd0d59e20b0698c39c3bbeb588b",
+      "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
+      "src/doctor.ts": "5a06fd04e061f9e5862040941484a49cf6b2cbf23aaa4c08e32ce1b3eb0fb0f1",
+      "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+      "src/index.ts": "64066b941d64ccdbc45ab73a6b5763a4e8e7c995d3ed19634c467b3d3c768b67"
     }
   },
   "core_dependency": {

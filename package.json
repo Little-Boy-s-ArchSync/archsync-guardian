@@ -1,6 +1,6 @@
 {
   "name": "@archsync/guardian",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": false,
   "type": "module",
   "packageManager": "pnpm@11.16.0",
@@ -17,6 +17,7 @@
     "README.md"
   ],
   "bin": {
+    "archsync": "dist/bin.js",
     "archsync-guardian": "dist/bin.js"
   },
   "exports": {
@@ -31,6 +32,9 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "guardian": "tsx src/bin.ts",
+    "cli": "tsx src/bin.ts",
+    "doctor": "tsx src/bin.ts doctor",
+    "demo": "tsx src/bin.ts demo --benchmark ../archsync-benchmark/order-platform --scenario all",
     "cli:smoke": "node scripts/cli-smoke.mjs",
     "evidence:update": "pnpm build && node scripts/phase2-evidence.mjs --write",
     "evidence:verify": "node scripts/phase2-evidence.mjs",

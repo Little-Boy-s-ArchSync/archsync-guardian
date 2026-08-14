@@ -1,0 +1,12 @@
+diff --git a/service/src/cache.ts b/service/src/cache.ts
+new file mode 100644
+--- /dev/null
++++ b/service/src/cache.ts
+@@ -0,0 +1,6 @@
++import { createClient } from "redis";
++
++const redis = createClient({ url: "redis://redis:6379" });
++
++export async function cache(): Promise<void> {
++  await redis.set("health", "ready");
++}

@@ -17,7 +17,7 @@ The approved architecture model remains the source of truth. Phase 3 never rewri
 
 ## Version note
 
-The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. This is a package-version adjustment, not a scope change: Phase 3 remains the roadmap's Git-diff and CI milestone.
+The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. Patch release `v0.3.1` adds the unified CLI, diagnostics and demo experience without changing analyzer or decision semantics. This is a package-version adjustment, not a scope change: Phase 3 remains the roadmap's Git-diff and CI milestone.
 
 ## Why the decision is diff-scoped
 
@@ -44,25 +44,24 @@ The cache is local evidence acceleration, not authority. A missing, stale or cor
 
 ## CLI contract
 
+Guardian v0.3 owns the unified `archsync` CLI. The same entry point exposes Core model operations through `archsync model ...`, source reconstruction through `scan`/`check`, and the Phase 3 Git gate through `check --diff`. `archsync-guardian` remains a compatibility binary.
+
 Working-tree demo:
 
-```powershell
-pnpm guardian check architecture.yaml . --diff .
+```text
+archsync check architecture.yaml . --diff .
 ```
 
 Pull-request branch compared with `main`:
 
-```powershell
-pnpm guardian check architecture.yaml . `
-  --diff main `
-  --github `
-  --report archsync-pr-report.md
+```text
+archsync check architecture.yaml . --diff main --github --report archsync-pr-report.md
 ```
 
 Machine-readable result:
 
-```powershell
-pnpm guardian check-json architecture.yaml . --diff main
+```text
+archsync check architecture.yaml . --diff main --json
 ```
 
 Options:
@@ -72,6 +71,8 @@ Options:
 - `--report <file>` writes a stable Markdown report artifact.
 - `--cache-dir <directory>` overrides the Git-internal cache location.
 - `--no-cache` forces baseline reconstruction.
+
+The CLI also provides `archsync doctor` for Node/Git/platform preflight checks and `archsync demo` for a real PASS/BLOCK/REVIEW benchmark demonstration. Both use Node child processes with `shell: false`; no Bash or PowerShell script is required. The verification matrix runs the complete CLI smoke suite on Windows, macOS and Ubuntu.
 
 ## Exit gate
 

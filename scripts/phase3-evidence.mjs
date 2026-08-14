@@ -193,7 +193,17 @@ for (const definition of cases) {
   measured[definition.id] = await runCase(expected, definition, writeMode);
 }
 
-const sourceFiles = ["analyzer.ts", "bin.ts", "contracts.ts", "guardian.ts", "index.ts", "phase3.ts"];
+const sourceFiles = [
+  "analyzer.ts",
+  "bin.ts",
+  "contracts.ts",
+  "demo.ts",
+  "doctor.ts",
+  "guardian.ts",
+  "index.ts",
+  "model-cli.ts",
+  "phase3.ts",
+];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
   sha256(await readFile(join(root, "src", file)), "utf8"),

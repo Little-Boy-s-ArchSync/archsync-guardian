@@ -70,7 +70,17 @@ assert.deepEqual(
   [{ file: "frontend/src/database.ts", line: 6, detector: "typescript-pg" }],
 );
 
-const sourceFiles = ["contracts.ts", "analyzer.ts", "guardian.ts", "benchmark.ts", "bin.ts", "index.ts"];
+const sourceFiles = [
+  "contracts.ts",
+  "analyzer.ts",
+  "guardian.ts",
+  "benchmark.ts",
+  "bin.ts",
+  "demo.ts",
+  "doctor.ts",
+  "model-cli.ts",
+  "index.ts",
+];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
   sha256(await readFile(join(root, "src", file))),

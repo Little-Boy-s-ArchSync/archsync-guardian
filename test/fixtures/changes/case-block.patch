@@ -1,0 +1,12 @@
+diff --git a/frontend/src/database.ts b/frontend/src/database.ts
+new file mode 100644
+--- /dev/null
++++ b/frontend/src/database.ts
+@@ -0,0 +1,7 @@
++import { Client } from "pg";
++
++const database = new Client({ connectionString: process.env.DATABASE_URL });
++
++export async function load(): Promise<void> {
++  await database.query("select 1");
++}
