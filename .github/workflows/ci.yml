@@ -1,4 +1,4 @@
-name: Phase 2 verification
+name: Phase 3 verification
 
 on:
   push:
@@ -27,16 +27,17 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm phase2:verify
+      - run: pnpm phase3:verify
       - name: Ensure committed build and evidence are current
         run: git diff --exit-code -- dist evidence
-      - name: Upload Phase 2 evidence
+      - name: Upload Guardian evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: phase-2-evidence-${{ matrix.os }}
+          name: guardian-evidence-${{ matrix.os }}
           if-no-files-found: error
           path: |
             evidence/phase-2-evidence.json
+            evidence/phase-3-evidence.json
             coverage/coverage-summary.json
             coverage/index.html

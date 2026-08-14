@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -21,6 +21,26 @@ function run(args) {
 
 function pass(name) {
   passed.push(name);
+}
+
+function git(repository, args) {
+  const result = spawnSync("git", ["-C", repository, ...args], {
+    encoding: "utf8",
+    shell: false,
+    windowsHide: true,
+  });
+  assert.equal(result.status, 0, result.stderr);
+}
+
+async function gitFixture(name) {
+  const repository = join(temporary, name);
+  await cp(fixture("baseline"), repository, { recursive: true });
+  git(repository, ["init", "-b", "main"]);
+  git(repository, ["config", "user.email", "cli-smoke@archsync.invalid"]);
+  git(repository, ["config", "user.name", "ArchSync CLI Smoke"]);
+  git(repository, ["add", "."]);
+  git(repository, ["commit", "-m", "baseline"]);
+  return repository;
 }
 
 try {
@@ -63,6 +83,67 @@ try {
   assert.equal(usage.status, 2);
   assert.match(usage.stderr, /Usage:/);
   pass("usage exits 2");
+
+  const noImpactRepository = await gitFixture("phase3-no-impact");
+  await mkdir(join(noImpactRepository, "service", "src"), { recursive: true });
+  await writeFile(
+    join(noImpactRepository, "service", "src", "internal.ts"),
+    "export const normalize = (value) => value.trim();\n",
+    "utf8",
+  );
+  const reportPath = join(temporary, "phase3-no-impact.md");
+  const noImpactDiff = run([
+    "check",
+    fixture("architecture.yaml"),
+    noImpactRepository,
+    "--diff",
+    ".",
+    "--report",
+    reportPath,
+  ]);
+  assert.equal(noImpactDiff.status, 0, noImpactDiff.stderr);
+  assert.match(noImpactDiff.stdout, /^DECISION: PASS/);
+  assert.match(await readFile(reportPath, "utf8"), /\*\*Decision: PASS\*\*/);
+  pass("Git diff no-impact exits 0 and writes PR report");
+
+  const violationRepository = await gitFixture("phase3-violation");
+  await writeFile(
+    join(violationRepository, "frontend", "src", "database.ts"),
+    await readFile(fixture("violation", "frontend", "src", "database.ts"), "utf8"),
+    "utf8",
+  );
+  const violationDiff = run([
+    "check",
+    fixture("architecture.yaml"),
+    violationRepository,
+    "--diff",
+    ".",
+    "--github",
+  ]);
+  assert.equal(violationDiff.status, 1);
+  assert.match(violationDiff.stdout, /::error file=frontend\/src\/database\.ts/);
+  assert.match(violationDiff.stdout, /DECISION: BLOCK/);
+  pass("Git diff violation exits 1 with GitHub annotation");
+
+  const evolutionRepository = await gitFixture("phase3-evolution");
+  await writeFile(
+    join(evolutionRepository, "service", "src", "cache.ts"),
+    `import { createClient } from "redis";
+const redis = createClient({ url: "redis://redis:6379" });
+export async function cache() { await redis.set("a", "b"); }
+`,
+    "utf8",
+  );
+  const evolutionDiff = run([
+    "check-json",
+    fixture("architecture.yaml"),
+    evolutionRepository,
+    "--diff",
+    ".",
+  ]);
+  assert.equal(evolutionDiff.status, 3);
+  assert.equal(JSON.parse(evolutionDiff.stdout).decision, "REVIEW");
+  pass("Git diff evolution exits 3 with machine-readable contract");
 
   console.log(`PASS GUARDIAN CLI SMOKE (${passed.length}/${passed.length}: ${passed.join(", ")})`);
 } finally {

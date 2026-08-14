@@ -41,6 +41,15 @@ interface ImportBindings {
   amqpNamespaces: Set<string>;
 }
 
+export interface AnalyzeTypeScriptOptions {
+  /**
+   * Limit parsing to source components affected by a Git diff. The returned
+   * graph is intentionally partial and must be merged with a cached baseline
+   * before conformance evaluation.
+   */
+  component_ids?: readonly string[];
+}
+
 const redisOperations = new Set([
   "get",
   "set",
@@ -426,9 +435,15 @@ function variableEndpoints(
 export async function analyzeTypeScriptRepository(
   repositoryPath: string,
   expected: ArchitectureDocument,
+  options: AnalyzeTypeScriptOptions = {},
 ): Promise<ObservedArchitecture> {
   const absoluteRepository = resolve(repositoryPath);
-  const files = await sourceFiles(absoluteRepository);
+  const componentFilter = options.component_ids
+    ? new Set(options.component_ids)
+    : undefined;
+  const files = (await sourceFiles(absoluteRepository)).filter((filePath) =>
+    !componentFilter || componentFilter.has(sourceComponentId(absoluteRepository, filePath, expected)),
+  );
   const components = new Map<string, ObservedComponent>();
   const componentAnchors = new Map<string, { rank: number; evidence: SourceEvidence }>();
   const relationships = new Map<string, RelationshipAccumulator>();

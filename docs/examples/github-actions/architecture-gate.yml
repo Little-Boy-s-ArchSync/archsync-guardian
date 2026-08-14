@@ -1,0 +1,48 @@
+name: ArchSync architecture gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.16.0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Restore ArchSync baseline graph cache
+        uses: actions/cache@v5
+        with:
+          path: .git/archsync-cache
+          key: archsync-${{ runner.os }}-${{ github.event.pull_request.base.sha }}-${{ hashFiles('architecture.yaml') }}
+
+      - name: Check architecture impact
+        run: >-
+          pnpm guardian check architecture.yaml .
+          --diff origin/${{ github.base_ref }}
+          --github
+          --report archsync-pr-report.md
+
+      - name: Upload architecture report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: archsync-pr-report
+          if-no-files-found: error
+          path: archsync-pr-report.md

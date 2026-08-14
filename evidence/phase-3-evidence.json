@@ -1,0 +1,251 @@
+{
+  "phase": 3,
+  "release": "v0.3",
+  "objective": "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
+  "contract_version": "0.1",
+  "source_sha256": {
+    "src/analyzer.ts": "b29b981a95fe2ad72af39512d97037810bb37be0d68318a7554e51abf6c38d08",
+    "src/bin.ts": "96600a0c648e91f7a4668198be2cf9c42139aa6cfd1da23ed88032463a7a314e",
+    "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
+    "src/guardian.ts": "6c092f3857c56afb7a008b66f66b7c2158e158a66097448d9723800e962b8291",
+    "src/phase3.ts": "bd80febb468a783a674294c77ef21ef675fbe4168922571280275a3f3e94d820"
+  },
+  "strategy": {
+    "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
+    "head": "Only source components touched by the Git diff are rescanned and merged into the cached baseline",
+    "decision": "New violations BLOCK, new non-forbidden topology REVIEW, no new drift PASS",
+    "pre_existing_findings": "Reported but do not block an unrelated diff"
+  },
+  "controlled_cases": {
+    "no-impact": {
+      "classification": "no-impact",
+      "decision": "PASS",
+      "changed_files": [
+        {
+          "path": "service/src/internal.ts",
+          "status": "added",
+          "additions": 1,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 1
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "service"
+      ],
+      "architecture_delta": {
+        "added_nodes": [],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [],
+        "removed_edges": []
+      },
+      "introduced_findings": [],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "scanned_files": 4
+    },
+    "violation": {
+      "classification": "violation",
+      "decision": "BLOCK",
+      "changed_files": [
+        {
+          "path": "frontend/src/database.ts",
+          "status": "added",
+          "additions": 7,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 7
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "frontend"
+      ],
+      "architecture_delta": {
+        "added_nodes": [],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [
+          "frontend|data|postgres"
+        ],
+        "removed_edges": []
+      },
+      "introduced_findings": [
+        {
+          "id": "ARCH-001",
+          "kind": "deny-rule",
+          "rule_id": "ARCH-001",
+          "edge": "frontend|data|postgres",
+          "source_evidence": [
+            {
+              "file": "frontend/src/database.ts",
+              "line": 6,
+              "column": 9,
+              "detector": "typescript-pg"
+            }
+          ]
+        },
+        {
+          "id": "EVOLUTION-001",
+          "kind": "architecture-evolution",
+          "edge": "frontend|data|postgres",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "frontend/src/database.ts",
+              "line": 6,
+              "column": 9,
+              "detector": "typescript-pg"
+            }
+          ]
+        }
+      ],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "scanned_files": 4
+    },
+    "evolution": {
+      "classification": "evolution",
+      "decision": "REVIEW",
+      "changed_files": [
+        {
+          "path": "service/src/cache.ts",
+          "status": "added",
+          "additions": 3,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 3
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "service"
+      ],
+      "architecture_delta": {
+        "added_nodes": [
+          "redis"
+        ],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [
+          "service|data|redis"
+        ],
+        "removed_edges": []
+      },
+      "introduced_findings": [
+        {
+          "id": "EVOLUTION-001",
+          "kind": "architecture-evolution",
+          "component": "redis",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "service/src/cache.ts",
+              "line": 3,
+              "column": 39,
+              "detector": "typescript-redis"
+            }
+          ]
+        },
+        {
+          "id": "EVOLUTION-002",
+          "kind": "architecture-evolution",
+          "edge": "service|data|redis",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "service/src/cache.ts",
+              "line": 3,
+              "column": 39,
+              "detector": "typescript-redis"
+            }
+          ]
+        }
+      ],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "scanned_files": 4
+    }
+  },
+  "gates": {
+    "pull_request_decisions": [
+      "PASS",
+      "BLOCK",
+      "REVIEW"
+    ],
+    "exact_file_line_annotations": true,
+    "machine_readable_json": true,
+    "markdown_report": true,
+    "baseline_cache_required": true,
+    "component_incremental_scan_required": true,
+    "cli_smoke_checks": 10
+  },
+  "exclusions": [
+    "Automatic architecture baseline updates",
+    "Automatic repair or merge",
+    "IaC and runtime evidence",
+    "LLM authority over deterministic rules"
+  ],
+  "environment": {
+    "platform": "win32",
+    "os_release": "10.0.26200",
+    "node": "v22.16.0",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "logical_cpus": 20
+  },
+  "performance": {
+    "no-impact": {
+      "cold_total_ms": 380.02,
+      "warm_total_ms": [
+        223.77,
+        214.38,
+        222.6,
+        229.86,
+        234.81
+      ],
+      "warm_median_total_ms": 223.77,
+      "warm_median_baseline_load_ms": 26.64,
+      "warm_median_incremental_scan_ms": 2.05
+    },
+    "violation": {
+      "cold_total_ms": 346.46,
+      "warm_total_ms": [
+        225.58,
+        223.6,
+        221.98,
+        230.13,
+        226.36
+      ],
+      "warm_median_total_ms": 225.58,
+      "warm_median_baseline_load_ms": 26.44,
+      "warm_median_incremental_scan_ms": 2
+    },
+    "evolution": {
+      "cold_total_ms": 344.37,
+      "warm_total_ms": [
+        224.24,
+        228.35,
+        225.84,
+        223.58,
+        223.22
+      ],
+      "warm_median_total_ms": 224.24,
+      "warm_median_baseline_load_ms": 26.86,
+      "warm_median_incremental_scan_ms": 1.95
+    }
+  }
+}

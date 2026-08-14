@@ -1,6 +1,6 @@
 {
   "name": "@archsync/guardian",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "type": "module",
   "packageManager": "pnpm@11.16.0",
@@ -34,7 +34,10 @@
     "cli:smoke": "node scripts/cli-smoke.mjs",
     "evidence:update": "pnpm build && node scripts/phase2-evidence.mjs --write",
     "evidence:verify": "node scripts/phase2-evidence.mjs",
-    "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify"
+    "phase3:evidence:update": "pnpm build && node scripts/phase3-evidence.mjs --write",
+    "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
+    "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
+    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify && pnpm phase3:evidence:verify"
   },
   "dependencies": {
     "typescript": "^5.9.2"

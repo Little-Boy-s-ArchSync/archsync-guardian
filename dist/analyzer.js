@@ -332,9 +332,12 @@ function variableEndpoints(sourceFile, bindings) {
     }
     return { endpoints, pgResources, redisResources, amqpChannels };
 }
-export async function analyzeTypeScriptRepository(repositoryPath, expected) {
+export async function analyzeTypeScriptRepository(repositoryPath, expected, options = {}) {
     const absoluteRepository = resolve(repositoryPath);
-    const files = await sourceFiles(absoluteRepository);
+    const componentFilter = options.component_ids
+        ? new Set(options.component_ids)
+        : undefined;
+    const files = (await sourceFiles(absoluteRepository)).filter((filePath) => !componentFilter || componentFilter.has(sourceComponentId(absoluteRepository, filePath, expected)));
     const components = new Map();
     const componentAnchors = new Map();
     const relationships = new Map();
