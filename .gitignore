@@ -3,3 +3,4 @@ coverage/
 *.tsbuildinfo
 *.log
 *.tgz
+.archsync/
