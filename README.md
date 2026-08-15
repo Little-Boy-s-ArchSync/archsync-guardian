@@ -97,8 +97,14 @@ OBSERVED 5 components, 5 relationships, 9 TypeScript files
 Generate the machine-readable Observed Graph:
 
 ```text
-pnpm cli scan architecture.yaml repository observed.json
+pnpm cli scan architecture.yaml repository .archsync/observed.json
 ```
+
+`.archsync/` is the local workspace for generated scan output and is ignored by
+Git. A generated graph is not research evidence by itself. If a graph is used
+to support a reported result, copy it into the benchmark evidence bundle only
+together with its source commit, architecture-model hash, analyzer version,
+generation command and verifier/checksum manifest.
 
 Check only architecture impact introduced by the current working-tree diff:
 
