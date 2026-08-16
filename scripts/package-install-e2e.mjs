@@ -76,6 +76,7 @@ try {
   assert.ok(packedFiles.includes("dist/provenance.json"));
   assert.ok(packedFiles.includes("dist/version.js"));
   assert.ok(packedFiles.includes("node_modules/@archsync/core/package.json"));
+  assert.ok(packedFiles.includes("node_modules/yaml/bin.mjs"));
   const allowedBundleRoots = new Set([
     "@archsync/core",
     "ajv",
@@ -109,13 +110,14 @@ try {
     PNPM_HOME: temporary,
     PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ""}`,
   };
-  runPnpm([
+  const installation = runPnpm([
     "add",
     "--global",
     `--global-dir=${globalDirectory}`,
     `--global-bin-dir=${binDirectory}`,
     guardianTarball,
   ], { env: installEnvironment });
+  assert.doesNotMatch(`${installation.stdout}\n${installation.stderr}`, /Failed to create bin/);
 
   await copyFile(join(root, "test", "fixtures", "architecture.yaml"), join(externalProject, "architecture.yaml"));
   await cp(join(root, "test", "fixtures"), join(externalProject, "benchmark"), { recursive: true });
@@ -149,13 +151,15 @@ try {
   assert.deepEqual(demo.cases.map(({ actual_decision }) => actual_decision), ["PASS", "BLOCK", "REVIEW"]);
   assert.equal(demo.cases.every(({ match }) => match), true);
 
-  const fallback = JSON.parse(runPnpm([
+  const fallbackResult = runPnpm([
     "dlx",
     `--package=${guardianTarball}`,
     "archsync",
     "version",
     "--json",
-  ], { cwd: externalProject, env: installEnvironment }).stdout);
+  ], { cwd: externalProject, env: installEnvironment });
+  assert.doesNotMatch(`${fallbackResult.stdout}\n${fallbackResult.stderr}`, /Failed to create bin/);
+  const fallback = JSON.parse(fallbackResult.stdout);
   assert.equal(fallback.provenance.integrity, "verified");
   assert.equal(fallback.provenance.source_commit, version.provenance.source_commit);
 
@@ -184,6 +188,8 @@ try {
       checks: [
         "package-file-allowlist",
         "bundled-core-runtime",
+        "bundled-cli-entrypoints",
+        "warning-free-install",
         "isolated-global-prefix",
         "binary-on-path",
         "version-provenance",

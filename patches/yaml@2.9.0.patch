@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 7bc4e22326c3c6eaa9bc50a5a0149a57bd9417dd..82ae1702721503882f8914f10c5f0befc8245a8e 100644
+--- a/package.json
++++ b/package.json	
+@@ -13,6 +13,7 @@
+   ],
+   "homepage": "https://eemeli.org/yaml/",
+   "files": [
++    "bin.mjs",
+     "browser/",
+     "dist/",
+     "util.js"

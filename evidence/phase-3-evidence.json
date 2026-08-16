@@ -23,11 +23,11 @@
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41",
-    "pnpm-workspace.yaml": "909e4362c01a31db66aa46150b15095b4223a9620d2882916dc544b71301fef8",
+    "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
     "vendor/archsync-core-0.1.0.tgz": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176",
     "package.json": "bff3ca68c0d074de146724c3ab7351be70933e2dcea18dcc73402a25d6d336a0",
-    "pnpm-lock.yaml": "a758f17d6630c6d114f7f32e1fe195ec4dbd65ef660aae11e414fa54cc4ae3c1",
-    "scripts/package-install-e2e.mjs": "09a0fdb29841e9bce121e0cb1d0d503a1c1cf7050721636e5ba23204922cc740",
+    "pnpm-lock.yaml": "f74968a7629127c1a14b9ac5b98ba36d39e0b70c8672598e282c4a1fdb71eefc",
+    "scripts/package-install-e2e.mjs": "29326ac0a237662367bdab457b9e5741a367e062eb9d9dfd466af875e7ec9cbe",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7"
   },
   "strategy": {
@@ -264,85 +264,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 401.57,
+      "cold_total_ms": 421.54,
       "warm_total_ms": [
-        249.96,
-        258.55,
-        257.16,
-        253.18,
-        259.61
+        265.89,
+        272.31,
+        255.98,
+        270.85,
+        273.32
       ],
       "warm_baseline_load_ms": [
-        26.4,
-        25.09,
-        28.45,
-        26.75,
-        25.46
+        31.3,
+        35.36,
+        26.99,
+        28.22,
+        26.78
       ],
       "warm_incremental_scan_ms": [
-        2.25,
-        2.34,
-        2.22,
-        1.9,
-        2.08
+        3.41,
+        2.7,
+        2.29,
+        2.53,
+        2.07
       ],
-      "warm_median_total_ms": 257.16,
-      "warm_median_baseline_load_ms": 26.4,
-      "warm_median_incremental_scan_ms": 2.22
+      "warm_median_total_ms": 270.85,
+      "warm_median_baseline_load_ms": 28.22,
+      "warm_median_incremental_scan_ms": 2.53
     },
     "violation": {
-      "cold_total_ms": 375.62,
+      "cold_total_ms": 379.04,
       "warm_total_ms": [
-        262.34,
-        245.34,
-        259.19,
-        267.33,
-        267.07
+        253.46,
+        272.35,
+        264.7,
+        248.58,
+        259.51
       ],
       "warm_baseline_load_ms": [
-        29.08,
-        25.72,
-        27.13,
-        28.5,
-        29.8
+        27.46,
+        28.02,
+        26.93,
+        28.27,
+        31.87
       ],
       "warm_incremental_scan_ms": [
-        3.05,
-        2.02,
-        1.86,
-        1.93,
-        2.01
+        2.12,
+        1.89,
+        1.74,
+        2.17,
+        1.72
       ],
-      "warm_median_total_ms": 262.34,
-      "warm_median_baseline_load_ms": 28.5,
-      "warm_median_incremental_scan_ms": 2.01
+      "warm_median_total_ms": 259.51,
+      "warm_median_baseline_load_ms": 28.02,
+      "warm_median_incremental_scan_ms": 1.89
     },
     "evolution": {
-      "cold_total_ms": 375.89,
+      "cold_total_ms": 375.41,
       "warm_total_ms": [
-        260.36,
-        283.34,
-        252.96,
-        253.61,
-        267.58
+        264.06,
+        255.87,
+        262.87,
+        262.49,
+        259.77
       ],
       "warm_baseline_load_ms": [
-        26.41,
-        29.03,
-        27.85,
-        29.32,
-        27.07
+        28.57,
+        36.09,
+        33.13,
+        28.85,
+        26.36
       ],
       "warm_incremental_scan_ms": [
-        1.67,
-        2.19,
-        2.33,
-        2.41,
-        1.83
+        1.82,
+        2.72,
+        1.9,
+        1.75,
+        1.94
       ],
-      "warm_median_total_ms": 260.36,
-      "warm_median_baseline_load_ms": 27.85,
-      "warm_median_incremental_scan_ms": 2.19
+      "warm_median_total_ms": 262.49,
+      "warm_median_baseline_load_ms": 28.85,
+      "warm_median_incremental_scan_ms": 1.9
     }
   }
 }

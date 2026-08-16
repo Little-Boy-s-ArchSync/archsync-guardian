@@ -66,6 +66,12 @@ because pnpm requires a hoisted runtime tree when materializing
 `bundledDependencies`. This setting is part of the reproducible package
 contract and is exercised by the frozen-lockfile CI install.
 
+The bundled `yaml` runtime is patched only to include its declared `bin.mjs`
+entrypoint in the package file list. Without that file, pnpm emits a
+missing-bin warning while installing the otherwise functional Guardian
+tarball. The clean-install gate rejects that warning and verifies the bundled
+entrypoint explicitly.
+
 `archsync doctor` checks both global-command discovery and an explicit
 `PNPM_HOME` or `PNPM_HOME/bin` entry on `PATH`; pnpm uses the latter layout on
 some Windows installations. It treats either missing item as a warning during
