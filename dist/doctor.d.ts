@@ -12,6 +12,8 @@ export interface DoctorEnvironment {
     nodeVersion: string;
     platform: NodeJS.Platform;
     architecture: string;
+    pathValue: string | undefined;
+    pnpmHome: string | undefined;
     runGit: (command: string, args: string[], options: {
         encoding: "utf8";
         shell: false;
@@ -26,6 +28,7 @@ export interface DoctorEnvironment {
     };
 }
 export declare function archsyncLocator(platform: NodeJS.Platform): "where.exe" | "which";
+export declare function pathIncludesDirectory(pathValue: string | undefined, directory: string | undefined, platform: NodeJS.Platform): boolean;
 export declare function runDoctor(environment?: DoctorEnvironment): DoctorResult;
 export declare function formatDoctorResult(result: DoctorResult): string;
 //# sourceMappingURL=doctor.d.ts.map

@@ -16,6 +16,8 @@ export interface DoctorEnvironment {
   nodeVersion: string;
   platform: NodeJS.Platform;
   architecture: string;
+  pathValue: string | undefined;
+  pnpmHome: string | undefined;
   runGit: (
     command: string,
     args: string[],
@@ -28,10 +30,27 @@ export function archsyncLocator(platform: NodeJS.Platform): "where.exe" | "which
   return platform === "win32" ? "where.exe" : "which";
 }
 
+export function pathIncludesDirectory(
+  pathValue: string | undefined,
+  directory: string | undefined,
+  platform: NodeJS.Platform,
+): boolean {
+  if (!pathValue || !directory) return false;
+  const normalize = (value: string) => {
+    const normalized = value.trim().replace(/^"|"$/g, "").replace(/[\\/]+$/g, "");
+    return platform === "win32" ? normalized.toLowerCase() : normalized;
+  };
+  const expected = normalize(directory);
+  const separator = platform === "win32" ? ";" : ":";
+  return pathValue.split(separator).some((entry) => normalize(entry) === expected);
+}
+
 export function runDoctor(environment: DoctorEnvironment = {
   nodeVersion: process.versions.node,
   platform: process.platform,
   architecture: process.arch,
+  pathValue: process.env.PATH,
+  pnpmHome: process.env.PNPM_HOME,
   runGit: spawnSync,
   locateArchSync: () => spawnSync(
     archsyncLocator(process.platform),
@@ -47,6 +66,11 @@ export function runDoctor(environment: DoctorEnvironment = {
     windowsHide: true,
   });
   const archsync = environment.locateArchSync();
+  const pnpmHomeOnPath = pathIncludesDirectory(
+    environment.pathValue,
+    environment.pnpmHome,
+    environment.platform,
+  );
   const checks: DoctorCheck[] = [
     {
       name: "Node.js",
@@ -79,6 +103,15 @@ export function runDoctor(environment: DoctorEnvironment = {
       detail: archsync.status === 0
         ? archsync.stdout.trim().split(/\r?\n/)[0]!
         : "archsync is not discoverable; run 'pnpm setup', reopen the shell, then install the CLI",
+    },
+    {
+      name: "PNPM_HOME / PATH",
+      status: pnpmHomeOnPath ? "PASS" : "WARN",
+      detail: pnpmHomeOnPath
+        ? `${environment.pnpmHome} is on PATH`
+        : environment.pnpmHome
+          ? `${environment.pnpmHome} is not on PATH; run 'pnpm setup' and reopen the shell`
+          : "PNPM_HOME is not set; run 'pnpm setup' and reopen the shell before a global pnpm install",
     },
   ];
   return {

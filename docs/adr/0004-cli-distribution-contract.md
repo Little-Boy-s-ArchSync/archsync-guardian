@@ -66,9 +66,10 @@ because pnpm requires a hoisted runtime tree when materializing
 `bundledDependencies`. This setting is part of the reproducible package
 contract and is exercised by the frozen-lockfile CI install.
 
-`archsync doctor` treats a missing global command as a warning during source
-development and prints an actionable `pnpm setup` instruction. The clean-prefix
-test requires that same check to pass when the release is installed.
+`archsync doctor` checks both global-command discovery and the explicit
+`PNPM_HOME` entry on `PATH`. It treats either missing item as a warning during
+source development and prints an actionable `pnpm setup` instruction. The
+clean-prefix test requires both checks to pass when the release is installed.
 
 ## Consequences
 

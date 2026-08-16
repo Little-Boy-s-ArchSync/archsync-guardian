@@ -2,10 +2,23 @@ import { spawnSync } from "node:child_process";
 export function archsyncLocator(platform) {
     return platform === "win32" ? "where.exe" : "which";
 }
+export function pathIncludesDirectory(pathValue, directory, platform) {
+    if (!pathValue || !directory)
+        return false;
+    const normalize = (value) => {
+        const normalized = value.trim().replace(/^"|"$/g, "").replace(/[\\/]+$/g, "");
+        return platform === "win32" ? normalized.toLowerCase() : normalized;
+    };
+    const expected = normalize(directory);
+    const separator = platform === "win32" ? ";" : ":";
+    return pathValue.split(separator).some((entry) => normalize(entry) === expected);
+}
 export function runDoctor(environment = {
     nodeVersion: process.versions.node,
     platform: process.platform,
     architecture: process.arch,
+    pathValue: process.env.PATH,
+    pnpmHome: process.env.PNPM_HOME,
     runGit: spawnSync,
     locateArchSync: () => spawnSync(archsyncLocator(process.platform), ["archsync"], { encoding: "utf8", shell: false, windowsHide: true }),
 }) {
@@ -17,6 +30,7 @@ export function runDoctor(environment = {
         windowsHide: true,
     });
     const archsync = environment.locateArchSync();
+    const pnpmHomeOnPath = pathIncludesDirectory(environment.pathValue, environment.pnpmHome, environment.platform);
     const checks = [
         {
             name: "Node.js",
@@ -49,6 +63,15 @@ export function runDoctor(environment = {
             detail: archsync.status === 0
                 ? archsync.stdout.trim().split(/\r?\n/)[0]
                 : "archsync is not discoverable; run 'pnpm setup', reopen the shell, then install the CLI",
+        },
+        {
+            name: "PNPM_HOME / PATH",
+            status: pnpmHomeOnPath ? "PASS" : "WARN",
+            detail: pnpmHomeOnPath
+                ? `${environment.pnpmHome} is on PATH`
+                : environment.pnpmHome
+                    ? `${environment.pnpmHome} is not on PATH; run 'pnpm setup' and reopen the shell`
+                    : "PNPM_HOME is not set; run 'pnpm setup' and reopen the shell before a global pnpm install",
         },
     ];
     return {

@@ -57,6 +57,10 @@ Rollback means reinstalling a previous checksum-verified release tarball and
 confirming its commit with `archsync version --json`; release tags and artifacts
 must never be overwritten.
 
+`archsync doctor` checks both command discovery and whether `PNPM_HOME` is
+present on `PATH`. Source development remains usable with a warning, while the
+clean-install CI requires both checks to pass.
+
 ## Unified CLI
 
 ```text

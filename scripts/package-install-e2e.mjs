@@ -129,6 +129,7 @@ try {
   const doctor = JSON.parse(runInstalled(["doctor", "--json"], installEnvironment).stdout);
   assert.equal(doctor.ok, true);
   assert.equal(doctor.checks.find(({ name }) => name === "CLI on PATH")?.status, "PASS");
+  assert.equal(doctor.checks.find(({ name }) => name === "PNPM_HOME / PATH")?.status, "PASS");
 
   const validation = runInstalled(["model", "validate", "architecture.yaml"], installEnvironment);
   assert.match(validation.stdout, /RESULT: VALID/);
