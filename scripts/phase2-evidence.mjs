@@ -126,7 +126,7 @@ const verificationSource = await hashFiles([
   join(root, "vitest.config.ts"),
 ]);
 const dependencySource = await hashFiles([
-  join(root, ".npmrc"),
+  join(root, "pnpm-workspace.yaml"),
   join(root, "package.json"),
   join(root, "pnpm-lock.yaml"),
   join(root, "vendor", "archsync-core-0.1.0.tgz"),

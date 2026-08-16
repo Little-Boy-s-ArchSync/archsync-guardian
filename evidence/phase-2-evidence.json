@@ -76,7 +76,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "c0e02a5eaf74ce39e34e54a885091f5b601c351b0c2ee4917743f17497ab8b9a"
+        "sha256": "fa18e45e427b86d588f2d5f3ae3ab148ce3b6e91ebc094ac221e65f2d5c49801"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -127,12 +127,8 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "e92802e7daf484effe90efb1ee804e55481df1b117f0329a78d6039e052afe51",
+    "verification_source_sha256": "cc491b858c1de300464bc4b410afbd8adc93bfd6dc54db6d615b22684df350da",
     "dependency_source": [
-      {
-        "file": ".npmrc",
-        "sha256": "a28c9d86a8981049d203ad164cff1e753ed61dc0460ee8765316cbb3d0007d00"
-      },
       {
         "file": "package.json",
         "sha256": "5492ae53fc8af48b332cf466c8bbfa7e1450e364376ff73f4625227d61f0179e"
@@ -142,11 +138,15 @@
         "sha256": "a758f17d6630c6d114f7f32e1fe195ec4dbd65ef660aae11e414fa54cc4ae3c1"
       },
       {
+        "file": "pnpm-workspace.yaml",
+        "sha256": "909e4362c01a31db66aa46150b15095b4223a9620d2882916dc544b71301fef8"
+      },
+      {
         "file": "vendor/archsync-core-0.1.0.tgz",
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "697da204cc202ff10aea9262c63d6f30d0d47aa865e772a3b1d8854afa001674"
+    "dependency_source_sha256": "64d8b245e0825e98b22b64713bfe0376cda094cd1d835f8476c7f12b8551233e"
   },
   "contracts": {
     "observed_graph_version": "0.1",
