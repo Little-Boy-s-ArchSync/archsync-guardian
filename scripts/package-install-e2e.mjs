@@ -88,6 +88,7 @@ try {
   runPnpm([
     "add",
     "--global",
+    "--config.auto-install-peers=false",
     `--global-dir=${globalDirectory}`,
     `--global-bin-dir=${binDirectory}`,
     coreTarball,
