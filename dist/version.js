@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
+import { basename, dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 const packageName = "@archsync/guardian";
 const provenanceFile = "provenance.json";
@@ -43,10 +43,9 @@ export async function computePackageContentSha256(root) {
         : [];
     const files = [
         join(root, "README.md"),
-        join(root, "package.json"),
         ...(await walkFiles(dist)),
         ...bundledFiles,
-    ].filter((file) => file !== join(dist, provenanceFile));
+    ].filter((file) => file !== join(dist, provenanceFile) && basename(file) !== "package.json");
     const digest = createHash("sha256");
     for (const file of files.sort()) {
         const name = relative(root, file).replaceAll("\\", "/");

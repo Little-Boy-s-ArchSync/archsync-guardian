@@ -32,9 +32,11 @@ consumers. A release is acceptable only when CI:
 
 Guardian embeds a deterministic provenance record during `prepack`. The record
 binds the package name and version, the 40-character source commit, and a
-SHA-256 digest of Guardian and its complete bundled Core runtime closure,
-excluding the record itself. The installed CLI recomputes that digest before
-reporting `integrity: verified`.
+SHA-256 digest of Guardian and its complete bundled Core executable/runtime
+content, excluding the record and package manifests that package managers may
+normalize during installation. Package name and version are bound as separate
+fields. The installed CLI recomputes the content digest before reporting
+`integrity: verified`.
 The release workflow separately publishes SHA-256 checksums of the compressed
 tarballs.
 

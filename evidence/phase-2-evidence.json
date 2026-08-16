@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "07d26e3e6623d77793279327508de2c1b1d427a78e2eedb8ee50ee9c11223cd9",
+    "implementation_source_sha256": "ed759b4ea0957ef756520794bf6d44cefe618c5a088c306bedb53f8663a028ea",
     "fixture_tree": {
       "files": [
         {
@@ -163,7 +163,7 @@
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
-      "src/version.ts": "cec77930bcaf57307b070c28498b92f2a2311e9e447fcfa82f00b0db36f29663"
+      "src/version.ts": "79e29564b185c9b81fbb3f5ed8f32674f105298a26397a9da6ccb45212e05f56"
     }
   },
   "core_dependency": {
@@ -222,13 +222,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1877,
-        "total": 1877,
+        "covered": 1876,
+        "total": 1876,
         "percent": 100
       },
       "branches": {
-        "covered": 776,
-        "total": 776,
+        "covered": 777,
+        "total": 777,
         "percent": 100
       },
       "functions": {
@@ -237,8 +237,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1877,
-        "total": 1877,
+        "covered": 1876,
+        "total": 1876,
         "percent": 100
       }
     },

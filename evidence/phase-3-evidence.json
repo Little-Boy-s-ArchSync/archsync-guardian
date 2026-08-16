@@ -14,7 +14,7 @@
     "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-    "src/version.ts": "cec77930bcaf57307b070c28498b92f2a2311e9e447fcfa82f00b0db36f29663"
+    "src/version.ts": "79e29564b185c9b81fbb3f5ed8f32674f105298a26397a9da6ccb45212e05f56"
   },
   "input_sha256": {
     "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
@@ -223,13 +223,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1877,
-        "total": 1877,
+        "covered": 1876,
+        "total": 1876,
         "percent": 100
       },
       "branches": {
-        "covered": 776,
-        "total": 776,
+        "covered": 777,
+        "total": 777,
         "percent": 100
       },
       "functions": {
@@ -238,8 +238,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1877,
-        "total": 1877,
+        "covered": 1876,
+        "total": 1876,
         "percent": 100
       }
     },
@@ -261,85 +261,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 416.6,
+      "cold_total_ms": 445.07,
       "warm_total_ms": [
-        254.01,
-        268.48,
-        266.64,
-        263.3,
-        249.37
+        256.09,
+        267.18,
+        277.42,
+        253.55,
+        266.54
       ],
       "warm_baseline_load_ms": [
-        25.91,
-        28.87,
-        35.28,
-        34.61,
-        26.78
+        25.3,
+        27.54,
+        27.5,
+        27.5,
+        31.42
       ],
       "warm_incremental_scan_ms": [
-        2.11,
-        3.34,
-        4.11,
-        2.53,
-        2.09
+        2.13,
+        2.47,
+        2.42,
+        2,
+        2.21
       ],
-      "warm_median_total_ms": 263.3,
-      "warm_median_baseline_load_ms": 28.87,
-      "warm_median_incremental_scan_ms": 2.53
+      "warm_median_total_ms": 266.54,
+      "warm_median_baseline_load_ms": 27.5,
+      "warm_median_incremental_scan_ms": 2.21
     },
     "violation": {
-      "cold_total_ms": 392.56,
+      "cold_total_ms": 381.05,
       "warm_total_ms": [
-        253.2,
-        247.75,
-        262.5,
-        263.64,
-        270.58
+        269.55,
+        240.61,
+        247.06,
+        257.35,
+        257.86
       ],
       "warm_baseline_load_ms": [
-        29.96,
-        26.57,
-        26.47,
-        25.16,
-        27.93
+        30.65,
+        27.56,
+        33.17,
+        27.56,
+        26.64
       ],
       "warm_incremental_scan_ms": [
-        2.16,
-        2.84,
-        1.97,
-        2.07,
-        1.82
+        2.52,
+        2.37,
+        2.24,
+        1.98,
+        2.55
       ],
-      "warm_median_total_ms": 262.5,
-      "warm_median_baseline_load_ms": 26.57,
-      "warm_median_incremental_scan_ms": 2.07
+      "warm_median_total_ms": 257.35,
+      "warm_median_baseline_load_ms": 27.56,
+      "warm_median_incremental_scan_ms": 2.37
     },
     "evolution": {
-      "cold_total_ms": 363.74,
+      "cold_total_ms": 379.03,
       "warm_total_ms": [
-        259.83,
-        254.99,
-        270.84,
-        259.62,
-        264.13
+        261.26,
+        273.99,
+        256.7,
+        268.97,
+        268.59
       ],
       "warm_baseline_load_ms": [
-        26.08,
-        26.83,
-        30.91,
-        35.61,
-        37.28
+        26.9,
+        28.12,
+        27.44,
+        28.34,
+        28.82
       ],
       "warm_incremental_scan_ms": [
-        1.76,
-        1.89,
-        2.15,
-        2.42,
+        1.93,
+        2.06,
+        1.75,
+        2.16,
         2.52
       ],
-      "warm_median_total_ms": 259.83,
-      "warm_median_baseline_load_ms": 30.91,
-      "warm_median_incremental_scan_ms": 2.15
+      "warm_median_total_ms": 268.59,
+      "warm_median_baseline_load_ms": 28.12,
+      "warm_median_incremental_scan_ms": 2.06
     }
   }
 }
