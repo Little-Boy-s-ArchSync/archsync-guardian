@@ -32,7 +32,23 @@ consumers. A release is acceptable only when CI:
 
 Each matrix job writes and uploads a machine-readable package-install evidence
 record containing the platform/toolchain, installed version provenance and the
-seven completed clean-install checks.
+nine completed clean-install checks.
+
+### Channel and rollback decision
+
+| Option | Authentication and availability | Decision |
+| --- | --- | --- |
+| Public npm | Best user experience, but requires package-name ownership and a publication/security process not yet established | Deferred; do not claim this package is currently on npm |
+| GitHub Packages | Requires registry configuration and authentication, including for many read-only installs | Rejected as the default MVP channel |
+| Source checkout or global link | Useful only for contributors and can hide package/file/PATH defects | Development-only, not an end-user channel |
+| GitHub Release tarball | Immutable artifact, existing team access, explicit SHA-256 file, no registry resolution for bundled Core | Selected default channel |
+| `pnpm dlx --package=<tarball> archsync` | Executes the same verified artifact without a global install or source checkout | Selected fallback |
+
+The default is a checksum-verified Guardian tarball installed globally with
+pnpm. The fallback is `pnpm dlx` over that same local/downloaded tarball. CI
+executes both paths. Rollback reinstalls an older immutable, checksum-verified
+tarball and verifies its recorded source commit with `archsync version --json`.
+Tags and release artifacts are never replaced in place.
 
 Guardian embeds a deterministic provenance record during `prepack`. The record
 binds the package name and version, the 40-character source commit, and a

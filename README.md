@@ -36,6 +36,27 @@ pnpm phase3:verify
 
 The published/package binary is `archsync`. During source development, use the equivalent `pnpm cli <command>`. The former `archsync-guardian` binary remains as a compatibility alias.
 
+For a release tarball downloaded and checksum-verified from GitHub Releases,
+the default installation is:
+
+```text
+pnpm setup
+pnpm add --global ./archsync-guardian-0.3.1.tgz
+archsync version --json
+archsync doctor
+```
+
+Reopen the terminal after `pnpm setup`. If a global install is not permitted,
+run the same immutable artifact without a source checkout:
+
+```text
+pnpm dlx --package=./archsync-guardian-0.3.1.tgz archsync doctor
+```
+
+Rollback means reinstalling a previous checksum-verified release tarball and
+confirming its commit with `archsync version --json`; release tags and artifacts
+must never be overwritten.
+
 ## Unified CLI
 
 ```text

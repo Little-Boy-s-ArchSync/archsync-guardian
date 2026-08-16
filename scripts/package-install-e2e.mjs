@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -115,6 +115,7 @@ try {
   ], { env: installEnvironment });
 
   await copyFile(join(root, "test", "fixtures", "architecture.yaml"), join(externalProject, "architecture.yaml"));
+  await cp(join(root, "test", "fixtures"), join(externalProject, "benchmark"), { recursive: true });
 
   const version = JSON.parse(runInstalled(["version", "--json"], installEnvironment).stdout);
   assert.equal(version.cli.package, "@archsync/guardian");
@@ -131,6 +132,28 @@ try {
   const validation = runInstalled(["model", "validate", "architecture.yaml"], installEnvironment);
   assert.match(validation.stdout, /RESULT: VALID/);
   assert.match(validation.stdout, /SUMMARY: 4 components, 3 relationships/);
+
+  const demo = JSON.parse(runInstalled([
+    "demo",
+    "--benchmark",
+    "benchmark",
+    "--scenario",
+    "all",
+    "--json",
+  ], installEnvironment).stdout);
+  assert.equal(demo.ok, true);
+  assert.deepEqual(demo.cases.map(({ actual_decision }) => actual_decision), ["PASS", "BLOCK", "REVIEW"]);
+  assert.equal(demo.cases.every(({ match }) => match), true);
+
+  const fallback = JSON.parse(runPnpm([
+    "dlx",
+    `--package=${guardianTarball}`,
+    "archsync",
+    "version",
+    "--json",
+  ], { cwd: externalProject, env: installEnvironment }).stdout);
+  assert.equal(fallback.provenance.integrity, "verified");
+  assert.equal(fallback.provenance.source_commit, version.provenance.source_commit);
 
   const installedManifest = JSON.parse(await readFile(
     join(globalDirectory, "5", "node_modules", "@archsync", "guardian", "package.json"),
@@ -162,13 +185,15 @@ try {
         "version-provenance",
         "doctor",
         "external-project-model-validation",
+        "installed-pass-block-review-demo",
+        "no-global-dlx-fallback",
       ],
     }, null, 2)}\n`, "utf8");
   }
 
   console.log(
     `PASS CLEAN PACKAGE INSTALL (${process.platform}: packed whitelist, isolated pnpm prefix, PATH, ` +
-    "version provenance, doctor, external-project model validation and evidence)",
+    "version provenance, doctor, external-project validation, demo, dlx fallback and evidence)",
   );
 } finally {
   if (process.env.ARCHSYNC_KEEP_TEST_TEMP === "1") {
