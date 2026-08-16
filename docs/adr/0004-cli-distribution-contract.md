@@ -37,6 +37,11 @@ installed CLI recomputes that digest before reporting `integrity: verified`.
 The release workflow separately publishes SHA-256 checksums of the compressed
 tarballs.
 
+The repository uses pnpm's hoisted linker because pnpm requires a hoisted
+runtime tree when materializing `bundledDependencies`. This setting is part of
+the reproducible package contract and is exercised by the frozen-lockfile CI
+install.
+
 `archsync doctor` treats a missing global command as a warning during source
 development and prints an actionable `pnpm setup` instruction. The clean-prefix
 test requires that same check to pass when the release is installed.

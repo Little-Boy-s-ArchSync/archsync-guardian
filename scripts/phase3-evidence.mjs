@@ -236,6 +236,7 @@ const inputHashes = {
   ),
 };
 const dependencyHashes = {
+  ".npmrc": sha256(await readFile(join(root, ".npmrc"))),
   "vendor/archsync-core-0.1.0.tgz": sha256(
     await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz")),
   ),

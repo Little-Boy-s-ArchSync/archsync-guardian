@@ -76,7 +76,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "3ac1d1253ae866fcc99cdd52f4b6c2cafb4b00cd2423d2032327b0c4ecfab942"
+        "sha256": "c0e02a5eaf74ce39e34e54a885091f5b601c351b0c2ee4917743f17497ab8b9a"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -127,8 +127,12 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "ffee8bdd23228d9af2a9b0d8bc8f2c630fb1e9160ecebace18de342841c9134e",
+    "verification_source_sha256": "e92802e7daf484effe90efb1ee804e55481df1b117f0329a78d6039e052afe51",
     "dependency_source": [
+      {
+        "file": ".npmrc",
+        "sha256": "a28c9d86a8981049d203ad164cff1e753ed61dc0460ee8765316cbb3d0007d00"
+      },
       {
         "file": "package.json",
         "sha256": "5492ae53fc8af48b332cf466c8bbfa7e1450e364376ff73f4625227d61f0179e"
@@ -142,7 +146,7 @@
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "0289495a07f0d5c3ee7b7619f088a362999563057ef7d1ceba626d6526b4237f"
+    "dependency_source_sha256": "697da204cc202ff10aea9262c63d6f30d0d47aa865e772a3b1d8854afa001674"
   },
   "contracts": {
     "observed_graph_version": "0.1",
