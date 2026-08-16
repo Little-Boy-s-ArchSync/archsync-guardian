@@ -68,7 +68,7 @@
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "73de279be31aeb20833e727ae1960971715dd9703a0ad0294001981613a43e27"
+        "sha256": "8ab3bb80db63635be8ed945aded60d52aa0ca0c7e93f478852b2273b20760648"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -127,22 +127,22 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "8ac44020a5645658d8c713a53e359889315dc788d74c6b02c8b5f87fbd2893ec",
+    "verification_source_sha256": "ffee8bdd23228d9af2a9b0d8bc8f2c630fb1e9160ecebace18de342841c9134e",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "1150ee407f2a19d56ffafaaa4231cdbc0614d9ae2b0b475be25e6eec95812c10"
+        "sha256": "5492ae53fc8af48b332cf466c8bbfa7e1450e364376ff73f4625227d61f0179e"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "4e119df161b5432d7baf3e4bd4da43631c6b564ac52233d9130acdc00e8a480a"
+        "sha256": "a758f17d6630c6d114f7f32e1fe195ec4dbd65ef660aae11e414fa54cc4ae3c1"
       },
       {
         "file": "vendor/archsync-core-0.1.0.tgz",
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "92f51eba92165bc2392e888254f3b521ca4c02f05eb59949911d41c1003a5fb6"
+    "dependency_source_sha256": "0289495a07f0d5c3ee7b7619f088a362999563057ef7d1ceba626d6526b4237f"
   },
   "contracts": {
     "observed_graph_version": "0.1",

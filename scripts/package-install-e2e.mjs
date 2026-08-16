@@ -70,8 +70,12 @@ try {
   assert.ok(packedFiles.includes("dist/bin.js"));
   assert.ok(packedFiles.includes("dist/provenance.json"));
   assert.ok(packedFiles.includes("dist/version.js"));
+  assert.ok(packedFiles.includes("node_modules/@archsync/core/package.json"));
   assert.equal(
-    packedFiles.every((path) => path === "package.json" || path === "README.md" || path.startsWith("dist/")),
+    packedFiles.every((path) =>
+      path === "package.json" || path === "README.md" || path.startsWith("dist/") ||
+      path.startsWith("node_modules/@archsync/core/"),
+    ),
     true,
     `Unexpected package files: ${packedFiles.join(", ")}`,
   );
@@ -79,7 +83,6 @@ try {
   const guardianTarball = isAbsolute(packResult.filename)
     ? packResult.filename
     : join(packages, packResult.filename);
-  const coreTarball = join(root, "vendor", "archsync-core-0.1.0.tgz");
   const installEnvironment = {
     ...process.env,
     PNPM_HOME: binDirectory,
@@ -88,11 +91,8 @@ try {
   runPnpm([
     "add",
     "--global",
-    "--force",
-    "--config.auto-install-peers=false",
     `--global-dir=${globalDirectory}`,
     `--global-bin-dir=${binDirectory}`,
-    coreTarball,
     guardianTarball,
   ], { env: installEnvironment });
 

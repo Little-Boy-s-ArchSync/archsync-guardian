@@ -14,12 +14,16 @@ provenance after `.git` is no longer available.
 
 ## Decision
 
-The supported v0.3 distribution is the pair of Core and Guardian tarballs
-produced by `pnpm pack`. A release is acceptable only when CI:
+The supported v0.3 command-line distribution is the Guardian tarball produced
+by `pnpm pack`. It bundles the pinned Core runtime because Core and Guardian
+cannot both own the global `archsync` shim and Core is not yet published to a
+registry. The release still contains a separate Core tarball for API-only
+consumers. A release is acceptable only when CI:
 
 1. builds and tests Core and Guardian;
 2. packs both packages from a clean commit;
-3. installs those exact tarballs into a temporary global directory;
+3. confirms Guardian contains the pinned Core runtime and installs that exact
+   Guardian tarball into a temporary global directory;
 4. prepends only that directory to `PATH`;
 5. invokes the installed `archsync` binary from an unrelated temporary project;
 6. validates an architecture model and runs `version --json` and `doctor --json`;

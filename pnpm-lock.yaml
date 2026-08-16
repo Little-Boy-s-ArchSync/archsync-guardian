@@ -8,13 +8,13 @@ importers:
 
   .:
     dependencies:
+      '@archsync/core':
+        specifier: file:vendor/archsync-core-0.1.0.tgz
+        version: file:vendor/archsync-core-0.1.0.tgz
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
     devDependencies:
-      '@archsync/core':
-        specifier: file:vendor/archsync-core-0.1.0.tgz
-        version: file:vendor/archsync-core-0.1.0.tgz
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
