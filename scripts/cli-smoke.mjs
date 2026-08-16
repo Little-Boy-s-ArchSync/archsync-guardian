@@ -52,7 +52,7 @@ try {
 
   const help = run(["help"]);
   assert.equal(help.status, 0, help.stderr);
-  assert.match(help.stdout, /ArchSync CLI 0\.3\.1/);
+  assert.ok(help.stdout.includes(`ArchSync CLI ${packageJson.version}`));
   assert.match(help.stdout, /archsync model validate/);
   assert.match(help.stdout, /archsync demo/);
   pass("help lists the complete command surface");

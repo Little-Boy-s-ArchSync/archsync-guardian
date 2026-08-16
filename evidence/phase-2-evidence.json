@@ -68,7 +68,7 @@
       },
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "e149107c8695cbb027aa1ecfdd11284b18a14b704d231f68ec94578eb834a62b"
+        "sha256": "e3baed318c342afa363c56ea81f68d2f42ae0841e2f96f06ab022da57d9691ba"
       },
       {
         "file": "scripts/package-install-e2e.mjs",
@@ -131,7 +131,7 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "e6b3801a90f57fb01c73b25201edf69ff7ac2d20f26c51fba91beb9da3bede79",
+    "verification_source_sha256": "e94e67df15f91d57044ecbc836079387891266c18b83443ee852bf99d646fefb",
     "dependency_source": [
       {
         "file": "package.json",
