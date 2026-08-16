@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "2bb38974f70974b55e341ce29890879680eece75461f4b461d21e1b0b1c131dc",
+    "implementation_source_sha256": "df18c6085b2289a0721776e798ae2188c903bea7ec465a274803766209e8dcb0",
     "fixture_tree": {
       "files": [
         {
@@ -135,7 +135,7 @@
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "cea24098d007e27a8d849dce3324058c55b33dedd6610c8b563c480d28c98d35"
+        "sha256": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -150,7 +150,7 @@
         "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
       }
     ],
-    "dependency_source_sha256": "b4edeaf668416e7970fd9abe0bf41f3213006e82bcd9c7298fb32216b574351c"
+    "dependency_source_sha256": "21035b0222d8f62acd1ab70699c3bf8f3f1189a1f7727e175fb1fe296dc1d9f6"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -160,7 +160,7 @@
       "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
       "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
-      "src/bin.ts": "50385a056eb97cac42bc7214c55db15036a8627488af72e7075ef7d73d66fe96",
+      "src/bin.ts": "d9aef906501d7a300270129136985cfa0eb999fe8a092c4394153932d0ae3dd9",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
