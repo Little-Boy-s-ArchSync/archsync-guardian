@@ -17,7 +17,7 @@ The approved architecture model remains the source of truth. Phase 3 never rewri
 
 ## Version note
 
-The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. Patch release `v0.3.1` adds the unified CLI, diagnostics and demo experience without changing analyzer or decision semantics. This is a package-version adjustment, not a scope change: Phase 3 remains the roadmap's Git-diff and CI milestone.
+The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. Patch release `v0.3.1` adds the unified CLI, diagnostics and demo experience; `v0.3.2` adds clean-prefix package verification, PATH diagnostics and package provenance without changing analyzer or decision semantics. These are package-version adjustments, not scope changes: Phase 3 remains the roadmap's Git-diff and CI milestone.
 
 ## Why the decision is diff-scoped
 
@@ -72,7 +72,7 @@ Options:
 - `--cache-dir <directory>` overrides the Git-internal cache location.
 - `--no-cache` forces baseline reconstruction.
 
-The CLI also provides `archsync doctor` for Node/Git/platform preflight checks and `archsync demo` for a real PASS/BLOCK/REVIEW benchmark demonstration. Both use Node child processes with `shell: false`; no Bash or PowerShell script is required. Deterministic engine, doctor and model-command adapter modules must reach 100% statement, branch, function and line coverage. The verification matrix additionally runs all 22 built-CLI smoke checks on Windows, macOS and Ubuntu.
+The CLI also provides `archsync doctor` for Node/Git/platform/PATH preflight checks and `archsync demo` for a real PASS/BLOCK/REVIEW benchmark demonstration. Both use Node child processes with `shell: false`; no Bash or PowerShell script is required. Deterministic engine, doctor, version-provenance and model-command adapter modules must reach 100% statement, branch, function and line coverage. The verification matrix additionally runs all 23 built-CLI smoke checks and a clean-prefix tarball installation on Windows, macOS and Ubuntu.
 
 ## Exit gate
 

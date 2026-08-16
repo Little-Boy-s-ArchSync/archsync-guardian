@@ -2,7 +2,7 @@
 
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
 
-**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 adds the unified cross-platform CLI and professional demo runner.
+**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardens installable artifacts, PATH diagnostics and provenance.
 
 ## Repository boundary
 
@@ -35,6 +35,32 @@ pnpm phase3:verify
 ```
 
 The published/package binary is `archsync`. During source development, use the equivalent `pnpm cli <command>`. The former `archsync-guardian` binary remains as a compatibility alias.
+
+For a release tarball downloaded and checksum-verified from GitHub Releases,
+the default installation is:
+
+```text
+pnpm setup
+pnpm add --global ./archsync-guardian-0.3.2.tgz
+archsync version --json
+archsync doctor
+```
+
+Reopen the terminal after `pnpm setup`. If a global install is not permitted,
+run the same immutable artifact without a source checkout:
+
+```text
+pnpm dlx --package=./archsync-guardian-0.3.2.tgz archsync doctor
+```
+
+Rollback means reinstalling a previous checksum-verified release tarball and
+confirming its commit with `archsync version --json`; release tags and artifacts
+must never be overwritten.
+
+`archsync doctor` checks both command discovery and whether `PNPM_HOME` or its
+`bin` child is present on `PATH`. The latter matches pnpm's Windows global-bin
+layout. Source development remains usable with a warning, while clean-install
+CI requires both checks to pass.
 
 ## Unified CLI
 
@@ -76,7 +102,7 @@ archsync demo --benchmark ../archsync-benchmark/order-platform --scenario all --
 
 Running `archsync demo` in an interactive terminal shows a numbered menu. In CI or with `--scenario all`, it runs one real Git-diff case for each decision. Expected `BLOCK` and `REVIEW` decisions do not make the demo command fail; the command exits `0` only when every actual decision, changed-file set, cache transition and ground-truth label match. `--json` emits a machine-readable result and `--verbose` reveals the complete technical gate output.
 
-The deterministic analyzer, conformance, benchmark, Git-gate, doctor and model-command adapter modules are enforced at 100% statement, branch, function and line coverage. The thin terminal entry point and demo process orchestrator are additionally exercised by a mandatory 22-command built-binary smoke suite on every supported operating system because they cross process, temporary-Git and terminal boundaries.
+The deterministic analyzer, conformance, benchmark, Git-gate, doctor, version-provenance and model-command adapter modules are enforced at 100% statement, branch, function and line coverage. The thin terminal entry point and demo process orchestrator are additionally exercised by a mandatory 23-command built-binary smoke suite on every supported operating system because they cross process, temporary-Git and terminal boundaries. The same matrix packs Core and Guardian, installs the tarballs into an isolated global prefix, and calls the installed `archsync` binary from an unrelated project.
 
 ## Repository scan
 

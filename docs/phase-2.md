@@ -60,7 +60,7 @@ Expected + Observed -> Core conformance -> Guardian Finding v0.1
 8. Expected source evidence files and exact lines match.
 9. Repeated analysis produces byte-identical JSON for baseline and all cases.
 10. The detector challenge corpus classifies all 20 positive and 20 hard-negative signals exactly and deterministically.
-11. Deterministic engine and model-command adapter statement, branch, function and line coverage are all exactly 100%; the built CLI contract additionally passes all 22 smoke checks.
+11. Deterministic engine and model-command adapter statement, branch, function and line coverage are all exactly 100%; the built CLI contract additionally passes all 23 smoke checks.
 12. Guardian and Benchmark gates pass from clean clones on Windows and Ubuntu.
 13. The committed Phase 2 evidence binds implementation source, the complete fixture tree, verification source/configuration, package metadata, lockfile and vendored Core runtime by SHA-256.
 

@@ -52,7 +52,7 @@ try {
 
   const help = run(["help"]);
   assert.equal(help.status, 0, help.stderr);
-  assert.match(help.stdout, /ArchSync CLI 0\.3\.1/);
+  assert.ok(help.stdout.includes(`ArchSync CLI ${packageJson.version}`));
   assert.match(help.stdout, /archsync model validate/);
   assert.match(help.stdout, /archsync demo/);
   pass("help lists the complete command surface");
@@ -62,13 +62,23 @@ try {
   assert.match(version.stdout, /Core Model 0\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/);
   pass("version reports component contracts");
 
+  const versionJson = run(["version", "--json"]);
+  assert.equal(versionJson.status, 0, versionJson.stderr);
+  const versionResult = JSON.parse(versionJson.stdout);
+  assert.equal(versionResult.cli.package, "@archsync/guardian");
+  assert.equal(versionResult.cli.version, packageJson.version);
+  assert.match(versionResult.provenance.package_content_sha256, /^[0-9a-f]{64}$/);
+  assert.match(versionResult.provenance.source_commit, /^[0-9a-f]{40}$/);
+  pass("version JSON reports real source and package-content provenance");
+
   const doctor = run(["doctor", "--json"]);
   assert.equal(doctor.status, 0, doctor.stderr);
   const doctorResult = JSON.parse(doctor.stdout);
   assert.equal(doctorResult.ok, true);
   assert.ok(["win32", "darwin", "linux"].includes(doctorResult.platform));
-  assert.equal(doctorResult.checks.every(({ status }) => status === "PASS"), true);
-  pass("doctor verifies Node, operating system, Git and runtime packages");
+  assert.equal(doctorResult.checks.every(({ status }) => status !== "FAIL"), true);
+  assert.ok(["PASS", "WARN"].includes(doctorResult.checks.find(({ name }) => name === "CLI on PATH").status));
+  pass("doctor verifies Node, operating system, Git, runtime packages and CLI PATH");
 
   const modelValidate = run(["model", "validate", fixture("architecture.yaml")]);
   assert.equal(modelValidate.status, 0, modelValidate.stderr);

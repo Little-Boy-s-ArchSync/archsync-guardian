@@ -1,4 +1,13 @@
-packages: []
+packages:
+  - "."
 
 allowBuilds:
   esbuild: true
+
+nodeLinker: hoisted
+
+patchedDependencies:
+  # yaml 2.9.0 omits its declared CLI entrypoint from `files`. A bundled
+  # Guardian tarball must include it so pnpm can create dependency shims
+  # without emitting a missing-bin warning during global installation.
+  yaml@2.9.0: patches/yaml@2.9.0.patch

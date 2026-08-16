@@ -1,6 +1,6 @@
 {
   "name": "@archsync/guardian",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "type": "module",
   "packageManager": "pnpm@11.16.0",
@@ -15,6 +15,9 @@
   "files": [
     "dist",
     "README.md"
+  ],
+  "bundledDependencies": [
+    "@archsync/core"
   ],
   "bin": {
     "archsync": "dist/bin.js",
@@ -36,21 +39,21 @@
     "doctor": "tsx src/bin.ts doctor",
     "demo": "tsx src/bin.ts demo --benchmark ../archsync-benchmark/order-platform --scenario all",
     "cli:smoke": "node scripts/cli-smoke.mjs",
+    "package:verify": "node scripts/package-install-e2e.mjs --evidence .artifacts/package-install.json",
+    "prepack": "pnpm build && node scripts/package-provenance.mjs write",
+    "postpack": "node scripts/package-provenance.mjs clean",
     "evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase2-evidence.mjs --write",
     "evidence:verify": "node scripts/phase2-evidence.mjs",
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
-    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify && pnpm phase3:evidence:verify"
+    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
   },
   "dependencies": {
+    "@archsync/core": "file:vendor/archsync-core-0.1.0.tgz",
     "typescript": "^5.9.2"
   },
-  "peerDependencies": {
-    "@archsync/core": "^0.1.0"
-  },
   "devDependencies": {
-    "@archsync/core": "file:vendor/archsync-core-0.1.0.tgz",
     "@types/node": "^24.0.0",
     "@vitest/coverage-v8": "3.2.7",
     "tsx": "^4.20.5",

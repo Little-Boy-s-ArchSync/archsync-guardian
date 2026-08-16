@@ -8,8 +8,9 @@ import { formatDemoResult, runDemo } from "./demo.js";
 import { formatDoctorResult, runDoctor } from "./doctor.js";
 import { checkRepository, formatGuardianResult } from "./guardian.js";
 import { runModelCommand } from "./model-cli.js";
+import { formatVersionResult, loadVersionResult } from "./version.js";
 import { appendGitHubStepSummary, checkRepositoryDiff, formatGitHubAnnotations, formatPhase3Markdown, formatPhase3Result, } from "./phase3.js";
-const cliVersion = "0.3.1";
+const cliVersion = "0.3.2";
 function usage(error = true) {
     const output = `ArchSync CLI ${cliVersion}
 
@@ -37,7 +38,7 @@ Architecture Model commands:
 Demo and diagnostics:
   archsync demo [--benchmark <directory>] [--scenario pass|block|review|all] [--report <file>] [--json] [--verbose]
   archsync doctor [--json]
-  archsync version
+  archsync version [--json]
   archsync help
 
 Compatibility:
@@ -86,7 +87,10 @@ async function main() {
         return;
     }
     if (["version", "--version", "-v"].includes(command)) {
-        console.log(`ArchSync CLI ${cliVersion} (Core Model 0.1, Guardian Analyzer 0.2, Git Gate 0.3)`);
+        const result = await loadVersionResult();
+        console.log(commandArgs.includes("--json")
+            ? JSON.stringify(result, null, 2)
+            : formatVersionResult(result));
         return;
     }
     if (command === "doctor") {

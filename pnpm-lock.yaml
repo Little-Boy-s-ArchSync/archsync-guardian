@@ -4,29 +4,32 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  yaml@2.9.0: dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b
+
 importers:
 
   .:
     dependencies:
+      '@archsync/core':
+        specifier: file:vendor/archsync-core-0.1.0.tgz
+        version: file:vendor/archsync-core-0.1.0.tgz
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
     devDependencies:
-      '@archsync/core':
-        specifier: file:vendor/archsync-core-0.1.0.tgz
-        version: file:vendor/archsync-core-0.1.0.tgz
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
       '@vitest/coverage-v8':
         specifier: 3.2.7
-        version: 3.2.7(supports-color@7.2.0)(vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0))
+        version: 3.2.7(supports-color@7.2.0)(vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)))
       tsx:
         specifier: ^4.20.5
         version: 4.23.12
       vitest:
         specifier: ^3.2.4
-        version: 3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0)
+        version: 3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
 
 packages:
 
@@ -880,7 +883,7 @@ snapshots:
   '@archsync/core@file:vendor/archsync-core-0.1.0.tgz':
     dependencies:
       ajv: 8.20.0
-      yaml: 2.9.0
+      yaml: 2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)
 
   '@babel/helper-string-parser@7.29.7': {}
 
@@ -1094,7 +1097,7 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@vitest/coverage-v8@3.2.7(supports-color@7.2.0)(vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0))':
+  '@vitest/coverage-v8@3.2.7(supports-color@7.2.0)(vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -1109,7 +1112,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.2
       tinyrainbow: 2.0.0
-      vitest: 3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0)
+      vitest: 3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
     transitivePeerDependencies:
       - supports-color
 
@@ -1121,13 +1124,13 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0))':
+  '@vitest/mocker@3.2.7(vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)))':
     dependencies:
       '@vitest/spy': 3.2.7
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
 
   '@vitest/pretty-format@3.2.7':
     dependencies:
@@ -1499,13 +1502,13 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  vite-node@3.2.4(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0):
+  vite-node@3.2.4(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3(supports-color@7.2.0)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -1520,7 +1523,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0):
+  vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)):
     dependencies:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.5)
@@ -1532,13 +1535,13 @@ snapshots:
       '@types/node': 24.13.3
       fsevents: 2.3.3
       tsx: 4.23.12
-      yaml: 2.9.0
+      yaml: 2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)
 
-  vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0):
+  vitest@3.2.7(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.7
-      '@vitest/mocker': 3.2.7(vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0))
+      '@vitest/mocker': 3.2.7(vite@7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)))
       '@vitest/pretty-format': 3.2.7
       '@vitest/runner': 3.2.7
       '@vitest/snapshot': 3.2.7
@@ -1556,8 +1559,8 @@ snapshots:
       tinyglobby: 0.2.17
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
-      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0)
-      vite-node: 3.2.4(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite: 7.3.6(@types/node@24.13.3)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
+      vite-node: 3.2.4(@types/node@24.13.3)(supports-color@7.2.0)(tsx@4.23.12)(yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b))
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.3
@@ -1596,4 +1599,4 @@ snapshots:
       string-width: 5.1.2
       strip-ansi: 7.2.0
 
-  yaml@2.9.0: {}
+  yaml@2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b): {}
