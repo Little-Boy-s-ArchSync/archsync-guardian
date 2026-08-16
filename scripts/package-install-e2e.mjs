@@ -144,5 +144,9 @@ try {
     "version provenance, doctor and external-project model validation)",
   );
 } finally {
-  await rm(temporary, { recursive: true, force: true });
+  if (process.env.ARCHSYNC_KEEP_TEST_TEMP === "1") {
+    console.error(`KEPT TEST DIRECTORY ${temporary}`);
+  } else {
+    await rm(temporary, { recursive: true, force: true });
+  }
 }
