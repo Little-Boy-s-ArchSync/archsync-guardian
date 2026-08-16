@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "9c5522876efa4aa0605512ad997abc2cbfdcb22bc46d80d308c30aecf503938d",
+    "implementation_source_sha256": "2bb38974f70974b55e341ce29890879680eece75461f4b461d21e1b0b1c131dc",
     "fixture_tree": {
       "files": [
         {
@@ -80,7 +80,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "465a121be2e1fb67cd322f798acf98de8f8993bf50e9d1fcfd6d907187cec1a2"
+        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -96,7 +96,7 @@
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "8f4d1e13a11cd029b2a4575d9565957cedf58a17a2f87830c74ff75902f2eeb9"
+        "sha256": "d21a1a6997fdb85d7e30c983807edbba0c0ad3f53c0ce4d9e68e76070e815a8c"
       },
       {
         "file": "src/model-cli.test.ts",
@@ -131,26 +131,26 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "9a8366f1854097c2e93c0cc8f3861ff5ad8455c9255dd4f5569d18127919d447",
+    "verification_source_sha256": "085b9f4fed102dd83e2846b4759ad07dda05bf3b8501194cea7014c4c7e392b9",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "bff3ca68c0d074de146724c3ab7351be70933e2dcea18dcc73402a25d6d336a0"
+        "sha256": "cea24098d007e27a8d849dce3324058c55b33dedd6610c8b563c480d28c98d35"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "f74968a7629127c1a14b9ac5b98ba36d39e0b70c8672598e282c4a1fdb71eefc"
+        "sha256": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de"
       },
       {
         "file": "pnpm-workspace.yaml",
         "sha256": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16"
       },
       {
-        "file": "vendor/archsync-core-0.1.0.tgz",
-        "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
+        "file": "vendor/archsync-core-0.1.1.tgz",
+        "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
       }
     ],
-    "dependency_source_sha256": "c78aa7a8d20ac7e0663bd9bc209fe6f46b8052d2fef3cafafcb12009a81b1fa2"
+    "dependency_source_sha256": "b4edeaf668416e7970fd9abe0bf41f3213006e82bcd9c7298fb32216b574351c"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -158,7 +158,7 @@
     "source_sha256": {
       "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
       "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
-      "src/guardian.ts": "6fad7a3bc7e469ee2bf19433957aeed7e4c4237e25adb01922a4c8c79a6314fa",
+      "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "50385a056eb97cac42bc7214c55db15036a8627488af72e7075ef7d73d66fe96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
@@ -171,10 +171,10 @@
     }
   },
   "core_dependency": {
-    "repository_commit": "2affbbb0da859a32b9b9079b4bf718fc7b14993b",
-    "vendored_package": "vendor/archsync-core-0.1.0.tgz",
-    "vendored_package_sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176",
-    "consumption_contract": "peerDependency ^0.1.0"
+    "repository_commit": "f7812c471887029951b5e5ad4105a72f0b29d0ed",
+    "vendored_package": "vendor/archsync-core-0.1.1.tgz",
+    "vendored_package_sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
+    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1"
   },
   "analyzer": {
     "id": "archsync-typescript",

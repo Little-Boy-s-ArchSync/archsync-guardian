@@ -66,13 +66,13 @@ function guardianFinding(
     severity: finding.severity,
     message: finding.message,
     ...(finding.kind !== "architecture-evolution" ? { rule_id: finding.id } : {}),
-    ...(finding.from && finding.to && finding.edge_key
+    ...(finding.from && finding.to && finding.edge_key && finding.relationship_type
       ? {
           edge: {
             key: finding.edge_key,
             from: finding.from,
             to: finding.to,
-            type: finding.relationship_type ?? "other",
+            type: finding.relationship_type,
           },
         }
       : {}),

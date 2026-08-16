@@ -12,8 +12,8 @@ importers:
   .:
     dependencies:
       '@archsync/core':
-        specifier: file:vendor/archsync-core-0.1.0.tgz
-        version: file:vendor/archsync-core-0.1.0.tgz
+        specifier: file:vendor/archsync-core-0.1.1.tgz
+        version: file:vendor/archsync-core-0.1.1.tgz
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -37,9 +37,9 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@archsync/core@file:vendor/archsync-core-0.1.0.tgz':
-    resolution: {integrity: sha512-haIminTHW+CDy/zF5HNR2KinVXJLXyFIzQPXP4SyWeZl48GW72CtUP8cVBdB/K8ONrDmFsOxson28gDqLaf2EQ==, tarball: file:vendor/archsync-core-0.1.0.tgz}
-    version: 0.1.0
+  '@archsync/core@file:vendor/archsync-core-0.1.1.tgz':
+    resolution: {integrity: sha512-cfS/dAFIskQwcCe5mA+nZlUf1zF9L0ltKPKWGRIBFqkPODGpzfEKeAtCoeTVKinNyosBUzggazSajosJneAoXQ==, tarball: file:vendor/archsync-core-0.1.1.tgz}
+    version: 0.1.1
     engines: {node: '>=22'}
     hasBin: true
 
@@ -880,7 +880,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@archsync/core@file:vendor/archsync-core-0.1.0.tgz':
+  '@archsync/core@file:vendor/archsync-core-0.1.1.tgz':
     dependencies:
       ajv: 8.20.0
       yaml: 2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)

@@ -96,7 +96,7 @@ export async function ${functionName}(): Promise<void> {
     expect(finding?.model_evidence).toEqual({ document: "expected", path: "/rules/1" });
   });
 
-  it("uses the 'other' relationship type for an untyped required-edge finding", async () => {
+  it("does not fabricate an edge type for an untyped required-edge finding", async () => {
     const expected = testArchitecture();
     expected.rules = [
       { id: "ARCH-UNTYPED", type: "require", from: "gateway", to: "service", severity: "error" },
@@ -109,9 +109,15 @@ export async function ${functionName}(): Promise<void> {
 
     const result = await checkRepository(expected, repository);
 
-    expect(result.findings.find(({ rule_id }) => rule_id === "ARCH-UNTYPED")).toMatchObject({
-      edge: { key: "gateway|other|service", type: "other" },
+    const finding = result.findings.find(({ rule_id }) => rule_id === "ARCH-UNTYPED");
+
+    expect(finding).toMatchObject({
+      source_evidence: [
+        expect.objectContaining({ file: "gateway/src/server.ts", detector: "component-root" }),
+      ],
+      model_evidence: { document: "expected", path: "/rules/0" },
     });
+    expect(finding).not.toHaveProperty("edge");
   });
 
   it("blocks an allowlist violation with the disallowed call site", async () => {

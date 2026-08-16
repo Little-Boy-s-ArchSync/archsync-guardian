@@ -238,8 +238,8 @@ const inputHashes = {
 const dependencyHashes = {
   ".github/workflows/ci.yml": sha256(await readFile(join(root, ".github", "workflows", "ci.yml"))),
   "pnpm-workspace.yaml": sha256(await readFile(join(root, "pnpm-workspace.yaml"))),
-  "vendor/archsync-core-0.1.0.tgz": sha256(
-    await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz")),
+  "vendor/archsync-core-0.1.1.tgz": sha256(
+    await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz")),
   ),
   "package.json": sha256(await readFile(join(root, "package.json"))),
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
