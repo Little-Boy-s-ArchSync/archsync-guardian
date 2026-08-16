@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "cac1f45f105ccf6d6d6a3a7e99eaceb30549242adf6134ab1911ec8f4d98f515",
+    "implementation_source_sha256": "b53342204f78c20543c9a4837a69ebe26c730f7dae8242931493f3f1f3971fb9",
     "fixture_tree": {
       "files": [
         {
@@ -64,11 +64,19 @@
     "verification_source": [
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "2d361d5fbac228d20b027248cf8848c29e1ab4a5316151052339c6b27f559f7b"
+        "sha256": "e149107c8695cbb027aa1ecfdd11284b18a14b704d231f68ec94578eb834a62b"
+      },
+      {
+        "file": "scripts/package-install-e2e.mjs",
+        "sha256": "73de279be31aeb20833e727ae1960971715dd9703a0ad0294001981613a43e27"
+      },
+      {
+        "file": "scripts/package-provenance.mjs",
+        "sha256": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7"
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "e3376c769ea20971cb6df60aa27dd94cd16c30c98b3a68b57234f8addea55df6"
+        "sha256": "3ac1d1253ae866fcc99cdd52f4b6c2cafb4b00cd2423d2032327b0c4ecfab942"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -80,7 +88,7 @@
       },
       {
         "file": "src/doctor.test.ts",
-        "sha256": "4dbc241c77994780bf6d10b0fe93886059063cef31c595226ba23917af0646d1"
+        "sha256": "608488219c719d59bf0390d6f7ead4524e558f943e818b148a5c720d2398bc09"
       },
       {
         "file": "src/guardian.test.ts",
@@ -103,6 +111,10 @@
         "sha256": "4acbb03530827ddd930f433d2bde48e926e476500fe18702e98697a0f7fa7b31"
       },
       {
+        "file": "src/version.test.ts",
+        "sha256": "00f93d3e2e40660455418bfc53d6053cfe08b41668f1fb6bd0725fc6f5d9f15d"
+      },
+      {
         "file": "tsconfig.json",
         "sha256": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c"
       },
@@ -115,11 +127,11 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "649d47b5c151b86d422a02260c5a0a6fc87e13f9aa0946153233d5b9d058fc19",
+    "verification_source_sha256": "8ac44020a5645658d8c713a53e359889315dc788d74c6b02c8b5f87fbd2893ec",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "c1e971b519b395ae0916d55c6cb8b30066f49afb7eda9eca44c3b6e1ca97da79"
+        "sha256": "1150ee407f2a19d56ffafaaa4231cdbc0614d9ae2b0b475be25e6eec95812c10"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -130,7 +142,7 @@
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "c60a9127c493a8b2d69c7f41ac45f9a26bdca3f0542fbc3918f20e038f41eaa1"
+    "dependency_source_sha256": "92f51eba92165bc2392e888254f3b521ca4c02f05eb59949911d41c1003a5fb6"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -140,13 +152,14 @@
       "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
       "src/guardian.ts": "6fad7a3bc7e469ee2bf19433957aeed7e4c4237e25adb01922a4c8c79a6314fa",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
-      "src/bin.ts": "bfe710df6e4aeec26d87f95b6ae86e45b6a16cd0d59e20b0698c39c3bbeb588b",
+      "src/bin.ts": "5076be96ff6c51e767ba4b54c231bd8f2caad52e9d4e67b8a66ebb1d163b7784",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
-      "src/doctor.ts": "6a32e99d4a3950bb5885a4c81fb2a029cdd124a47de9b681a77da17c43c4816d",
+      "src/doctor.ts": "c238c72ff4007eac9106c006abeb41d7c089e4b8a1cc3df7a8c84b947f4a6083",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-      "src/index.ts": "64066b941d64ccdbc45ab73a6b5763a4e8e7c995d3ed19634c467b3d3c768b67"
+      "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
+      "src/version.ts": "48ea67b9f744522a5386ccb15aa5b818f94f80d4e2f3295d9aca5f2a602e4009"
     }
   },
   "core_dependency": {
@@ -205,27 +218,28 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1694,
-        "total": 1694,
+        "covered": 1858,
+        "total": 1858,
         "percent": 100
       },
       "branches": {
-        "covered": 706,
-        "total": 706,
+        "covered": 769,
+        "total": 769,
         "percent": 100
       },
       "functions": {
-        "covered": 80,
-        "total": 80,
+        "covered": 91,
+        "total": 91,
         "percent": 100
       },
       "lines": {
-        "covered": 1694,
-        "total": 1694,
+        "covered": 1858,
+        "total": 1858,
         "percent": 100
       }
     },
-    "cli_smoke_checks": 22,
+    "cli_smoke_checks": 23,
+    "clean_package_install": "required on Windows, macOS and Linux",
     "canonical_benchmark": {
       "repository": "archsync-benchmark",
       "command": "pnpm phase2:verify",

@@ -222,6 +222,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "version.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
@@ -270,7 +271,8 @@ const staticEvidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
-    cli_smoke_checks: 22,
+    cli_smoke_checks: 23,
+    clean_package_install: "required on Windows, macOS and Linux",
   },
   exclusions: [
     "Automatic architecture baseline updates",

@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 
 export interface DoctorCheck {
   name: string;
-  status: "PASS" | "FAIL";
+  status: "PASS" | "WARN" | "FAIL";
   detail: string;
 }
 
@@ -21,6 +21,11 @@ export interface DoctorEnvironment {
     args: string[],
     options: { encoding: "utf8"; shell: false; windowsHide: true },
   ) => { status: number | null; stdout: string };
+  locateArchSync: () => { status: number | null; stdout: string };
+}
+
+export function archsyncLocator(platform: NodeJS.Platform): "where.exe" | "which" {
+  return platform === "win32" ? "where.exe" : "which";
 }
 
 export function runDoctor(environment: DoctorEnvironment = {
@@ -28,6 +33,11 @@ export function runDoctor(environment: DoctorEnvironment = {
   platform: process.platform,
   architecture: process.arch,
   runGit: spawnSync,
+  locateArchSync: () => spawnSync(
+    archsyncLocator(process.platform),
+    ["archsync"],
+    { encoding: "utf8", shell: false, windowsHide: true },
+  ),
 }): DoctorResult {
   const nodeMajor = Number.parseInt(environment.nodeVersion.split(".")[0]!, 10);
   const supportedPlatform = ["win32", "darwin", "linux"].includes(environment.platform);
@@ -36,6 +46,7 @@ export function runDoctor(environment: DoctorEnvironment = {
     shell: false,
     windowsHide: true,
   });
+  const archsync = environment.locateArchSync();
   const checks: DoctorCheck[] = [
     {
       name: "Node.js",
@@ -62,9 +73,16 @@ export function runDoctor(environment: DoctorEnvironment = {
       status: "PASS",
       detail: "Analyzer v0.2 and Git-diff gate v0.3 loaded",
     },
+    {
+      name: "CLI on PATH",
+      status: archsync.status === 0 ? "PASS" : "WARN",
+      detail: archsync.status === 0
+        ? archsync.stdout.trim().split(/\r?\n/)[0]!
+        : "archsync is not discoverable; run 'pnpm setup', reopen the shell, then install the CLI",
+    },
   ];
   return {
-    ok: checks.every(({ status }) => status === "PASS"),
+    ok: checks.every(({ status }) => status !== "FAIL"),
     platform: environment.platform,
     checks,
   };
@@ -76,11 +94,13 @@ export function formatDoctorResult(result: DoctorResult): string {
     "ARCHSYNC DOCTOR",
     "",
     ...result.checks.map(({ name, status, detail }) =>
-      `${status === "PASS" ? "[PASS]" : "[FAIL]"} ${name.padEnd(width)}  ${detail}`,
+      `[${status}] ${name.padEnd(width)}  ${detail}`,
     ),
     "",
     result.ok
-      ? "READY: This machine can run the ArchSync CLI."
+      ? result.checks.some(({ status }) => status === "WARN")
+        ? "READY WITH WARNING: The engine works, but fix warnings before relying on a global command."
+        : "READY: This machine can run the ArchSync CLI."
       : "NOT READY: Fix the failed checks before running ArchSync.",
   ].join("\n");
 }

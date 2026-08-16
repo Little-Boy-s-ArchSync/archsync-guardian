@@ -1,6 +1,6 @@
 export interface DoctorCheck {
     name: string;
-    status: "PASS" | "FAIL";
+    status: "PASS" | "WARN" | "FAIL";
     detail: string;
 }
 export interface DoctorResult {
@@ -20,7 +20,12 @@ export interface DoctorEnvironment {
         status: number | null;
         stdout: string;
     };
+    locateArchSync: () => {
+        status: number | null;
+        stdout: string;
+    };
 }
+export declare function archsyncLocator(platform: NodeJS.Platform): "where.exe" | "which";
 export declare function runDoctor(environment?: DoctorEnvironment): DoctorResult;
 export declare function formatDoctorResult(result: DoctorResult): string;
 //# sourceMappingURL=doctor.d.ts.map

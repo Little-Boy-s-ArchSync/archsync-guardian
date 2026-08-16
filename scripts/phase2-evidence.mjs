@@ -100,6 +100,7 @@ const sourceFiles = [
   "phase3-git.ts",
   "phase3.ts",
   "index.ts",
+  "version.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
   `src/${file}`,
@@ -116,6 +117,9 @@ const verificationSource = await hashFiles([
   join(root, "src", "model-cli.test.ts"),
   join(root, "src", "phase3-git.test.ts"),
   join(root, "src", "phase3.test.ts"),
+  join(root, "src", "version.test.ts"),
+  join(root, "scripts", "package-install-e2e.mjs"),
+  join(root, "scripts", "package-provenance.mjs"),
   join(root, "src", "test-helpers.ts"),
   join(root, "tsconfig.json"),
   join(root, "tsconfig.test.json"),
@@ -188,7 +192,8 @@ const evidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
-    cli_smoke_checks: 22,
+    cli_smoke_checks: 23,
+    clean_package_install: "required on Windows, macOS and Linux",
     canonical_benchmark: {
       repository: "archsync-benchmark",
       command: "pnpm phase2:verify",
