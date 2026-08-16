@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "ed759b4ea0957ef756520794bf6d44cefe618c5a088c306bedb53f8663a028ea",
+    "implementation_source_sha256": "58e13f4738406f4644c817f03c8bdb19cd40ca97a5c28cd63610e181905246e1",
     "fixture_tree": {
       "files": [
         {
@@ -163,7 +163,7 @@
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
-      "src/version.ts": "79e29564b185c9b81fbb3f5ed8f32674f105298a26397a9da6ccb45212e05f56"
+      "src/version.ts": "c7c6b63cd86c1f9b6ec555963ba90086a372270194cdedbf27b2c95dad2c67c9"
     }
   },
   "core_dependency": {

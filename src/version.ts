@@ -171,7 +171,10 @@ export async function loadVersionResult(root = defaultPackageRoot): Promise<Vers
       throw new Error("packaged provenance does not match package.json");
     }
     if (packaged.package_content_sha256 !== contentSha) {
-      throw new Error("packaged content failed its SHA-256 integrity check");
+      throw new Error(
+        `packaged content failed its SHA-256 integrity check ` +
+        `(expected ${packaged.package_content_sha256}, received ${contentSha})`,
+      );
     }
   }
   return {
