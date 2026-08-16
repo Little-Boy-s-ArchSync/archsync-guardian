@@ -14,7 +14,7 @@
     "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-    "src/version.ts": "c7c6b63cd86c1f9b6ec555963ba90086a372270194cdedbf27b2c95dad2c67c9"
+    "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
   },
   "input_sha256": {
     "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
@@ -223,13 +223,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1876,
-        "total": 1876,
+        "covered": 1885,
+        "total": 1885,
         "percent": 100
       },
       "branches": {
-        "covered": 777,
-        "total": 777,
+        "covered": 779,
+        "total": 779,
         "percent": 100
       },
       "functions": {
@@ -238,8 +238,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1876,
-        "total": 1876,
+        "covered": 1885,
+        "total": 1885,
         "percent": 100
       }
     },
@@ -261,85 +261,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 421.73,
+      "cold_total_ms": 419.05,
       "warm_total_ms": [
-        250.68,
-        311.05,
-        260.35,
-        278.64,
-        269.44
+        250.92,
+        247.67,
+        243.21,
+        276.11,
+        258.06
       ],
       "warm_baseline_load_ms": [
-        25.83,
-        37.29,
-        28.99,
-        36.04,
-        26.38
+        27.39,
+        27.66,
+        26.17,
+        28.72,
+        28.63
       ],
       "warm_incremental_scan_ms": [
-        2.52,
-        2.82,
-        2.85,
-        2.9,
-        1.98
+        2.42,
+        2.36,
+        2.49,
+        1.56,
+        2.23
       ],
-      "warm_median_total_ms": 269.44,
-      "warm_median_baseline_load_ms": 28.99,
-      "warm_median_incremental_scan_ms": 2.82
+      "warm_median_total_ms": 250.92,
+      "warm_median_baseline_load_ms": 27.66,
+      "warm_median_incremental_scan_ms": 2.36
     },
     "violation": {
-      "cold_total_ms": 381.83,
+      "cold_total_ms": 371.14,
       "warm_total_ms": [
-        264,
-        273.86,
-        252.74,
-        253.37,
-        275.82
+        267.73,
+        255.47,
+        266.7,
+        256.12,
+        264.23
       ],
       "warm_baseline_load_ms": [
-        27.92,
-        32.09,
-        27.64,
-        27.82,
-        28.53
+        26.51,
+        27.53,
+        27.69,
+        34.25,
+        37.26
       ],
       "warm_incremental_scan_ms": [
-        2.88,
-        2.49,
-        2.22,
-        2.27,
-        3.59
+        2.37,
+        2.06,
+        1.85,
+        2.47,
+        2.39
       ],
-      "warm_median_total_ms": 264,
-      "warm_median_baseline_load_ms": 27.92,
-      "warm_median_incremental_scan_ms": 2.49
+      "warm_median_total_ms": 264.23,
+      "warm_median_baseline_load_ms": 27.69,
+      "warm_median_incremental_scan_ms": 2.37
     },
     "evolution": {
-      "cold_total_ms": 390.59,
+      "cold_total_ms": 361.79,
       "warm_total_ms": [
-        254.21,
-        262.96,
-        270.47,
-        258.95,
-        263
+        277.9,
+        252.16,
+        264.62,
+        263.94,
+        249.51
       ],
       "warm_baseline_load_ms": [
-        26.36,
-        26.27,
-        30.53,
-        26.2,
-        28.12
+        31.25,
+        27.29,
+        27.66,
+        27.64,
+        27.6
       ],
       "warm_incremental_scan_ms": [
-        1.9,
-        2.2,
-        2,
-        1.96,
-        1.81
+        2.21,
+        2.5,
+        2.64,
+        1.88,
+        1.88
       ],
-      "warm_median_total_ms": 262.96,
-      "warm_median_baseline_load_ms": 26.36,
-      "warm_median_incremental_scan_ms": 1.96
+      "warm_median_total_ms": 263.94,
+      "warm_median_baseline_load_ms": 27.64,
+      "warm_median_incremental_scan_ms": 2.21
     }
   }
 }

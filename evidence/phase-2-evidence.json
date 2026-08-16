@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "58e13f4738406f4644c817f03c8bdb19cd40ca97a5c28cd63610e181905246e1",
+    "implementation_source_sha256": "aca6b94854bbbede1c8b042b48daee80e245e640979411095bcc85686dc358ae",
     "fixture_tree": {
       "files": [
         {
@@ -68,7 +68,7 @@
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "c6aeb632d045cd96594fdce84c4b5435bf93a10849faf0d252b7a95fca1434dc"
+        "sha256": "972f8fde67a7832695d95d498ae5dce6cab0bbcfc1d9fa267356c2507277d873"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -127,7 +127,7 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "3d416a9b5aa131dab96a269a1593adc749aefdf72f632137423ce28f18eb5d25",
+    "verification_source_sha256": "173c98ef668455ed7dd617208626ae7e5677fcf68436df1fee7f4f79684d06a6",
     "dependency_source": [
       {
         "file": "package.json",
@@ -163,7 +163,7 @@
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
-      "src/version.ts": "c7c6b63cd86c1f9b6ec555963ba90086a372270194cdedbf27b2c95dad2c67c9"
+      "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },
   "core_dependency": {
@@ -222,13 +222,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1876,
-        "total": 1876,
+        "covered": 1885,
+        "total": 1885,
         "percent": 100
       },
       "branches": {
-        "covered": 777,
-        "total": 777,
+        "covered": 779,
+        "total": 779,
         "percent": 100
       },
       "functions": {
@@ -237,8 +237,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1876,
-        "total": 1876,
+        "covered": 1885,
+        "total": 1885,
         "percent": 100
       }
     },

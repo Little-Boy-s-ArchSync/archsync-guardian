@@ -45,7 +45,13 @@ export async function computePackageContentSha256(root) {
         join(root, "README.md"),
         ...(await walkFiles(dist)),
         ...bundledFiles,
-    ].filter((file) => file !== join(dist, provenanceFile) && basename(file) !== "package.json");
+    ].filter((file) => {
+        const name = relative(root, file).replaceAll("\\", "/");
+        return file !== join(dist, provenanceFile) &&
+            basename(file) !== "package.json" &&
+            !name.split("/").includes(".bin") &&
+            name !== "node_modules/yaml/bin.mjs";
+    });
     const digest = createHash("sha256");
     for (const file of files.sort()) {
         const name = relative(root, file).replaceAll("\\", "/");
