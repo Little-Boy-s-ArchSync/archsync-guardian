@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { copyFile, mkdir, mkdtemp, readFile, readdir, rm } from "node:fs/promises";
-import { delimiter, dirname, join } from "node:path";
+import { delimiter, dirname, isAbsolute, join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
@@ -76,7 +76,9 @@ try {
     `Unexpected package files: ${packedFiles.join(", ")}`,
   );
 
-  const guardianTarball = join(packages, packResult.filename);
+  const guardianTarball = isAbsolute(packResult.filename)
+    ? packResult.filename
+    : join(packages, packResult.filename);
   const coreTarball = join(root, "vendor", "archsync-core-0.1.0.tgz");
   const installEnvironment = {
     ...process.env,
