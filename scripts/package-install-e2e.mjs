@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, readFile, readdir, rm } from "node:fs/promises";
-import { delimiter, dirname, isAbsolute, join } from "node:path";
+import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { delimiter, dirname, isAbsolute, join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
@@ -12,6 +12,10 @@ const globalDirectory = join(temporary, "global");
 const binDirectory = join(temporary, "bin");
 const externalProject = join(temporary, "external-project");
 const pnpmCli = process.env.npm_execpath;
+const evidenceOption = process.argv.indexOf("--evidence");
+const evidencePath = evidenceOption >= 0 && process.argv[evidenceOption + 1]
+  ? resolve(root, process.argv[evidenceOption + 1])
+  : undefined;
 const pnpmCommand = pnpmCli
   ? { command: process.execPath, prefix: [pnpmCli] }
   : { command: process.platform === "win32" ? "pnpm.cmd" : "pnpm", prefix: [] };
@@ -139,9 +143,32 @@ try {
   }));
   assert.deepEqual(installedManifest.files, ["dist", "README.md"]);
 
+  if (evidencePath) {
+    const pnpmVersion = runPnpm(["--version"]).stdout.trim();
+    await mkdir(dirname(evidencePath), { recursive: true });
+    await writeFile(evidencePath, `${JSON.stringify({
+      schema_version: 1,
+      platform: process.platform,
+      architecture: process.arch,
+      node_version: process.versions.node,
+      pnpm_version: pnpmVersion,
+      package: version.cli,
+      provenance: version.provenance,
+      checks: [
+        "package-file-allowlist",
+        "bundled-core-runtime",
+        "isolated-global-prefix",
+        "binary-on-path",
+        "version-provenance",
+        "doctor",
+        "external-project-model-validation",
+      ],
+    }, null, 2)}\n`, "utf8");
+  }
+
   console.log(
     `PASS CLEAN PACKAGE INSTALL (${process.platform}: packed whitelist, isolated pnpm prefix, PATH, ` +
-    "version provenance, doctor and external-project model validation)",
+    "version provenance, doctor, external-project model validation and evidence)",
   );
 } finally {
   if (process.env.ARCHSYNC_KEEP_TEST_TEMP === "1") {

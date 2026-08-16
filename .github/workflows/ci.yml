@@ -39,5 +39,6 @@ jobs:
           path: |
             evidence/phase-2-evidence.json
             evidence/phase-3-evidence.json
+            .artifacts/package-install.json
             coverage/coverage-summary.json
             coverage/index.html

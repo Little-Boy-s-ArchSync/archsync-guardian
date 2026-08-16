@@ -120,6 +120,7 @@ const verificationSource = await hashFiles([
   join(root, "src", "version.test.ts"),
   join(root, "scripts", "package-install-e2e.mjs"),
   join(root, "scripts", "package-provenance.mjs"),
+  join(root, ".github", "workflows", "ci.yml"),
   join(root, "src", "test-helpers.ts"),
   join(root, "tsconfig.json"),
   join(root, "tsconfig.test.json"),

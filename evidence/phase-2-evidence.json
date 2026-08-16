@@ -63,12 +63,16 @@
     },
     "verification_source": [
       {
+        "file": ".github/workflows/ci.yml",
+        "sha256": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41"
+      },
+      {
         "file": "scripts/cli-smoke.mjs",
         "sha256": "e149107c8695cbb027aa1ecfdd11284b18a14b704d231f68ec94578eb834a62b"
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "972f8fde67a7832695d95d498ae5dce6cab0bbcfc1d9fa267356c2507277d873"
+        "sha256": "8a2cbc325efb8b64ed6c39ac30777f2fc032d54034ff1ee02ee3e9be03d6eca2"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -76,7 +80,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "fa18e45e427b86d588f2d5f3ae3ab148ce3b6e91ebc094ac221e65f2d5c49801"
+        "sha256": "465a121be2e1fb67cd322f798acf98de8f8993bf50e9d1fcfd6d907187cec1a2"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -127,11 +131,11 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "173c98ef668455ed7dd617208626ae7e5677fcf68436df1fee7f4f79684d06a6",
+    "verification_source_sha256": "387da35dfaecb5c6f663a0c1a814b2fe76e090f3dd0f69b1a90529ae0300ddab",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "5492ae53fc8af48b332cf466c8bbfa7e1450e364376ff73f4625227d61f0179e"
+        "sha256": "ddb148649a79ce1569db1e693cb51ce64dd7c8c5abac817e53ed1ae81fbbcce8"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -146,7 +150,7 @@
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "64d8b245e0825e98b22b64713bfe0376cda094cd1d835f8476c7f12b8551233e"
+    "dependency_source_sha256": "50571753e67efbeec0c7a0af55d4f0de76ba64c118f03fb73caa9c7e3bdac318"
   },
   "contracts": {
     "observed_graph_version": "0.1",

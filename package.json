@@ -39,7 +39,7 @@
     "doctor": "tsx src/bin.ts doctor",
     "demo": "tsx src/bin.ts demo --benchmark ../archsync-benchmark/order-platform --scenario all",
     "cli:smoke": "node scripts/cli-smoke.mjs",
-    "package:verify": "node scripts/package-install-e2e.mjs",
+    "package:verify": "node scripts/package-install-e2e.mjs --evidence .artifacts/package-install.json",
     "prepack": "pnpm build && node scripts/package-provenance.mjs write",
     "postpack": "node scripts/package-provenance.mjs clean",
     "evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase2-evidence.mjs --write",

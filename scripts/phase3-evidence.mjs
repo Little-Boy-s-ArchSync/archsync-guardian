@@ -236,12 +236,15 @@ const inputHashes = {
   ),
 };
 const dependencyHashes = {
+  ".github/workflows/ci.yml": sha256(await readFile(join(root, ".github", "workflows", "ci.yml"))),
   "pnpm-workspace.yaml": sha256(await readFile(join(root, "pnpm-workspace.yaml"))),
   "vendor/archsync-core-0.1.0.tgz": sha256(
     await readFile(join(root, "vendor", "archsync-core-0.1.0.tgz")),
   ),
   "package.json": sha256(await readFile(join(root, "package.json"))),
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
+  "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
+  "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
 };
 const staticEvidence = {
   phase: 3,

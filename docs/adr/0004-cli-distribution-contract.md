@@ -30,6 +30,10 @@ consumers. A release is acceptable only when CI:
 7. verifies that the package contains only the declared runtime surface; and
 8. repeats the test on Windows, macOS and Linux.
 
+Each matrix job writes and uploads a machine-readable package-install evidence
+record containing the platform/toolchain, installed version provenance and the
+seven completed clean-install checks.
+
 Guardian embeds a deterministic provenance record during `prepack`. The record
 binds the package name and version, the 40-character source commit, and a
 SHA-256 digest of Guardian and its complete bundled Core executable/runtime
