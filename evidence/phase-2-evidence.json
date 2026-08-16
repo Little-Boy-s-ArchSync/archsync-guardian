@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "aca6b94854bbbede1c8b042b48daee80e245e640979411095bcc85686dc358ae",
+    "implementation_source_sha256": "e12a05f439a3b02b158bed50aae6ffd86b36d45e98eb00747faa757d6dddcb33",
     "fixture_tree": {
       "files": [
         {
@@ -72,7 +72,7 @@
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "de694827a6e9bb330dcc57d288cf70967a81ce3e186b0274f2036dff65d71858"
+        "sha256": "fe4ef85071af2f4df184e331081c9879469cc5ec8cf4e310021df7b2124eba64"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -131,11 +131,11 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "fcdf8be228f5422ab8a2030f9f3a91aa6b95fa291d2ecf36628b0c168914a7b2",
+    "verification_source_sha256": "e6b3801a90f57fb01c73b25201edf69ff7ac2d20f26c51fba91beb9da3bede79",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "ddb148649a79ce1569db1e693cb51ce64dd7c8c5abac817e53ed1ae81fbbcce8"
+        "sha256": "bff3ca68c0d074de146724c3ab7351be70933e2dcea18dcc73402a25d6d336a0"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -150,7 +150,7 @@
         "sha256": "015c9bbb0cf42ae4945c6f19866096d2833b9118c43c4574ce74cf9526b87176"
       }
     ],
-    "dependency_source_sha256": "50571753e67efbeec0c7a0af55d4f0de76ba64c118f03fb73caa9c7e3bdac318"
+    "dependency_source_sha256": "a0ab2f3d3bacefd845f23330b600113e02f10468cee350c566b34234eaa37f4b"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -160,7 +160,7 @@
       "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
       "src/guardian.ts": "6fad7a3bc7e469ee2bf19433957aeed7e4c4237e25adb01922a4c8c79a6314fa",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
-      "src/bin.ts": "5076be96ff6c51e767ba4b54c231bd8f2caad52e9d4e67b8a66ebb1d163b7784",
+      "src/bin.ts": "50385a056eb97cac42bc7214c55db15036a8627488af72e7075ef7d73d66fe96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "c238c72ff4007eac9106c006abeb41d7c089e4b8a1cc3df7a8c84b947f4a6083",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",

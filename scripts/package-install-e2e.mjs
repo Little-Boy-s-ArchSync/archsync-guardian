@@ -12,6 +12,7 @@ const globalDirectory = join(temporary, "global");
 const binDirectory = join(temporary, "bin");
 const externalProject = join(temporary, "external-project");
 const pnpmCli = process.env.npm_execpath;
+const sourceManifest = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const evidenceOption = process.argv.indexOf("--evidence");
 const evidencePath = evidenceOption >= 0 && process.argv[evidenceOption + 1]
   ? resolve(root, process.argv[evidenceOption + 1])
@@ -67,7 +68,7 @@ try {
   const pack = runPnpm(["pack", "--json", "--pack-destination", packages]);
   const packResult = parsePackResult(pack.stdout);
   assert.equal(packResult.name, "@archsync/guardian");
-  assert.equal(packResult.version, "0.3.1");
+  assert.equal(packResult.version, sourceManifest.version);
   const packedFiles = packResult.files.map(({ path }) => path);
   assert.ok(packedFiles.includes("package.json"));
   assert.ok(packedFiles.includes("README.md"));
