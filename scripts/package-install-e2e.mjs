@@ -71,10 +71,24 @@ try {
   assert.ok(packedFiles.includes("dist/provenance.json"));
   assert.ok(packedFiles.includes("dist/version.js"));
   assert.ok(packedFiles.includes("node_modules/@archsync/core/package.json"));
+  const allowedBundleRoots = new Set([
+    "@archsync/core",
+    "ajv",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string",
+    "yaml",
+  ]);
+  const bundledRoots = new Set(packedFiles.filter((path) => path.startsWith("node_modules/")).map((path) => {
+    const parts = path.split("/");
+    return parts[1].startsWith("@") ? `${parts[1]}/${parts[2]}` : parts[1];
+  }));
+  assert.deepEqual(bundledRoots, allowedBundleRoots);
   assert.equal(
     packedFiles.every((path) =>
       path === "package.json" || path === "README.md" || path.startsWith("dist/") ||
-      path.startsWith("node_modules/@archsync/core/"),
+      path.startsWith("node_modules/"),
     ),
     true,
     `Unexpected package files: ${packedFiles.join(", ")}`,

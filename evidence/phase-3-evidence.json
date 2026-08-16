@@ -14,7 +14,7 @@
     "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-    "src/version.ts": "48ea67b9f744522a5386ccb15aa5b818f94f80d4e2f3295d9aca5f2a602e4009"
+    "src/version.ts": "cec77930bcaf57307b070c28498b92f2a2311e9e447fcfa82f00b0db36f29663"
   },
   "input_sha256": {
     "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
@@ -223,13 +223,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1858,
-        "total": 1858,
+        "covered": 1877,
+        "total": 1877,
         "percent": 100
       },
       "branches": {
-        "covered": 769,
-        "total": 769,
+        "covered": 776,
+        "total": 776,
         "percent": 100
       },
       "functions": {
@@ -238,8 +238,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1858,
-        "total": 1858,
+        "covered": 1877,
+        "total": 1877,
         "percent": 100
       }
     },
@@ -261,85 +261,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 413.87,
+      "cold_total_ms": 416.6,
       "warm_total_ms": [
-        265.28,
-        254.47,
-        263.61,
-        272.02,
-        251.71
+        254.01,
+        268.48,
+        266.64,
+        263.3,
+        249.37
       ],
       "warm_baseline_load_ms": [
-        27.08,
-        26.68,
-        25.25,
-        26.89,
-        26.01
+        25.91,
+        28.87,
+        35.28,
+        34.61,
+        26.78
       ],
       "warm_incremental_scan_ms": [
-        2.82,
-        2.52,
-        2.21,
-        1.97,
-        1.91
+        2.11,
+        3.34,
+        4.11,
+        2.53,
+        2.09
       ],
-      "warm_median_total_ms": 263.61,
-      "warm_median_baseline_load_ms": 26.68,
-      "warm_median_incremental_scan_ms": 2.21
+      "warm_median_total_ms": 263.3,
+      "warm_median_baseline_load_ms": 28.87,
+      "warm_median_incremental_scan_ms": 2.53
     },
     "violation": {
-      "cold_total_ms": 376.14,
+      "cold_total_ms": 392.56,
       "warm_total_ms": [
-        259.34,
-        271.8,
-        247.44,
-        268.7,
-        256.27
+        253.2,
+        247.75,
+        262.5,
+        263.64,
+        270.58
       ],
       "warm_baseline_load_ms": [
-        27.73,
-        25.96,
-        26.29,
-        29.63,
-        26.84
+        29.96,
+        26.57,
+        26.47,
+        25.16,
+        27.93
       ],
       "warm_incremental_scan_ms": [
-        2.14,
-        1.86,
-        1.98,
-        2.41,
-        1.83
+        2.16,
+        2.84,
+        1.97,
+        2.07,
+        1.82
       ],
-      "warm_median_total_ms": 259.34,
-      "warm_median_baseline_load_ms": 26.84,
-      "warm_median_incremental_scan_ms": 1.98
+      "warm_median_total_ms": 262.5,
+      "warm_median_baseline_load_ms": 26.57,
+      "warm_median_incremental_scan_ms": 2.07
     },
     "evolution": {
-      "cold_total_ms": 387.03,
+      "cold_total_ms": 363.74,
       "warm_total_ms": [
-        255.66,
-        263.59,
-        253.23,
-        256.05,
-        266.19
+        259.83,
+        254.99,
+        270.84,
+        259.62,
+        264.13
       ],
       "warm_baseline_load_ms": [
-        27.22,
-        29.38,
-        27.23,
-        27.09,
-        27.8
+        26.08,
+        26.83,
+        30.91,
+        35.61,
+        37.28
       ],
       "warm_incremental_scan_ms": [
-        2.06,
-        2.69,
-        1.93,
-        2.32,
-        2.01
+        1.76,
+        1.89,
+        2.15,
+        2.42,
+        2.52
       ],
-      "warm_median_total_ms": 256.05,
-      "warm_median_baseline_load_ms": 27.23,
-      "warm_median_incremental_scan_ms": 2.06
+      "warm_median_total_ms": 259.83,
+      "warm_median_baseline_load_ms": 30.91,
+      "warm_median_incremental_scan_ms": 2.15
     }
   }
 }

@@ -21,14 +21,31 @@ async function readManifest(root) {
         !("version" in value) || typeof value.version !== "string") {
         throw new Error("package.json does not contain a valid name and version");
     }
-    return { name: value.name, version: value.version };
+    const bundledDependencies = "bundledDependencies" in value && Array.isArray(value.bundledDependencies)
+        ? value.bundledDependencies.filter((dependency) => typeof dependency === "string")
+        : [];
+    return { name: value.name, version: value.version, bundledDependencies };
 }
+const coreRuntimePackages = [
+    "@archsync/core",
+    "ajv",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string",
+    "yaml",
+];
 export async function computePackageContentSha256(root) {
     const dist = join(root, "dist");
+    const manifest = await readManifest(root);
+    const bundledFiles = manifest.bundledDependencies.includes("@archsync/core")
+        ? (await Promise.all(coreRuntimePackages.map((dependency) => walkFiles(join(root, "node_modules", ...dependency.split("/")))))).flat()
+        : [];
     const files = [
         join(root, "README.md"),
         join(root, "package.json"),
         ...(await walkFiles(dist)),
+        ...bundledFiles,
     ].filter((file) => file !== join(dist, provenanceFile));
     const digest = createHash("sha256");
     for (const file of files.sort()) {
