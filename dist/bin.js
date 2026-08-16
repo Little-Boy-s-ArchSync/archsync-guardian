@@ -10,7 +10,7 @@ import { checkRepository, formatGuardianResult } from "./guardian.js";
 import { runModelCommand } from "./model-cli.js";
 import { formatVersionResult, loadVersionResult } from "./version.js";
 import { appendGitHubStepSummary, checkRepositoryDiff, formatGitHubAnnotations, formatPhase3Markdown, formatPhase3Result, } from "./phase3.js";
-const cliVersion = "0.3.2";
+const cliVersion = "0.3.3";
 function usage(error = true) {
     const output = `ArchSync CLI ${cliVersion}
 

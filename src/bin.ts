@@ -20,7 +20,7 @@ import {
   formatPhase3Result,
 } from "./phase3.js";
 
-const cliVersion = "0.3.2";
+const cliVersion = "0.3.3";
 
 function usage(error = true): number {
   const output = `ArchSync CLI ${cliVersion}

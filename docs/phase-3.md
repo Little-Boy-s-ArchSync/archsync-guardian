@@ -17,7 +17,7 @@ The approved architecture model remains the source of truth. Phase 3 never rewri
 
 ## Version note
 
-The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. Patch release `v0.3.1` adds the unified CLI, diagnostics and demo experience; `v0.3.2` adds clean-prefix package verification, PATH diagnostics and package provenance without changing analyzer or decision semantics. These are package-version adjustments, not scope changes: Phase 3 remains the roadmap's Git-diff and CI milestone.
+The roadmap used `v0.2 / MVP` as a planning label for Phase 3. The implementation uses Guardian package `v0.3.0` because `v0.2.0` was consumed by the provenance-aware analyzer hardening completed before the PR gate. Patch release `v0.3.1` adds the unified CLI, diagnostics and demo experience; `v0.3.2` adds clean-prefix package verification, PATH diagnostics and package provenance without changing analyzer or decision semantics; `v0.3.3` binds the audited package to Core v0.1.1 and prevents an untyped required relationship from being serialized as a fabricated edge. These are package-version adjustments, not scope changes: Phase 3 remains the roadmap's Git-diff and CI milestone.
 
 ## Why the decision is diff-scoped
 
