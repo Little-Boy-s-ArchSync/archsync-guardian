@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { archsyncLocator, formatDoctorResult, pathIncludesDirectory, runDoctor } from "./doctor.js";
+import {
+  archsyncLocator,
+  formatDoctorResult,
+  pathIncludesDirectory,
+  pnpmHomePathMatch,
+  runDoctor,
+} from "./doctor.js";
 
 function gitResult(status: number, stdout = "git version 2.50.0\n") {
   return { stdout, status };
@@ -15,8 +21,46 @@ describe("ArchSync doctor", () => {
   it("matches PNPM_HOME against PATH with platform-aware normalization", () => {
     expect(pathIncludesDirectory("/usr/bin:/opt/pnpm/", "/opt/pnpm", "linux")).toBe(true);
     expect(pathIncludesDirectory("C:\\Windows;\"C:\\Users\\Me\\pnpm\\\"", "c:\\users\\me\\pnpm", "win32")).toBe(true);
+    expect(pathIncludesDirectory("C:\\Windows;C:\\Users\\Me\\pnpm\\bin", "C:/Users/Me/pnpm/bin", "win32")).toBe(true);
     expect(pathIncludesDirectory(undefined, "/opt/pnpm", "linux")).toBe(false);
     expect(pathIncludesDirectory("/usr/bin", undefined, "linux")).toBe(false);
+  });
+
+  it("accepts both PNPM_HOME and its bin child as pnpm command directories", () => {
+    expect(pnpmHomePathMatch(
+      "C:\\Windows;C:\\Users\\Me\\pnpm\\bin",
+      "C:\\Users\\Me\\pnpm",
+      "win32",
+    )).toBe("C:\\Users\\Me\\pnpm\\bin");
+    expect(pnpmHomePathMatch(
+      "/usr/bin:/home/me/.local/share/pnpm/bin",
+      "/home/me/.local/share/pnpm/",
+      "linux",
+    )).toBe("/home/me/.local/share/pnpm/bin");
+    expect(pnpmHomePathMatch(
+      "/usr/bin:/home/me/.local/share/pnpm-other/bin",
+      "/home/me/.local/share/pnpm",
+      "linux",
+    )).toBeUndefined();
+  });
+
+  it("passes the real Windows pnpm layout where PNPM_HOME/bin is on PATH", () => {
+    const result = runDoctor({
+      nodeVersion: "22.16.0",
+      platform: "win32",
+      architecture: "x64",
+      pathValue: "C:\\Windows\\System32;C:\\Users\\test\\pnpm\\bin",
+      pnpmHome: "C:\\Users\\test\\pnpm",
+      runGit: () => gitResult(0),
+      locateArchSync: () => gitResult(0, "C:\\Users\\test\\pnpm\\bin\\archsync.cmd\n"),
+    });
+
+    expect(result.checks.at(-1)).toEqual({
+      name: "PNPM_HOME / PATH",
+      status: "PASS",
+      detail: "C:\\Users\\test\\pnpm\\bin is on PATH (PNPM_HOME=C:\\Users\\test\\pnpm)",
+    });
+    expect(formatDoctorResult(result)).toContain("READY: This machine can run the ArchSync CLI.");
   });
 
   it("runs the real non-shell environment probes", () => {

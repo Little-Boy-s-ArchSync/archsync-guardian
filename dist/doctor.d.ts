@@ -29,6 +29,7 @@ export interface DoctorEnvironment {
 }
 export declare function archsyncLocator(platform: NodeJS.Platform): "where.exe" | "which";
 export declare function pathIncludesDirectory(pathValue: string | undefined, directory: string | undefined, platform: NodeJS.Platform): boolean;
+export declare function pnpmHomePathMatch(pathValue: string | undefined, pnpmHome: string | undefined, platform: NodeJS.Platform): string | undefined;
 export declare function runDoctor(environment?: DoctorEnvironment): DoctorResult;
 export declare function formatDoctorResult(result: DoctorResult): string;
 //# sourceMappingURL=doctor.d.ts.map

@@ -7,11 +7,17 @@ export function pathIncludesDirectory(pathValue, directory, platform) {
         return false;
     const normalize = (value) => {
         const normalized = value.trim().replace(/^"|"$/g, "").replace(/[\\/]+$/g, "");
-        return platform === "win32" ? normalized.toLowerCase() : normalized;
+        return platform === "win32" ? normalized.replace(/\//g, "\\").toLowerCase() : normalized;
     };
     const expected = normalize(directory);
     const separator = platform === "win32" ? ";" : ":";
     return pathValue.split(separator).some((entry) => normalize(entry) === expected);
+}
+export function pnpmHomePathMatch(pathValue, pnpmHome, platform) {
+    if (!pnpmHome)
+        return undefined;
+    const separator = pnpmHome.match(/[\\/]$/) ? "" : platform === "win32" ? "\\" : "/";
+    return [pnpmHome, `${pnpmHome}${separator}bin`].find((candidate) => pathIncludesDirectory(pathValue, candidate, platform));
 }
 export function runDoctor(environment = {
     nodeVersion: process.versions.node,
@@ -30,7 +36,7 @@ export function runDoctor(environment = {
         windowsHide: true,
     });
     const archsync = environment.locateArchSync();
-    const pnpmHomeOnPath = pathIncludesDirectory(environment.pathValue, environment.pnpmHome, environment.platform);
+    const pnpmPathEntry = pnpmHomePathMatch(environment.pathValue, environment.pnpmHome, environment.platform);
     const checks = [
         {
             name: "Node.js",
@@ -66,9 +72,9 @@ export function runDoctor(environment = {
         },
         {
             name: "PNPM_HOME / PATH",
-            status: pnpmHomeOnPath ? "PASS" : "WARN",
-            detail: pnpmHomeOnPath
-                ? `${environment.pnpmHome} is on PATH`
+            status: pnpmPathEntry ? "PASS" : "WARN",
+            detail: pnpmPathEntry
+                ? `${pnpmPathEntry} is on PATH (PNPM_HOME=${environment.pnpmHome})`
                 : environment.pnpmHome
                     ? `${environment.pnpmHome} is not on PATH; run 'pnpm setup' and reopen the shell`
                     : "PNPM_HOME is not set; run 'pnpm setup' and reopen the shell before a global pnpm install",

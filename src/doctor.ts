@@ -38,11 +38,23 @@ export function pathIncludesDirectory(
   if (!pathValue || !directory) return false;
   const normalize = (value: string) => {
     const normalized = value.trim().replace(/^"|"$/g, "").replace(/[\\/]+$/g, "");
-    return platform === "win32" ? normalized.toLowerCase() : normalized;
+    return platform === "win32" ? normalized.replace(/\//g, "\\").toLowerCase() : normalized;
   };
   const expected = normalize(directory);
   const separator = platform === "win32" ? ";" : ":";
   return pathValue.split(separator).some((entry) => normalize(entry) === expected);
+}
+
+export function pnpmHomePathMatch(
+  pathValue: string | undefined,
+  pnpmHome: string | undefined,
+  platform: NodeJS.Platform,
+): string | undefined {
+  if (!pnpmHome) return undefined;
+  const separator = pnpmHome.match(/[\\/]$/) ? "" : platform === "win32" ? "\\" : "/";
+  return [pnpmHome, `${pnpmHome}${separator}bin`].find((candidate) =>
+    pathIncludesDirectory(pathValue, candidate, platform),
+  );
 }
 
 export function runDoctor(environment: DoctorEnvironment = {
@@ -66,7 +78,7 @@ export function runDoctor(environment: DoctorEnvironment = {
     windowsHide: true,
   });
   const archsync = environment.locateArchSync();
-  const pnpmHomeOnPath = pathIncludesDirectory(
+  const pnpmPathEntry = pnpmHomePathMatch(
     environment.pathValue,
     environment.pnpmHome,
     environment.platform,
@@ -106,9 +118,9 @@ export function runDoctor(environment: DoctorEnvironment = {
     },
     {
       name: "PNPM_HOME / PATH",
-      status: pnpmHomeOnPath ? "PASS" : "WARN",
-      detail: pnpmHomeOnPath
-        ? `${environment.pnpmHome} is on PATH`
+      status: pnpmPathEntry ? "PASS" : "WARN",
+      detail: pnpmPathEntry
+        ? `${pnpmPathEntry} is on PATH (PNPM_HOME=${environment.pnpmHome})`
         : environment.pnpmHome
           ? `${environment.pnpmHome} is not on PATH; run 'pnpm setup' and reopen the shell`
           : "PNPM_HOME is not set; run 'pnpm setup' and reopen the shell before a global pnpm install",

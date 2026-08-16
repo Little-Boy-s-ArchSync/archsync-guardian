@@ -104,7 +104,9 @@ try {
     : join(packages, packResult.filename);
   const installEnvironment = {
     ...process.env,
-    PNPM_HOME: binDirectory,
+    // pnpm may expose shims from PNPM_HOME/bin (not PNPM_HOME itself),
+    // particularly in a configured Windows user environment.
+    PNPM_HOME: temporary,
     PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ""}`,
   };
   runPnpm([

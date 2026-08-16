@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "65d0b6a4610d1fa37d38da7594cb10212d4b1fccfba6a43d1af10e2e938fb1b9",
+    "implementation_source_sha256": "9c5522876efa4aa0605512ad997abc2cbfdcb22bc46d80d308c30aecf503938d",
     "fixture_tree": {
       "files": [
         {
@@ -72,7 +72,7 @@
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "27566fd2adcc5a112d439dd63caab89cf0698babe9bfaa93a6fdbe7910da1308"
+        "sha256": "09a0fdb29841e9bce121e0cb1d0d503a1c1cf7050721636e5ba23204922cc740"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -92,7 +92,7 @@
       },
       {
         "file": "src/doctor.test.ts",
-        "sha256": "e132dcc26b5cbdf086963e3005d3066356988628ce8041bc5f0ab30549db21ae"
+        "sha256": "19bc2ac68496cda3e7ac5cad73597dce9352454a786b827779875534db08e043"
       },
       {
         "file": "src/guardian.test.ts",
@@ -131,7 +131,7 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "57bc847344764d2b1e2c22fe0592f49fc12c74e2c3582569fd8948a58649a373",
+    "verification_source_sha256": "8a1415b54a10307f226257dc604a2b37bc04ad0c078ed029a6157ec0c6c06cba",
     "dependency_source": [
       {
         "file": "package.json",
@@ -162,7 +162,7 @@
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "50385a056eb97cac42bc7214c55db15036a8627488af72e7075ef7d73d66fe96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
-      "src/doctor.ts": "7f9490995e564a0445210b055f5f86bb1f02bb6be117df6dd5669dd2a06da3b7",
+      "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
@@ -226,23 +226,23 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1915,
-        "total": 1915,
+        "covered": 1926,
+        "total": 1926,
         "percent": 100
       },
       "branches": {
-        "covered": 795,
-        "total": 795,
+        "covered": 803,
+        "total": 803,
         "percent": 100
       },
       "functions": {
-        "covered": 93,
-        "total": 93,
+        "covered": 94,
+        "total": 94,
         "percent": 100
       },
       "lines": {
-        "covered": 1915,
-        "total": 1915,
+        "covered": 1926,
+        "total": 1926,
         "percent": 100
       }
     },
