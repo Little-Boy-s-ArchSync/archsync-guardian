@@ -7,4 +7,5 @@ export * from "./version.js";
 export * from "./guardian.js";
 export * from "./model-cli.js";
 export * from "./phase3.js";
+export * from "./privacy.js";
 //# sourceMappingURL=index.d.ts.map
