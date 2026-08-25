@@ -8,7 +8,11 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import { loadArchitecture } from "@archsync/core";
-import { checkRepositoryDiff } from "../dist/index.js";
+import {
+  checkRepositoryDiff,
+  coreDependencyProvenance,
+  coreGuardianContractMatrix,
+} from "../dist/index.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fixture = (...parts) => join(root, "test", "fixtures", ...parts);
@@ -214,6 +218,7 @@ const measuredCoverage = await readMeasuredCoverage();
 const sourceFiles = [
   "analyzer.ts",
   "bin.ts",
+  "compatibility.ts",
   "contracts.ts",
   "demo.ts",
   "doctor.ts",
@@ -239,8 +244,8 @@ const inputHashes = {
 const dependencyHashes = {
   ".github/workflows/ci.yml": sha256(await readFile(join(root, ".github", "workflows", "ci.yml"))),
   "pnpm-workspace.yaml": sha256(await readFile(join(root, "pnpm-workspace.yaml"))),
-  "vendor/archsync-core-0.1.1-p6-783716d.tgz": sha256(
-    await readFile(join(root, "vendor", "archsync-core-0.1.1-p6-783716d.tgz")),
+  [coreDependencyProvenance.vendored_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.vendored_artifact)),
   ),
   "package.json": sha256(await readFile(join(root, "package.json"))),
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
@@ -251,12 +256,26 @@ const dependencyHashes = {
   "scripts/verify-offline.mjs": sha256(await readFile(join(root, "scripts", "verify-offline.mjs"))),
   "src/privacy.test.ts": sha256(await readFile(join(root, "src", "privacy.test.ts"))),
   "docs/OPERATIONS-PRIVACY.md": sha256(await readFile(join(root, "docs", "OPERATIONS-PRIVACY.md"))),
+  "scripts/core-compatibility.mjs": sha256(await readFile(join(root, "scripts", "core-compatibility.mjs"))),
+  [coreDependencyProvenance.provenance_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.provenance_artifact)),
+  ),
 };
 const staticEvidence = {
   phase: 3,
   release: "v0.3",
   objective: "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
-  contract_version: "0.1",
+  contract_version: coreGuardianContractMatrix.guardian.result,
+  contracts: coreGuardianContractMatrix,
+  core_dependency: {
+    repository: coreDependencyProvenance.repository,
+    repository_commit: coreDependencyProvenance.source_commit,
+    source_pull_request: coreDependencyProvenance.source_pull_request,
+    included_source_commits: coreDependencyProvenance.included_source_commits,
+    vendored_package: coreDependencyProvenance.vendored_artifact,
+    vendored_package_sha256: coreDependencyProvenance.vendored_sha256,
+    dependency_status: coreDependencyProvenance.dependency_status,
+  },
   source_sha256: sourceHashes,
   input_sha256: inputHashes,
   dependency_sha256: dependencyHashes,

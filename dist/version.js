@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { basename, dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { coreDependencyProvenance, coreGuardianContractMatrix } from "./compatibility.js";
 const packageName = "@archsync/guardian";
 const provenanceFile = "provenance.json";
 export const defaultPackageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -136,10 +137,26 @@ export async function loadVersionResult(root = defaultPackageRoot) {
             version: manifest.version,
         },
         contracts: {
-            core_model: "0.1",
-            guardian_analyzer: "0.2",
+            core_model: coreGuardianContractMatrix.core.architecture_model.current,
+            core_model_previous: coreGuardianContractMatrix.core.architecture_model.previous,
+            core_model_legacy: coreGuardianContractMatrix.core.architecture_model.legacy,
+            core_model_accepted: coreGuardianContractMatrix.core.architecture_model.accepted,
+            core_graph: coreGuardianContractMatrix.core.graph,
+            core_finding: coreGuardianContractMatrix.core.finding,
+            core_evidence: coreGuardianContractMatrix.core.evidence,
+            core_conformance: coreGuardianContractMatrix.core.conformance,
+            core_cli_json: coreGuardianContractMatrix.core.cli_json,
+            guardian_analyzer: coreGuardianContractMatrix.guardian.analyzer,
+            guardian_observed_graph: coreGuardianContractMatrix.guardian.observed_graph,
             git_gate: "0.3",
-            finding: "0.1",
+            guardian_finding: coreGuardianContractMatrix.guardian.finding,
+            guardian_source_evidence: coreGuardianContractMatrix.guardian.source_evidence,
+            finding: coreGuardianContractMatrix.guardian.finding,
+            source_evidence: coreGuardianContractMatrix.guardian.source_evidence,
+            guardian_result: coreGuardianContractMatrix.guardian.result,
+        },
+        dependencies: {
+            core: coreDependencyProvenance,
         },
         provenance: packaged
             ? {

@@ -13,7 +13,7 @@
   "source_sha256": {
     "src/iac.ts": "c4dc64941014770ed7d4f26bc992df8c90c12fd27da6fae414d2ed07e360f34f",
     "src/iac-contracts.ts": "2ce13c6c575baa76b302633896d810c664c9741beb405e1bb5e1b5824126def0",
-    "src/index.ts": "427d7e7321c48eb9ff6da68d5c99fa64014d8198d73bf53c936d6fe3f9896b6c",
+    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
     "src/iac-governance.test.ts": "95386eada7572ce88793bf017c62e297a4f9094a88b90c91c2c27cdc91584f34",
     "src/iac-kubernetes.ts": "25e1ceb8e4addfede55e91f46b1afe5f695423615e23564b934f355ecf49c4ed",
     "src/iac-normalize.ts": "1a5c0f0067bc1f5eb9a021a4bf487996eeb6adca4f5917b2c88f372f98cbfdb2",
@@ -25,23 +25,23 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "b45f0689d36f33a3e9da207082b2471e03dbf25232815328a8157071873cfc81",
+  "generated_dist_sha256": "89abee10433954dadf120cbc7e528b5c400b5525c20bd26872d98fdd89e6ed72",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
   "governance_sha256": {
-    "README.md": "f78ffd19b3a34fc5bbe7d67ba10ecfb68b06482cff6ca35c25a086c88ba7ebce",
-    "docs/BOUNDARY.md": "db51a76efc71acf73b2c3591c5c8229feafc5d5be2c17d92fbe64285770bac5d",
+    "README.md": "fb9de4ff1d19991db953325a3b59ad5a94dc7d37b13cacf0a2b1738a71896b78",
+    "docs/BOUNDARY.md": "aed32740fbfa42629837e3393046c35dfb9ca6660d084df731c3553887425e3f",
     "docs/OPERATIONS-PRIVACY.md": "3be0a2f814264797f9bb08dacf6522d85c23bc4b9179f0f4cce63083b0080a39",
     "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",
     "docs/schemas/infrastructure-graph-v0.1.schema.json": "a97e352a8873c28d33bae4a9854c5bf36c552ca5c6460a8764230c13c21ffbbd",
     "docs/adr/0005-phase-5-infrastructure-evidence-boundary.md": "577aa0a17919d88c0e66655d58d974caad2f8695543cd905b73bf63aca45d306",
-    "evidence/README.md": "05bc67da2c6dec76b5232e1059add6583c8a2fd9abffb86057cb24305886bdf0"
+    "evidence/README.md": "154f36ff3184e8eee6fb4342460d53d0f09f54d3ef975609dced8092ce872d24"
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
-    "package.json": "67b65a89ea2cef483d6d92b9b8e5e1bb39708fb8d0f3b180587abd645b4af1d9",
-    "pnpm-lock.yaml": "f6b7e4e54be967c4c66180110bd3cf689b5dd454a5b626c6db7b6fd63500e95c",
+    "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
+    "pnpm-lock.yaml": "ac5081c6adbbd20a935d1afa3d13420eca4a19d1a5f2d41d1b28945e05236652",
     "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
     "tsconfig.json": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c",
     "tsconfig.test.json": "04910a31dc7be48c03671a814ed81ebc5095f21d4150cf08f613f0c8f1b8ce13",

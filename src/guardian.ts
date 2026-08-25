@@ -7,7 +7,10 @@ import {
 } from "@archsync/core";
 
 import { analyzeTypeScriptRepository } from "./analyzer.js";
+import { guardianContractsForCoreArchitecture } from "./compatibility.js";
 import {
+  findingContractVersion,
+  guardianResultContractVersion,
   type GuardianFinding,
   type GuardianResult,
   type ObservedArchitecture,
@@ -60,7 +63,7 @@ function guardianFinding(
   observed: ObservedArchitecture,
 ): GuardianFinding {
   return {
-    contract_version: "0.1",
+    contract_version: findingContractVersion,
     id: finding.id,
     kind: finding.kind,
     severity: finding.severity,
@@ -87,10 +90,11 @@ export function evaluateObservedArchitecture(
   expected: ArchitectureDocument,
   observed: ObservedArchitecture,
 ): GuardianResult {
+  guardianContractsForCoreArchitecture(expected.version);
   const observedDocument = toArchitectureDocument(expected, observed);
   const conformance: ConformanceResult = analyzeConformance(expected, observedDocument);
   return {
-    contract_version: "0.1",
+    contract_version: guardianResultContractVersion,
     classification: conformance.classification,
     decision: conformance.classification === "no-impact"
       ? "PASS"

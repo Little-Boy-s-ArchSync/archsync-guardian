@@ -645,7 +645,7 @@ describe("ArchSync rechecks and deterministic decisions", () => {
       detector: "typescript-pg",
       confidence: 1,
     }],
-    model_evidence: { document: "observed", path: "/relationships/3" },
+    model_evidence: { schema_version: "1.0.0", document: "observed", path: "/relationships/3" },
   };
 
   function guardianResult(decision: "PASS" | "BLOCK" | "REVIEW", findings: GuardianFinding[]): GuardianResult {

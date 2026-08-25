@@ -3,38 +3,85 @@
   "release": "v0.3",
   "objective": "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
   "contract_version": "0.1",
+  "contracts": {
+    "schema_version": 1,
+    "core": {
+      "architecture_model": {
+        "current": "0.1.1",
+        "previous": "0.1.0",
+        "legacy": "0.1",
+        "accepted": [
+          "0.1.1",
+          "0.1.0",
+          "0.1"
+        ]
+      },
+      "graph": "1.0.0",
+      "finding": "1.0.0",
+      "evidence": "1.0.0",
+      "conformance": "1.0.0",
+      "cli_json": "1.0.0"
+    },
+    "guardian": {
+      "analyzer": "0.2",
+      "observed_graph": "0.1",
+      "finding": "0.1",
+      "source_evidence": "0.1",
+      "source_evidence_version_carrier": "observed-or-finding-envelope",
+      "result": "0.1"
+    },
+    "ownership": {
+      "architecture_model_graph_and_decisions": "core",
+      "source_detection_observed_graph_and_enrichment": "guardian"
+    }
+  },
+  "core_dependency": {
+    "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+    "repository_commit": "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+    "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3",
+    "included_source_commits": {
+      "contract_compatibility": "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+      "quality_goals": "783716d7961690b1e8c1cda4acb956777977a853"
+    },
+    "vendored_package": "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
+    "vendored_package_sha256": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "dependency_status": "upstream-integration-pr-open-unmerged"
+  },
   "source_sha256": {
-    "src/analyzer.ts": "d5c19c27fc66b87f6ebee8151b517a1c44d53e8a6a91cc05ca0af97d9f3c65eb",
+    "src/analyzer.ts": "9c12a4ff49cb0e39b1de43205409776b3610e5af315c7a4b7bb66d0640ae81c5",
     "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
-    "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
+    "src/compatibility.ts": "e4c34ce16fa0eca7a94cced52f21626723a50ad4106bacde61dbc71e591b63fd",
+    "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
-    "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
-    "src/index.ts": "427d7e7321c48eb9ff6da68d5c99fa64014d8198d73bf53c936d6fe3f9896b6c",
-    "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+    "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
+    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
+    "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
     "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
-    "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
+    "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
   },
   "input_sha256": {
-    "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
+    "test/fixtures/architecture.yaml": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c",
     "test/fixtures/baseline": "295859d70647b405b378341a4f1b9137168b25b21a3826698439e8742baed54e",
     "test/fixtures/violation/frontend/src/database.ts": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
-    "vendor/archsync-core-0.1.1-p6-783716d.tgz": "943b6e0da88a227835b49c4b505c55af58ca1f4d4edb2c515e9e51972d1e4199",
-    "package.json": "67b65a89ea2cef483d6d92b9b8e5e1bb39708fb8d0f3b180587abd645b4af1d9",
-    "pnpm-lock.yaml": "f6b7e4e54be967c4c66180110bd3cf689b5dd454a5b626c6db7b6fd63500e95c",
-    "scripts/package-install-e2e.mjs": "6a76cb6bd0dd3704bea252bab37c7399d9fa9f2625725710515b0082c42ff113",
+    "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
+    "pnpm-lock.yaml": "ac5081c6adbbd20a935d1afa3d13420eca4a19d1a5f2d41d1b28945e05236652",
+    "scripts/package-install-e2e.mjs": "afa634778fc210cb7850369a2f88a52b2b754b5d6292c00bd8b8b9f9673ef03a",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
-    "scripts/phase3-evidence.mjs": "adc325dc1614fedec415cefe0e1fbcd3a502a36543e5959dd8f63e0f2e4904f9",
+    "scripts/phase3-evidence.mjs": "8467de3d042ad8ee3a07a0270c04a04b257af7568392b6f08fb79638359d6717",
     "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
     "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3",
     "src/privacy.test.ts": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116",
-    "docs/OPERATIONS-PRIVACY.md": "3be0a2f814264797f9bb08dacf6522d85c23bc4b9179f0f4cce63083b0080a39"
+    "docs/OPERATIONS-PRIVACY.md": "3be0a2f814264797f9bb08dacf6522d85c23bc4b9179f0f4cce63083b0080a39",
+    "scripts/core-compatibility.mjs": "fb23bd739c5b3943d5ab0d9c0be5c103c03f0bb410e1c602e9751f4026b6ba4a",
+    "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json": "411a196d189743bbbb0c310d9fde405176074ab61ce80122e8e7ef4054968b4f"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -271,85 +318,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 112.51,
+      "cold_total_ms": 111.64,
       "warm_total_ms": [
-        61.14,
-        57.08,
-        56.02,
-        55.42,
-        54.85
+        56.13,
+        54.1,
+        56.51,
+        56.31,
+        58.02
       ],
       "warm_baseline_load_ms": [
-        6.29,
-        5.31,
-        5.51,
-        5.54,
-        5.66
+        5.6,
+        5.96,
+        5.44,
+        5.6,
+        8.17
       ],
       "warm_incremental_scan_ms": [
-        1.38,
-        1.2,
-        1.42,
-        1.16,
-        1.24
+        1.28,
+        1.47,
+        1.33,
+        1.21,
+        1.8
       ],
-      "warm_median_total_ms": 56.02,
-      "warm_median_baseline_load_ms": 5.54,
-      "warm_median_incremental_scan_ms": 1.24
+      "warm_median_total_ms": 56.31,
+      "warm_median_baseline_load_ms": 5.6,
+      "warm_median_incremental_scan_ms": 1.33
     },
     "violation": {
-      "cold_total_ms": 90.1,
+      "cold_total_ms": 95.19,
       "warm_total_ms": [
-        56.27,
-        61,
-        56.21,
-        55.28,
-        55.74
+        63.78,
+        63.04,
+        64.68,
+        63.33,
+        66.06
       ],
       "warm_baseline_load_ms": [
-        5.36,
-        6.33,
-        5.13,
-        5.82,
-        6.32
+        6.37,
+        6.04,
+        6.48,
+        5.53,
+        6.73
       ],
       "warm_incremental_scan_ms": [
-        1.01,
-        1.18,
-        1.03,
-        1.09,
-        1.78
+        1.22,
+        1.24,
+        1.35,
+        1.14,
+        1.15
       ],
-      "warm_median_total_ms": 56.21,
-      "warm_median_baseline_load_ms": 5.82,
-      "warm_median_incremental_scan_ms": 1.09
+      "warm_median_total_ms": 63.78,
+      "warm_median_baseline_load_ms": 6.37,
+      "warm_median_incremental_scan_ms": 1.22
     },
     "evolution": {
-      "cold_total_ms": 94.92,
+      "cold_total_ms": 88.67,
       "warm_total_ms": [
-        54.73,
-        57.83,
-        58.47,
-        62.04,
-        58.92
+        60.91,
+        58.7,
+        54.9,
+        53.81,
+        60.13
       ],
       "warm_baseline_load_ms": [
-        5.28,
-        5.78,
-        5.57,
-        6.54,
-        6.49
+        5.64,
+        5.29,
+        5.38,
+        5.15,
+        5.4
       ],
       "warm_incremental_scan_ms": [
         1.13,
-        1.17,
-        1.18,
-        1.23,
-        1.27
+        1.15,
+        1.06,
+        1.53,
+        0.98
       ],
-      "warm_median_total_ms": 58.47,
-      "warm_median_baseline_load_ms": 5.78,
-      "warm_median_incremental_scan_ms": 1.18
+      "warm_median_total_ms": 58.7,
+      "warm_median_baseline_load_ms": 5.38,
+      "warm_median_incremental_scan_ms": 1.13
     }
   }
 }

@@ -1,5 +1,8 @@
 export const observedGraphVersion = "0.1";
 export const findingContractVersion = "0.1";
+export const sourceEvidenceContractVersion = "0.1";
+export const guardianResultContractVersion = "0.1";
+export const guardianAnalyzerVersion = "0.2";
 export function toArchitectureDocument(expected, observed) {
     return {
         version: expected.version,

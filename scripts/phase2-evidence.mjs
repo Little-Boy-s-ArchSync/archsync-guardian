@@ -5,7 +5,12 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadArchitecture } from "@archsync/core";
-import { analyzeTypeScriptRepository, checkRepository } from "../dist/index.js";
+import {
+  analyzeTypeScriptRepository,
+  checkRepository,
+  coreDependencyProvenance,
+  coreGuardianContractMatrix,
+} from "../dist/index.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const evidencePath = join(root, "evidence", "phase-2-evidence.json");
@@ -86,10 +91,85 @@ assert.deepEqual(
   arch001.source_evidence.map(({ file, line, detector }) => ({ file, line, detector })),
   [{ file: "frontend/src/database.ts", line: 6, detector: "typescript-pg" }],
 );
+
+const [currentArchitecture, previousArchitecture, unsupportedArchitecture] = await Promise.all([
+  loadArchitecture(join(fixtures, "compatibility", "current.architecture.yaml")),
+  loadArchitecture(join(fixtures, "compatibility", "previous.architecture.yaml")),
+  loadArchitecture(join(fixtures, "compatibility", "unsupported.architecture.yaml")),
+]);
+assert.equal(currentArchitecture.valid, true);
+assert.equal(previousArchitecture.valid, true);
+assert.ok(currentArchitecture.value);
+assert.ok(previousArchitecture.value);
+const [currentReplay, previousReplay] = await Promise.all([
+  checkRepository(currentArchitecture.value, join(fixtures, "violation")),
+  checkRepository(previousArchitecture.value, join(fixtures, "violation")),
+]);
+assert.deepEqual(previousReplay, currentReplay, "Core current/previous Guardian replay differs");
+assert.equal(unsupportedArchitecture.valid, false);
+assert.equal(
+  unsupportedArchitecture.issues[0]?.message,
+  "Unsupported architecture contract version '9.0.0'. Supported versions: 0.1.1, 0.1.0, 0.1.",
+);
+
+const detectorArchitecture = await loadArchitecture(join(fixtures, "detectors", "architecture.yaml"));
+assert.equal(detectorArchitecture.valid, true);
+assert.ok(detectorArchitecture.value);
+const detectorRepository = join(fixtures, "detectors", "repository");
+const detectorObserved = await analyzeTypeScriptRepository(detectorRepository, detectorArchitecture.value);
+const repeatedDetectorObserved = await analyzeTypeScriptRepository(detectorRepository, detectorArchitecture.value);
+assert.deepEqual(repeatedDetectorObserved, detectorObserved, "Detector fixture must be deterministic");
+const detectorResult = await checkRepository(detectorArchitecture.value, detectorRepository);
+assert.equal(detectorResult.classification, "no-impact");
+const detectorEvidence = detectorObserved.relationships.map(({ from, type, to, evidence }) => ({
+  edge: `${from}|${type}|${to}`,
+  source_evidence: evidence.map(({ file, line, column, detector, confidence }) => ({
+    file,
+    line,
+    column,
+    detector,
+    confidence,
+  })),
+}));
+assert.deepEqual(detectorEvidence.map(({ edge }) => edge), [
+  "amqp|async|worker",
+  "frontend|http|service",
+  "service|async|amqp",
+  "service|data|postgres",
+  "service|data|redis",
+]);
+const sourceEvidenceRecord = ({ file, line, column, detector, confidence }) => ({
+  file,
+  line,
+  column,
+  detector,
+  confidence,
+});
+const componentRootExample = detectorObserved.components.utility?.evidence.find(
+  ({ detector }) => detector === "component-root",
+);
+assert.ok(componentRootExample);
+const detectorExamples = {
+  "component-root": sourceEvidenceRecord(componentRootExample),
+};
+for (const relationship of detectorObserved.relationships) {
+  for (const item of relationship.evidence) {
+    detectorExamples[item.detector] = sourceEvidenceRecord(item);
+  }
+}
+assert.deepEqual(Object.keys(detectorExamples).sort(), [
+  "component-root",
+  "typescript-amqp-consume",
+  "typescript-amqp-publish",
+  "typescript-fetch",
+  "typescript-pg",
+  "typescript-redis",
+]);
 const measuredCoverage = await readMeasuredCoverage();
 
 const sourceFiles = [
   "contracts.ts",
+  "compatibility.ts",
   "analyzer.ts",
   "guardian.ts",
   "benchmark.ts",
@@ -110,9 +190,11 @@ const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async 
 const fixtureTree = await treeSha256(fixtures);
 const verificationSource = await hashFiles([
   join(root, "scripts", "cli-smoke.mjs"),
+  join(root, "scripts", "core-compatibility.mjs"),
   join(root, "scripts", "phase2-evidence.mjs"),
   join(root, "src", "analyzer.test.ts"),
   join(root, "src", "benchmark.test.ts"),
+  join(root, "src", "compatibility.test.ts"),
   join(root, "src", "doctor.test.ts"),
   join(root, "src", "guardian.test.ts"),
   join(root, "src", "model-cli.test.ts"),
@@ -125,6 +207,9 @@ const verificationSource = await hashFiles([
   join(root, "scripts", "verify-offline.mjs"),
   join(root, "src", "privacy.test.ts"),
   join(root, "docs", "OPERATIONS-PRIVACY.md"),
+  join(root, "docs", "contract-compatibility.md"),
+  join(root, "docs", "support-matrix.md"),
+  join(root, "docs", "migrations", "core-0.1.0-to-0.1.1.md"),
   join(root, ".github", "workflows", "ci.yml"),
   join(root, "src", "test-helpers.ts"),
   join(root, "tsconfig.json"),
@@ -135,7 +220,11 @@ const dependencySource = await hashFiles([
   join(root, "pnpm-workspace.yaml"),
   join(root, "package.json"),
   join(root, "pnpm-lock.yaml"),
-  join(root, "vendor", "archsync-core-0.1.1-p6-783716d.tgz"),
+  join(root, coreDependencyProvenance.vendored_artifact),
+  join(root, coreDependencyProvenance.provenance_artifact),
+  join(root, "vendor", "archsync-core-0.1.1.tgz"),
+  join(root, "vendor", "archsync-core-0.1.1.provenance.json"),
+  join(root, "vendor", "README.md"),
 ]);
 
 const evidence = {
@@ -153,19 +242,29 @@ const evidence = {
   contracts: {
     observed_graph_version: baseline.version,
     finding_contract_version: violation.contract_version,
+    core_guardian_matrix: coreGuardianContractMatrix,
     source_sha256: sourceHashes,
   },
   core_dependency: {
-    repository_commit: "783716d7961690b1e8c1cda4acb956777977a853",
-    vendored_package: "vendor/archsync-core-0.1.1-p6-783716d.tgz",
-    vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.1-p6-783716d.tgz"))),
-    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1 plus proposed quality-goal v0.2 contract",
+    repository: coreDependencyProvenance.repository,
+    repository_commit: coreDependencyProvenance.source_commit,
+    source_pull_request: coreDependencyProvenance.source_pull_request,
+    included_source_commits: coreDependencyProvenance.included_source_commits,
+    vendored_package: coreDependencyProvenance.vendored_artifact,
+    vendored_package_sha256: sha256(await readFile(join(root, coreDependencyProvenance.vendored_artifact))),
+    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1 with compatibility contracts and proposed quality-goal v0.2 contract",
+    dependency_status: coreDependencyProvenance.dependency_status,
+    reproducibility: {
+      independent_pack_runs: 2,
+      byte_identical: true,
+    },
   },
   analyzer: {
     id: baseline.analyzer.id,
     version: baseline.analyzer.version,
     stack: baseline.analyzer.stack,
     supported_detectors: [
+      "component-root",
       "typescript-fetch",
       "typescript-pg",
       "typescript-redis",
@@ -176,6 +275,23 @@ const evidence = {
     baseline_components: Object.keys(baseline.components),
     baseline_relationships: baseline.relationships.map(({ from, type, to }) => `${from}|${type}|${to}`),
     normalized_observed_sha256: sha256(JSON.stringify(baseline)),
+  },
+  compatibility_replay: {
+    current_core_architecture_model: currentArchitecture.value.version,
+    previous_core_architecture_model: previousArchitecture.value.version,
+    normalized_guardian_result_sha256: sha256(JSON.stringify(currentReplay)),
+    exact_current_previous_match: true,
+    unsupported_version: "9.0.0",
+    unsupported_message: unsupportedArchitecture.issues[0].message,
+  },
+  detector_fixture: {
+    architecture: "test/fixtures/detectors/architecture.yaml",
+    repository: "test/fixtures/detectors/repository",
+    deterministic: true,
+    classification: detectorResult.classification,
+    detector_examples: detectorExamples,
+    source_evidence: detectorEvidence,
+    normalized_observed_sha256: sha256(JSON.stringify(detectorObserved)),
   },
   finding_demo: {
     classification: violation.classification,

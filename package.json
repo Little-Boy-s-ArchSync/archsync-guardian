@@ -40,6 +40,7 @@
     "doctor": "tsx src/bin.ts doctor",
     "demo": "tsx src/bin.ts demo --benchmark ../archsync-benchmark/order-platform --scenario all",
     "cli:smoke": "node scripts/cli-smoke.mjs",
+    "core:compatibility:verify": "node scripts/core-compatibility.mjs",
     "package:verify": "node scripts/package-install-e2e.mjs --evidence .artifacts/package-install.json",
     "prepack": "pnpm build && node scripts/package-provenance.mjs write",
     "postpack": "node scripts/package-provenance.mjs clean",
@@ -52,14 +53,14 @@
     "phase4:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm phase4:assets",
     "phase5:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase5-evidence.mjs --write",
     "phase5:evidence:verify": "node scripts/phase5-evidence.mjs",
-    "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
-    "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify",
+    "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm core:compatibility:verify && pnpm cli:smoke && pnpm evidence:verify",
+    "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm core:compatibility:verify && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify",
     "phase5:verify": "pnpm phase3:verify && pnpm phase4:assets && pnpm phase5:evidence:verify",
     "verify": "pnpm phase5:verify",
     "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify"
   },
   "dependencies": {
-    "@archsync/core": "file:vendor/archsync-core-0.1.1-p6-783716d.tgz",
+    "@archsync/core": "file:vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
     "typescript": "^5.9.2",
     "yaml": "2.9.0"
   },

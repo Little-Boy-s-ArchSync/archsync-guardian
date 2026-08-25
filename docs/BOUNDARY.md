@@ -22,6 +22,8 @@
 
 Guardian calls Core's conformance functions. It must not fork or duplicate `deny`, `allow`, `require` or `require-path` semantics.
 
+The exact version mapping and enrichment boundary are executable in [`src/compatibility.ts`](../src/compatibility.ts) and documented in [`contract-compatibility.md`](contract-compatibility.md). Core model evidence remains Core Evidence `1.0.0`; Guardian source locations remain Guardian Source Evidence `0.1` and are never relabeled as Core evidence.
+
 Guardian does not approve an evolution or rewrite `architecture.yaml`. Repository governance such as CODEOWNERS supplies the human approval boundary around model changes.
 
 ADR-0005 is not accepted yet. Guardian does not execute Terraform, render

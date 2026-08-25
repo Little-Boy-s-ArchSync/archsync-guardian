@@ -1,5 +1,6 @@
 export * from "./analyzer.js";
 export * from "./benchmark.js";
+export * from "./compatibility.js";
 export * from "./contracts.js";
 export * from "./demo.js";
 export * from "./doctor.js";
