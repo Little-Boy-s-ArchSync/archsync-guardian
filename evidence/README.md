@@ -1,6 +1,6 @@
 # Guardian evidence
 
-`phase-2-evidence.json` binds the supported analyzer contract, deterministic fixture outputs, finding evidence and enforced quality gates to SHA-256 manifests for implementation source, the complete fixture tree, verification source/configuration, package metadata, lockfile and the vendored Core runtime artifact.
+`phase-2-evidence.json` binds the supported analyzer contract, explicit Core–Guardian contract matrix, current/previous Core replay, unsupported-version failure, detector-to-source evidence, deterministic fixture outputs, finding evidence and enforced quality gates to SHA-256 manifests for implementation source, the complete fixture tree, verification source/configuration, package metadata, lockfile, vendored Core runtime artifact and its provenance attestation.
 
 Regenerate only after an intentional Phase 2 contract or analyzer change:
 
@@ -11,11 +11,13 @@ pnpm phase2:verify
 
 Any change to a bound implementation, input, verifier or dependency makes the committed Phase 2 manifest stale until the complete gate is rerun and the regenerated evidence is reviewed.
 
+`pnpm core:compatibility:verify` separately verifies the exact Core source commit attestation and artifact checksum, installed package version, current/previous replays, unsupported-version failure, Core graph/finding/evidence/conformance/CLI JSON `1.0.0` records, and Guardian's owned observed/finding/source-evidence/result mapping.
+
 The manifest records the exact covered and total item counts from `coverage/coverage-summary.json` and rejects any statement, branch, function or line metric below 100%. The thin terminal/demo process boundary is verified separately by 23 built-binary CLI checks.
 
 The canonical 20-case end-to-end result and 40-signal detector challenge result are generated and verified in `archsync-benchmark`, which owns the source patches, annotated source signals and ground truth.
 
-`phase-3-evidence.json` binds the Git-diff contract, controlled `PASS/BLOCK/REVIEW` cases, exact PR annotations, baseline-cache behavior, component-incremental analysis and measured cold/warm timings to Phase 3 source hashes, fixture-tree hashes, package metadata, the lockfile and the pinned Core runtime artifact.
+`phase-3-evidence.json` binds the Git-diff contract, Core–Guardian contract map and exact Core dependency, controlled `PASS/BLOCK/REVIEW` cases, exact PR annotations, baseline-cache behavior, component-incremental analysis and measured cold/warm timings to Phase 3 source hashes, fixture-tree hashes, package metadata, the lockfile, pinned Core runtime artifact and provenance attestation.
 
 Regenerate measured Phase 3 evidence only after an intentional implementation or contract change:
 

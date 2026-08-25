@@ -125,6 +125,18 @@ try {
   const version = JSON.parse(runInstalled(["version", "--json"], installEnvironment).stdout);
   assert.equal(version.cli.package, "@archsync/guardian");
   assert.equal(version.cli.version, packResult.version);
+  assert.equal(version.contracts.core_model, "0.1.1");
+  assert.equal(version.contracts.core_model_previous, "0.1.0");
+  assert.equal(version.contracts.core_cli_json, "1.0.0");
+  assert.equal(version.contracts.guardian_result, "0.1");
+  assert.equal(
+    version.dependencies.core.source_commit,
+    "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+  );
+  assert.equal(
+    version.dependencies.core.vendored_sha256,
+    "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+  );
   assert.equal(version.provenance.mode, "package");
   assert.equal(version.provenance.integrity, "verified");
   assert.match(version.provenance.source_commit, /^[0-9a-f]{40}$/);
@@ -138,6 +150,10 @@ try {
   const validation = runInstalled(["model", "validate", "architecture.yaml"], installEnvironment);
   assert.match(validation.stdout, /RESULT: VALID/);
   assert.match(validation.stdout, /SUMMARY: 4 components, 3 relationships/);
+  const graph = JSON.parse(runInstalled(["model", "graph", "architecture.yaml"], installEnvironment).stdout);
+  assert.equal(graph.schema_version, "1.0.0");
+  assert.equal(graph.kind, "archsync.graph");
+  assert.deepEqual(graph.contracts, { architecture_model: "0.1.1", graph: "1.0.0" });
 
   const demo = JSON.parse(runInstalled([
     "demo",
@@ -193,6 +209,8 @@ try {
         "isolated-global-prefix",
         "binary-on-path",
         "version-provenance",
+        "exact-core-dependency-provenance",
+        "core-cli-json-envelope",
         "doctor",
         "external-project-model-validation",
         "installed-pass-block-review-demo",

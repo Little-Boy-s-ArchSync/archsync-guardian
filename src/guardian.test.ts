@@ -93,7 +93,11 @@ export async function ${functionName}(): Promise<void> {
     expect(finding?.source_evidence).toEqual([
       expect.objectContaining({ file: "gateway/src/app.ts", line: 1, detector: "component-root" }),
     ]);
-    expect(finding?.model_evidence).toEqual({ document: "expected", path: "/rules/1" });
+    expect(finding?.model_evidence).toEqual({
+      schema_version: "1.0.0",
+      document: "expected",
+      path: "/rules/1",
+    });
   });
 
   it("does not fabricate an edge type for an untyped required-edge finding", async () => {
@@ -115,7 +119,7 @@ export async function ${functionName}(): Promise<void> {
       source_evidence: [
         expect.objectContaining({ file: "gateway/src/server.ts", detector: "component-root" }),
       ],
-      model_evidence: { document: "expected", path: "/rules/0" },
+      model_evidence: { schema_version: "1.0.0", document: "expected", path: "/rules/0" },
     });
     expect(finding).not.toHaveProperty("edge");
   });
@@ -167,7 +171,7 @@ export async function ${functionName}(): Promise<void> {
     expect(finding).toMatchObject({
       kind: "required-path",
       source_evidence: [{ file: "frontend/src/app.ts", detector: "component-root" }],
-      model_evidence: { document: "expected", path: "/rules/0" },
+      model_evidence: { schema_version: "1.0.0", document: "expected", path: "/rules/0" },
     });
   });
 

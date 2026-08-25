@@ -3,12 +3,12 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "df18c6085b2289a0721776e798ae2188c903bea7ec465a274803766209e8dcb0",
+    "implementation_source_sha256": "50b412363c4c556f4bb9e3f57af55a0bb842c92c74f307e9d526316a2c8bcd56",
     "fixture_tree": {
       "files": [
         {
           "file": "test/fixtures/architecture.yaml",
-          "sha256": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573"
+          "sha256": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c"
         },
         {
           "file": "test/fixtures/baseline/frontend/src/app.ts",
@@ -35,6 +35,46 @@
           "sha256": "ca23d436c7b0c8978577de7be74ebdbf5c0b8b7334ed50f12eddda52510060b1"
         },
         {
+          "file": "test/fixtures/compatibility/current.architecture.yaml",
+          "sha256": "fa27f54bea13dfd47e7a37a56f2378fb5e33b14fa83624e5c6cf2585a0852582"
+        },
+        {
+          "file": "test/fixtures/compatibility/previous.architecture.yaml",
+          "sha256": "091474e766918ceeb2c96628d16cf632a4319fd21bdc33811eab744723c48776"
+        },
+        {
+          "file": "test/fixtures/compatibility/unsupported.architecture.yaml",
+          "sha256": "d86b8993666e9a4afb84b8a551eab2be1807b5a9bfc25ee00830b2eae4bf97b5"
+        },
+        {
+          "file": "test/fixtures/detectors/architecture.yaml",
+          "sha256": "2412776056072121ce4deffb802b5991d93be037837301dc943a926a4874f7f6"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/frontend/src/app.ts",
+          "sha256": "434b7edebed586b5a82223d7b0691122d29f659568fe7802b2b115e55812794f"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/service/src/postgres.ts",
+          "sha256": "8869dfa5a4545e2bd8510df4598889694a28dbb51b891c7cac7acd7b6b03ab7d"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/service/src/publisher.ts",
+          "sha256": "25adb6b82ffe12c069f54c61a6b21ee8b8a31a8a3f9e7f88d710598e75ccc69f"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/service/src/redis.ts",
+          "sha256": "161663fc4a270a400d4afb81b235b533fbf2c91f7ba3da16cd3a3b7fd261fcda"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/utility/src/index.ts",
+          "sha256": "79fe8e6e6d31af5285fd70557a0359f3b545da06d6628913844ee21f4c59477e"
+        },
+        {
+          "file": "test/fixtures/detectors/repository/worker/src/consumer.ts",
+          "sha256": "5d2ff4c5d0fedf76621f48175c344f92982f79aaf0ab02899f0dee2d2c3e1b89"
+        },
+        {
           "file": "test/fixtures/ground-truth.json",
           "sha256": "16f6cccef877ce9c0ac7f79082cad184edf4656f8eaa2608461de83cb5193213"
         },
@@ -59,7 +99,7 @@
           "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
         }
       ],
-      "sha256": "283afe52d9a9a27cf6351e54619935dfb4f1bf1330622841d600c67f813530c3"
+      "sha256": "fca984e5b12910f0c5099848d7bd755da68c43db021c5e4dd93e55297b0112f8"
     },
     "verification_source": [
       {
@@ -67,12 +107,28 @@
         "sha256": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41"
       },
       {
+        "file": "docs/contract-compatibility.md",
+        "sha256": "069acebb263428461ca33ebd5ad6d923060d67adad684b55ca277e1cdb1ff2a4"
+      },
+      {
+        "file": "docs/migrations/core-0.1.0-to-0.1.1.md",
+        "sha256": "64c47771ba73aec2eb7629b5c828e33b84d3e4c01f735104c5606f8bdfba5433"
+      },
+      {
+        "file": "docs/support-matrix.md",
+        "sha256": "0ccb659d89ac5825d267e23bc6356fc42807ecb1e3d4f6d1ee7c359c492da924"
+      },
+      {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "e3baed318c342afa363c56ea81f68d2f42ae0841e2f96f06ab022da57d9691ba"
+        "sha256": "c05789f914ed232bd31d28091ac38ed1b675802d4ff85f89a168400ad7dc4175"
+      },
+      {
+        "file": "scripts/core-compatibility.mjs",
+        "sha256": "62713cbe462eb0736cb0904b9f255e369bc78acc54eab3799aaabb6baf020618"
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "29326ac0a237662367bdab457b9e5741a367e062eb9d9dfd466af875e7ec9cbe"
+        "sha256": "bbff800c0c85b9a98dbb8018a6c1bf0ae831824d1ac48a35a8d4b9eddfceabe2"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -80,7 +136,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
+        "sha256": "14e1980b6eb38cd3f5028b262625d96723afb7c280c05cd26c0d798e45d2baad"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -91,16 +147,20 @@
         "sha256": "a5ef771855cd3a0aa0357cb563991da55957301d23aef9a29d3fb3beff3e61ee"
       },
       {
+        "file": "src/compatibility.test.ts",
+        "sha256": "e9c007360ae7fad1065d75f81781635da63b2d8ffcd5ceb0508d5808e0427c28"
+      },
+      {
         "file": "src/doctor.test.ts",
         "sha256": "19bc2ac68496cda3e7ac5cad73597dce9352454a786b827779875534db08e043"
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "d21a1a6997fdb85d7e30c983807edbba0c0ad3f53c0ce4d9e68e76070e815a8c"
+        "sha256": "85789dd5287b51925647597ad8b817693e96d8902a2ec514f3dfa5c82d62fc19"
       },
       {
         "file": "src/model-cli.test.ts",
-        "sha256": "38240e2e18cba4c9d61ece59daf64998d1d655cc0b1c1d04b187829e4267cd81"
+        "sha256": "f7604eda90e5dbb69646baacfc064ce1751644817aa147d49901440c3c61e65d"
       },
       {
         "file": "src/phase3-git.test.ts",
@@ -112,11 +172,11 @@
       },
       {
         "file": "src/test-helpers.ts",
-        "sha256": "4acbb03530827ddd930f433d2bde48e926e476500fe18702e98697a0f7fa7b31"
+        "sha256": "ed2fa2973fc37d8babdc39e8c0cb864a20edcb68d18cd91caf8574bd31497382"
       },
       {
         "file": "src/version.test.ts",
-        "sha256": "00f93d3e2e40660455418bfc53d6053cfe08b41668f1fb6bd0725fc6f5d9f15d"
+        "sha256": "e735e1a28ac301f52b4f31e1e381f0c99ae6c1c4f84f182bdfbd860144232866"
       },
       {
         "file": "tsconfig.json",
@@ -131,56 +191,105 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "085b9f4fed102dd83e2846b4759ad07dda05bf3b8501194cea7014c4c7e392b9",
+    "verification_source_sha256": "20038476dfe1052fa7e11a69a5e6e28353caf06a8007dfc24e1e3f34a120e4e5",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e"
+        "sha256": "d19063057677c66436867c038f29e372e9fabd9237ee5de9efdce2a3da5d8a07"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de"
+        "sha256": "b25a624d7e19512c809594402e7599db95de5faabcd4e680d7ac2b505be2e305"
       },
       {
         "file": "pnpm-workspace.yaml",
         "sha256": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16"
       },
       {
+        "file": "vendor/README.md",
+        "sha256": "59202a662725b86cf621d198c17ddbb5082a6f9dce31071fd1cd5f08accd18a6"
+      },
+      {
+        "file": "vendor/archsync-core-0.1.1.provenance.json",
+        "sha256": "07952b3e3a6d4d38e8d4e888885738061777f7b67d719bcc53c66cb15220bea7"
+      },
+      {
         "file": "vendor/archsync-core-0.1.1.tgz",
-        "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
+        "sha256": "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80"
       }
     ],
-    "dependency_source_sha256": "21035b0222d8f62acd1ab70699c3bf8f3f1189a1f7727e175fb1fe296dc1d9f6"
+    "dependency_source_sha256": "f3384621adb7f107c542450ab601dc4e0af7679f7d7e5552854805207264634b"
   },
   "contracts": {
     "observed_graph_version": "0.1",
     "finding_contract_version": "0.1",
+    "core_guardian_matrix": {
+      "schema_version": 1,
+      "core": {
+        "architecture_model": {
+          "current": "0.1.1",
+          "previous": "0.1.0",
+          "legacy": "0.1",
+          "accepted": [
+            "0.1.1",
+            "0.1.0",
+            "0.1"
+          ]
+        },
+        "graph": "1.0.0",
+        "finding": "1.0.0",
+        "evidence": "1.0.0",
+        "conformance": "1.0.0",
+        "cli_json": "1.0.0"
+      },
+      "guardian": {
+        "analyzer": "0.2",
+        "observed_graph": "0.1",
+        "finding": "0.1",
+        "source_evidence": "0.1",
+        "source_evidence_version_carrier": "observed-or-finding-envelope",
+        "result": "0.1"
+      },
+      "ownership": {
+        "architecture_model_graph_and_decisions": "core",
+        "source_detection_observed_graph_and_enrichment": "guardian"
+      }
+    },
     "source_sha256": {
-      "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
-      "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
-      "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
+      "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
+      "src/compatibility.ts": "c75536c60426cb828deee93b38263c6d91ac788a26c70602105387029b9b5194",
+      "src/analyzer.ts": "e061979bfce8c2e1d3c9c848b21ac3efe29399211ab07e9763d07801c7611c84",
+      "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "d9aef906501d7a300270129136985cfa0eb999fe8a092c4394153932d0ae3dd9",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
-      "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+      "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-      "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
-      "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
+      "src/index.ts": "4b3bc2394133cf5848c4ec011c31df5b5c3813300a211bfdd1ddff722bec347c",
+      "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
     }
   },
   "core_dependency": {
-    "repository_commit": "f7812c471887029951b5e5ad4105a72f0b29d0ed",
+    "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+    "repository_commit": "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+    "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
     "vendored_package": "vendor/archsync-core-0.1.1.tgz",
-    "vendored_package_sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1"
+    "vendored_package_sha256": "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1",
+    "dependency_status": "upstream-pr-open-unmerged",
+    "reproducibility": {
+      "independent_pack_runs": 2,
+      "byte_identical": true
+    }
   },
   "analyzer": {
     "id": "archsync-typescript",
     "version": "0.2",
     "stack": "typescript-node",
     "supported_detectors": [
+      "component-root",
       "typescript-fetch",
       "typescript-pg",
       "typescript-redis",
@@ -201,6 +310,127 @@
     ],
     "normalized_observed_sha256": "bfce42e50fcd35d3444942f02608a6314c9e16f273373f9daec55882f3659a93"
   },
+  "compatibility_replay": {
+    "current_core_architecture_model": "0.1.1",
+    "previous_core_architecture_model": "0.1.0",
+    "normalized_guardian_result_sha256": "9fabbc1afe6a823761eff699fe3ece79e121a41e78ad5555260099cb210757b0",
+    "exact_current_previous_match": true,
+    "unsupported_version": "9.0.0",
+    "unsupported_message": "Unsupported architecture contract version '9.0.0'. Supported versions: 0.1.1, 0.1.0, 0.1."
+  },
+  "detector_fixture": {
+    "architecture": "test/fixtures/detectors/architecture.yaml",
+    "repository": "test/fixtures/detectors/repository",
+    "deterministic": true,
+    "classification": "no-impact",
+    "detector_examples": {
+      "component-root": {
+        "file": "utility/src/index.ts",
+        "line": 2,
+        "column": 3,
+        "detector": "component-root",
+        "confidence": 1
+      },
+      "typescript-amqp-consume": {
+        "file": "worker/src/consumer.ts",
+        "line": 7,
+        "column": 9,
+        "detector": "typescript-amqp-consume",
+        "confidence": 0.98
+      },
+      "typescript-fetch": {
+        "file": "frontend/src/app.ts",
+        "line": 4,
+        "column": 9,
+        "detector": "typescript-fetch",
+        "confidence": 1
+      },
+      "typescript-amqp-publish": {
+        "file": "service/src/publisher.ts",
+        "line": 7,
+        "column": 3,
+        "detector": "typescript-amqp-publish",
+        "confidence": 0.98
+      },
+      "typescript-pg": {
+        "file": "service/src/postgres.ts",
+        "line": 6,
+        "column": 9,
+        "detector": "typescript-pg",
+        "confidence": 0.99
+      },
+      "typescript-redis": {
+        "file": "service/src/redis.ts",
+        "line": 6,
+        "column": 9,
+        "detector": "typescript-redis",
+        "confidence": 0.99
+      }
+    },
+    "source_evidence": [
+      {
+        "edge": "amqp|async|worker",
+        "source_evidence": [
+          {
+            "file": "worker/src/consumer.ts",
+            "line": 7,
+            "column": 9,
+            "detector": "typescript-amqp-consume",
+            "confidence": 0.98
+          }
+        ]
+      },
+      {
+        "edge": "frontend|http|service",
+        "source_evidence": [
+          {
+            "file": "frontend/src/app.ts",
+            "line": 4,
+            "column": 9,
+            "detector": "typescript-fetch",
+            "confidence": 1
+          }
+        ]
+      },
+      {
+        "edge": "service|async|amqp",
+        "source_evidence": [
+          {
+            "file": "service/src/publisher.ts",
+            "line": 7,
+            "column": 3,
+            "detector": "typescript-amqp-publish",
+            "confidence": 0.98
+          }
+        ]
+      },
+      {
+        "edge": "service|data|postgres",
+        "source_evidence": [
+          {
+            "file": "service/src/postgres.ts",
+            "line": 6,
+            "column": 9,
+            "detector": "typescript-pg",
+            "confidence": 0.99
+          }
+        ]
+      },
+      {
+        "edge": "service|data|redis",
+        "source_evidence": [
+          {
+            "file": "service/src/redis.ts",
+            "line": 6,
+            "column": 9,
+            "detector": "typescript-redis",
+            "confidence": 0.99
+          }
+        ]
+      }
+    ],
+    "normalized_observed_sha256": "53cff9ef5024abfe01acf01252210f82aad9d99e23415213c9189d7cdf2cd41b"
+  },
   "finding_demo": {
     "classification": "violation",
     "decision": "BLOCK",
@@ -215,7 +445,7 @@
         "confidence": 0.99
       }
     ],
-    "normalized_result_sha256": "4fdc9c1636fac64ed2378f9ec6fb305828f2bf5cbeac8ef49a433605652acd5d"
+    "normalized_result_sha256": "0216f68fbe8f06979430078d9240e8d8e196f4b9c7db134a64fc51d606241d95"
   },
   "enforced_gates": {
     "coverage_thresholds_percent": {
@@ -226,13 +456,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 1987,
+        "total": 1987,
         "percent": 100
       },
       "branches": {
-        "covered": 803,
-        "total": 803,
+        "covered": 797,
+        "total": 797,
         "percent": 100
       },
       "functions": {
@@ -241,8 +471,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 1987,
+        "total": 1987,
         "percent": 100
       }
     },

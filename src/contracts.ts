@@ -11,6 +11,9 @@ import type {
 
 export const observedGraphVersion = "0.1" as const;
 export const findingContractVersion = "0.1" as const;
+export const sourceEvidenceContractVersion = "0.1" as const;
+export const guardianResultContractVersion = "0.1" as const;
+export const guardianAnalyzerVersion = "0.2" as const;
 
 export type DetectorId =
   | "component-root"
@@ -43,7 +46,7 @@ export interface ObservedArchitecture {
   version: typeof observedGraphVersion;
   analyzer: {
     id: "archsync-typescript";
-    version: "0.2";
+    version: typeof guardianAnalyzerVersion;
     stack: "typescript-node";
   };
   metadata: {
@@ -74,7 +77,7 @@ export interface GuardianFinding {
 }
 
 export interface GuardianResult {
-  contract_version: "0.1";
+  contract_version: typeof guardianResultContractVersion;
   classification: ConformanceClassification;
   decision: "PASS" | "BLOCK" | "REVIEW";
   summary: ConformanceSummary;

@@ -1,6 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 import ts from "typescript";
+import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
 const redisOperations = new Set([
     "get",
     "set",
@@ -423,8 +424,8 @@ export async function analyzeTypeScriptRepository(repositoryPath, expected, opti
         observed.evidence = sortedEvidence(preferred ? [preferred, ...observed.evidence] : observed.evidence);
     }
     return {
-        version: "0.1",
-        analyzer: { id: "archsync-typescript", version: "0.2", stack: "typescript-node" },
+        version: observedGraphVersion,
+        analyzer: { id: "archsync-typescript", version: guardianAnalyzerVersion, stack: "typescript-node" },
         metadata: { name: `${expected.metadata.name}-observed`, scanned_files: files.length },
         components: Object.fromEntries([...components.entries()].sort(([a], [b]) => a.localeCompare(b))),
         relationships: [...relationships.entries()]

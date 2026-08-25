@@ -12,8 +12,10 @@ import {
   generateDrawio,
   generateMermaid,
   loadArchitecture,
+  serializeConformanceResult,
+  serializeGraph,
+  serializeGraphDiff,
   validateBenchmark,
-  type ConformanceResult,
   type ValidationIssue,
 } from "@archsync/core";
 
@@ -65,25 +67,6 @@ async function validateFile(filePath: string): Promise<boolean> {
     `SUMMARY: ${counted(graph.nodes.size, "component")}, ${counted(graph.edges.length, "relationship")}`,
   ].join("\n"));
   return true;
-}
-
-function serializeConformance(result: ConformanceResult): object {
-  return {
-    classification: result.classification,
-    summary: result.summary,
-    findings: result.findings,
-    diff: {
-      addedNodes: result.diff.addedNodes.map(({ id }) => id),
-      removedNodes: result.diff.removedNodes.map(({ id }) => id),
-      changedNodes: result.diff.changedNodes.map(({ id, expected, observed }) => ({
-        id,
-        expected: expected.component,
-        observed: observed.component,
-      })),
-      addedEdges: result.diff.addedEdges.map(({ key }) => key),
-      removedEdges: result.diff.removedEdges.map(({ key }) => key),
-    },
-  };
 }
 
 export async function runModelCommand(command: string, args: string[]): Promise<number | undefined> {
@@ -139,17 +122,11 @@ export async function runModelCommand(command: string, args: string[]): Promise<
 
     if (command === "diff") {
       const diff = diffGraphs(buildGraph(expected.value), buildGraph(observed.value));
-      console.log(JSON.stringify({
-        addedNodes: diff.addedNodes.map(({ id }) => id),
-        removedNodes: diff.removedNodes.map(({ id }) => id),
-        changedNodes: diff.changedNodes.map(({ id, expected: before, observed: after }) => ({
-          id,
-          expected: before.component,
-          observed: after.component,
-        })),
-        addedEdges: diff.addedEdges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-        removedEdges: diff.removedEdges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-      }, null, 2));
+      console.log(JSON.stringify(
+        serializeGraphDiff(expected.value.version, observed.value.version, diff),
+        null,
+        2,
+      ));
       return 0;
     }
 
@@ -174,7 +151,11 @@ export async function runModelCommand(command: string, args: string[]): Promise<
     }
 
     console.log(command === "check-json"
-      ? JSON.stringify(serializeConformance(result), null, 2)
+      ? JSON.stringify(
+          serializeConformanceResult(expected.value.version, observed.value.version, result),
+          null,
+          2,
+        )
       : formatConformanceResult(result));
     return result.classification === "no-impact" ? 0 : result.classification === "violation" ? 1 : 3;
   }
@@ -189,10 +170,7 @@ export async function runModelCommand(command: string, args: string[]): Promise<
 
     if (command === "graph") {
       const graph = buildGraph(result.value);
-      console.log(JSON.stringify({
-        nodes: [...graph.nodes.keys()],
-        edges: graph.edges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-      }, null, 2));
+      console.log(JSON.stringify(serializeGraph(result.value.version, graph), null, 2));
       return 0;
     }
 

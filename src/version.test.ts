@@ -27,6 +27,32 @@ describe("CLI version provenance", () => {
     const result = await loadVersionResult();
     expect(result.provenance.mode).toBe("source-tree");
     expect(result.provenance.source_commit).toMatch(/^[0-9a-f]{40}$/);
+    expect(result.contracts).toMatchObject({
+      core_model: "0.1.1",
+      core_model_previous: "0.1.0",
+      core_model_legacy: "0.1",
+      core_model_accepted: ["0.1.1", "0.1.0", "0.1"],
+      core_graph: "1.0.0",
+      core_finding: "1.0.0",
+      core_evidence: "1.0.0",
+      core_conformance: "1.0.0",
+      core_cli_json: "1.0.0",
+      guardian_analyzer: "0.2",
+      guardian_observed_graph: "0.1",
+      guardian_finding: "0.1",
+      guardian_source_evidence: "0.1",
+      finding: "0.1",
+      source_evidence: "0.1",
+      guardian_result: "0.1",
+    });
+    expect(result.dependencies.core).toEqual({
+      package: "@archsync/core",
+      package_version: "0.1.1",
+      repository: "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+      source_commit: "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+      vendored_artifact: "vendor/archsync-core-0.1.1.tgz",
+      vendored_sha256: "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+    });
   });
 
   it("computes a deterministic content digest and reports an unpackaged source tree", async () => {

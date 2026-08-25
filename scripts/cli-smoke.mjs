@@ -59,7 +59,7 @@ try {
 
   const version = run(["--version"]);
   assert.equal(version.status, 0, version.stderr);
-  assert.match(version.stdout, /Core Model 0\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/);
+  assert.match(version.stdout, /Core Model 0\.1\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/);
   pass("version reports component contracts");
 
   const versionJson = run(["version", "--json"]);
@@ -67,6 +67,30 @@ try {
   const versionResult = JSON.parse(versionJson.stdout);
   assert.equal(versionResult.cli.package, "@archsync/guardian");
   assert.equal(versionResult.cli.version, packageJson.version);
+  assert.equal(versionResult.contracts.core_model, "0.1.1");
+  assert.equal(versionResult.contracts.core_model_previous, "0.1.0");
+  assert.equal(versionResult.contracts.core_model_legacy, "0.1");
+  assert.deepEqual(versionResult.contracts.core_model_accepted, ["0.1.1", "0.1.0", "0.1"]);
+  assert.equal(versionResult.contracts.core_graph, "1.0.0");
+  assert.equal(versionResult.contracts.core_finding, "1.0.0");
+  assert.equal(versionResult.contracts.core_evidence, "1.0.0");
+  assert.equal(versionResult.contracts.core_conformance, "1.0.0");
+  assert.equal(versionResult.contracts.core_cli_json, "1.0.0");
+  assert.equal(versionResult.contracts.guardian_observed_graph, "0.1");
+  assert.equal(versionResult.contracts.guardian_finding, "0.1");
+  assert.equal(versionResult.contracts.guardian_source_evidence, "0.1");
+  assert.equal(versionResult.contracts.source_evidence, "0.1");
+  assert.equal(versionResult.contracts.guardian_result, "0.1");
+  assert.equal(versionResult.dependencies.core.package, "@archsync/core");
+  assert.equal(versionResult.dependencies.core.package_version, "0.1.1");
+  assert.equal(
+    versionResult.dependencies.core.source_commit,
+    "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+  );
+  assert.equal(
+    versionResult.dependencies.core.vendored_sha256,
+    "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+  );
   assert.match(versionResult.provenance.package_content_sha256, /^[0-9a-f]{64}$/);
   assert.match(versionResult.provenance.source_commit, /^[0-9a-f]{40}$/);
   pass("version JSON reports real source and package-content provenance");
@@ -95,7 +119,11 @@ try {
 
   const modelGraph = run(["model", "graph", fixture("architecture.yaml")]);
   assert.equal(modelGraph.status, 0, modelGraph.stderr);
-  assert.equal(JSON.parse(modelGraph.stdout).edges.length, 3);
+  const modelGraphResult = JSON.parse(modelGraph.stdout);
+  assert.equal(modelGraphResult.schema_version, "1.0.0");
+  assert.equal(modelGraphResult.kind, "archsync.graph");
+  assert.deepEqual(modelGraphResult.contracts, { architecture_model: "0.1.1", graph: "1.0.0" });
+  assert.equal(modelGraphResult.edges.length, 3);
 
   const modelDiff = run([
     "model",
@@ -104,7 +132,10 @@ try {
     fixture("architecture.yaml"),
   ]);
   assert.equal(modelDiff.status, 0, modelDiff.stderr);
-  assert.deepEqual(JSON.parse(modelDiff.stdout).addedEdges, []);
+  const modelDiffResult = JSON.parse(modelDiff.stdout);
+  assert.equal(modelDiffResult.schema_version, "1.0.0");
+  assert.equal(modelDiffResult.kind, "archsync.graph-diff");
+  assert.deepEqual(modelDiffResult.addedEdges, []);
 
   const modelCheck = run([
     "model",
@@ -113,7 +144,18 @@ try {
     fixture("architecture.yaml"),
   ]);
   assert.equal(modelCheck.status, 0, modelCheck.stderr);
-  assert.equal(JSON.parse(modelCheck.stdout).classification, "no-impact");
+  const modelCheckResult = JSON.parse(modelCheck.stdout);
+  assert.equal(modelCheckResult.schema_version, "1.0.0");
+  assert.equal(modelCheckResult.kind, "archsync.conformance");
+  assert.deepEqual(modelCheckResult.contracts, {
+    expected_architecture_model: "0.1.1",
+    observed_architecture_model: "0.1.1",
+    conformance: "1.0.0",
+    graph: "1.0.0",
+    finding: "1.0.0",
+    evidence: "1.0.0",
+  });
+  assert.equal(modelCheckResult.classification, "no-impact");
   pass("model graph, diff and conformance commands");
 
   for (const format of ["mermaid", "drawio"]) {
