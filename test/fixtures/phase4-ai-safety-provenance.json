@@ -1,0 +1,9 @@
+{
+  "source_repository": "Little-Boy-s-ArchSync/archsync-benchmark",
+  "source_commit": "3648f3c675cc485ad611cf08ad4994318be49253",
+  "corpus_sha256": "9273acfadb128d747b0c012a9bdb69c2bcbe42cbf9d30998946623b8638eac00",
+  "status": "development-regression-only",
+  "real_provider_run": false,
+  "research_claim": null,
+  "human_approval": null
+}

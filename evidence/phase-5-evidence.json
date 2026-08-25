@@ -13,7 +13,7 @@
   "source_sha256": {
     "src/iac.ts": "c4dc64941014770ed7d4f26bc992df8c90c12fd27da6fae414d2ed07e360f34f",
     "src/iac-contracts.ts": "2ce13c6c575baa76b302633896d810c664c9741beb405e1bb5e1b5824126def0",
-    "src/index.ts": "99af7b215d5bbab9c839ed72f85da10ae5a44a57339e3201ab4f8c83f2050f03",
+    "src/index.ts": "a6a5c9bad7d150f01bb55928817ed2ba379ba519df20aa630b855786e2d13d4f",
     "src/iac-governance.test.ts": "95386eada7572ce88793bf017c62e297a4f9094a88b90c91c2c27cdc91584f34",
     "src/iac-kubernetes.ts": "25e1ceb8e4addfede55e91f46b1afe5f695423615e23564b934f355ecf49c4ed",
     "src/iac-normalize.ts": "1a5c0f0067bc1f5eb9a021a4bf487996eeb6adca4f5917b2c88f372f98cbfdb2",
@@ -25,18 +25,18 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "63034a7ba85803b996769ef99efcaf1b96057eb0aa7b9172c46a4e1ae06c1731",
+  "generated_dist_sha256": "c6d4847717ce1cb6ada77b18d61f8615a6c90e3dafb3d556d66ae8d9e8ef0839",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
   "governance_sha256": {
-    "README.md": "68582b1a3d947ee365a0c0f35525be99f2e4e6ac2dbbf99d38d6c278dff0c1f4",
+    "README.md": "c9fc56aa8c2286d9977bcf2e921fc36d9949041cad388f3aa4ea0e49b3889c18",
     "docs/BOUNDARY.md": "db51a76efc71acf73b2c3591c5c8229feafc5d5be2c17d92fbe64285770bac5d",
     "docs/OPERATIONS-PRIVACY.md": "3be0a2f814264797f9bb08dacf6522d85c23bc4b9179f0f4cce63083b0080a39",
     "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",
     "docs/schemas/infrastructure-graph-v0.1.schema.json": "a97e352a8873c28d33bae4a9854c5bf36c552ca5c6460a8764230c13c21ffbbd",
     "docs/adr/0005-phase-5-infrastructure-evidence-boundary.md": "577aa0a17919d88c0e66655d58d974caad2f8695543cd905b73bf63aca45d306",
-    "evidence/README.md": "e08e342b261796ff821da7a6810e7b5467175437afb3774d8cbd10e5e81d93f7"
+    "evidence/README.md": "05bc67da2c6dec76b5232e1059add6583c8a2fd9abffb86057cb24305886bdf0"
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",

@@ -6,7 +6,7 @@ export function classifyRootCause(finding) {
     if (/invalid|configuration|schema|version/u.test(text)) {
         return { code: "configuration-error", reason: "The finding reports invalid configuration or contract input." };
     }
-    if (/pre-existing|baseline|removed component|missing baseline/u.test(text)) {
+    if (/pre-existing|baseline|removed component|missing baseline|missing from the observed architecture|removed from the observed architecture/u.test(text)) {
         return { code: "stale-baseline", reason: "Observed and approved baseline state are out of sync." };
     }
     if (/require|missing dependency|missing path/u.test(text) || finding.rule_id?.startsWith("REQ-") === true) {

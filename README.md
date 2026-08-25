@@ -1,12 +1,14 @@
 # ArchSync Guardian
 
-`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with a preparatory static Infrastructure-as-Evidence foundation for Phase 5.
+`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with preparatory Phase 4 reasoning/repair-verification and Phase 5 Infrastructure-as-Evidence foundations.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
 Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
-**Phase 4 preparatory status:** versioned Explanation/Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, root-cause taxonomy, and human-review handoff are implemented behind a proposed ADR. Real-provider execution remains prohibited until EXP-101, Lead review, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+**Phase 4 preparatory status:** versioned Explanation and canonical P4-103 Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, complete deterministic taxonomy mapping over the locked 20-case benchmark replay, offline repair verification, and human-review handoff are implemented behind a proposed ADR. The exact locked case-06 fixture and all 12 development safety cases run through deterministic/fake boundaries in tests. These are regression checks, not model, provider, repair-quality, or research results. Real-provider execution remains prohibited until EXP-101, Lead review, dataset/configuration freeze, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+
+See [`docs/phase-4-integration-status.md`](docs/phase-4-integration-status.md) for task-by-task coverage and remaining human/provider gates.
 
 **Phase 5 status:** technical preparation only. Terraform/Kubernetes parsing,
 cross-source identity, normalized graph, evidence claims, conflict classification
@@ -40,6 +42,7 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 - Build a stable normalized infrastructure graph, spec-code-IaC evidence claims,
   deterministic conflict classifications and four preparatory security finding
   families with positive/hard-negative fixtures.
+- Validate and apply a narrowly declared textual repair diff in a disposable workspace, run project tests without network access, inject an ArchSync recheck, and return a deterministic reviewability decision.
 
 ## Setup
 
@@ -182,6 +185,7 @@ src/iac-terraform.ts  narrow, non-executing Terraform resource parser
 src/iac-kubernetes.ts multi-document Kubernetes parser and reference resolver
 src/iac-normalize.ts  identity map, graph normalization, claims and conflicts
 src/iac-security.ts   preparatory deterministic infrastructure security rules
+src/repair-verification.ts  preparatory repair sandbox, patch/test/recheck gates
 src/contracts.ts      Observed Graph and Finding v0.1 contracts
 src/benchmark.ts      Phase 2 benchmark evaluator and metrics
 src/model-cli.ts      unified Architecture Model command adapter
@@ -192,8 +196,10 @@ docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 ```
 
 See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction,
-[`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate and
-[`docs/phase-5.md`](docs/phase-5.md) for the preparatory IaC contract and its
-explicit non-claims. Phase 4 reasoning is a preparatory evidence-only foundation;
-automatic repair execution, MCP transport, rendered/dynamic IaC, cloud-state
-discovery and runtime evidence remain outside this integration branch.
+[`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate,
+[`docs/phase-4-repair-verification.md`](docs/phase-4-repair-verification.md) for the
+draft deterministic verification boundary, and [`docs/phase-5.md`](docs/phase-5.md)
+for the preparatory IaC contract and its explicit non-claims. Phase 4 reasoning is
+an evidence-only foundation; repair generation, automatic approval/merge, MCP
+transport, rendered/dynamic IaC, cloud-state discovery and runtime evidence remain
+outside this integration branch.

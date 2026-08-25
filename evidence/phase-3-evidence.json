@@ -10,7 +10,7 @@
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
     "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
-    "src/index.ts": "99af7b215d5bbab9c839ed72f85da10ae5a44a57339e3201ab4f8c83f2050f03",
+    "src/index.ts": "a6a5c9bad7d150f01bb55928817ed2ba379ba519df20aa630b855786e2d13d4f",
     "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
@@ -30,7 +30,7 @@
     "pnpm-lock.yaml": "af8ceaed554f27621a99bd4c38a2671dfd8ffe9faf8a54af1ace5d860bee6f32",
     "scripts/package-install-e2e.mjs": "6a76cb6bd0dd3704bea252bab37c7399d9fa9f2625725710515b0082c42ff113",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
-    "scripts/phase3-evidence.mjs": "9df7ea88750369cc41d3be6e677300e8619686b0db86d4b5fc67d80fed59f303",
+    "scripts/phase3-evidence.mjs": "0baffb8ab6155a3dfcfc2d0ea31224509925b0aa3bf3ab9ddf3b2d64503b195a",
     "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
     "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3",
     "src/privacy.test.ts": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116",
@@ -232,18 +232,22 @@
     },
     "measured_engine_coverage": {
       "statements": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "branches": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "functions": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "lines": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       }
@@ -267,85 +271,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 116.68,
+      "cold_total_ms": 136.08,
       "warm_total_ms": [
-        60.92,
-        57.68,
-        56.4,
-        56.24,
-        57.34
+        69.06,
+        67.18,
+        69.45,
+        74.32,
+        82.15
       ],
       "warm_baseline_load_ms": [
-        5.67,
-        5.65,
-        5.45,
-        6.49,
-        6.01
+        6.76,
+        6.21,
+        7.86,
+        7.46,
+        12.35
       ],
       "warm_incremental_scan_ms": [
-        1.49,
-        1.32,
-        1.29,
-        1.21,
-        1.41
+        1.73,
+        1.42,
+        1.48,
+        1.38,
+        3.79
       ],
-      "warm_median_total_ms": 57.34,
-      "warm_median_baseline_load_ms": 5.67,
-      "warm_median_incremental_scan_ms": 1.32
+      "warm_median_total_ms": 69.45,
+      "warm_median_baseline_load_ms": 7.46,
+      "warm_median_incremental_scan_ms": 1.48
     },
     "violation": {
-      "cold_total_ms": 86.66,
+      "cold_total_ms": 117.12,
       "warm_total_ms": [
-        58.07,
-        58.05,
-        57.77,
-        56.58,
-        56.95
+        71.15,
+        76.18,
+        71.67,
+        68.11,
+        66.46
       ],
       "warm_baseline_load_ms": [
-        5.24,
-        5.69,
-        5.96,
-        5.47,
-        5.24
+        7.49,
+        6.56,
+        6.56,
+        6.63,
+        6.9
       ],
       "warm_incremental_scan_ms": [
-        1.1,
-        1.1,
-        1.19,
-        1.13,
-        1.09
+        1.43,
+        1.39,
+        1.34,
+        1.25,
+        1.39
       ],
-      "warm_median_total_ms": 57.77,
-      "warm_median_baseline_load_ms": 5.47,
-      "warm_median_incremental_scan_ms": 1.1
+      "warm_median_total_ms": 71.15,
+      "warm_median_baseline_load_ms": 6.63,
+      "warm_median_incremental_scan_ms": 1.39
     },
     "evolution": {
-      "cold_total_ms": 89.37,
+      "cold_total_ms": 108.29,
       "warm_total_ms": [
-        59.38,
-        58.22,
-        60.27,
-        61.01,
-        57.83
+        66.75,
+        63.35,
+        64.36,
+        65,
+        66.52
       ],
       "warm_baseline_load_ms": [
-        6.26,
-        6,
-        6.3,
-        6.6,
-        5.94
+        6.4,
+        6.94,
+        6.45,
+        6.7,
+        8.57
       ],
       "warm_incremental_scan_ms": [
-        1.15,
-        1.11,
-        1.12,
-        1.24,
-        1.12
+        1.27,
+        1.16,
+        1.64,
+        1.27,
+        1.25
       ],
-      "warm_median_total_ms": 59.38,
-      "warm_median_baseline_load_ms": 6.26,
-      "warm_median_incremental_scan_ms": 1.12
+      "warm_median_total_ms": 65,
+      "warm_median_baseline_load_ms": 6.7,
+      "warm_median_incremental_scan_ms": 1.27
     }
   }
 }

@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "d79cf1ca9db1fb8581538899a47bd1c560a6cd664612f10e251c9a9910786e46",
+    "implementation_source_sha256": "b1e7c6abc6c9fd97ddf109a34afa92d5ee31c52da5be3d03c98a227360bfcb1b",
     "fixture_tree": {
       "files": [
         {
@@ -75,6 +75,70 @@
           "sha256": "d91d9ad4ff7b1fb8a747f58f7cf401cff84f03a424d8f1e1b147c6b1997d6e39"
         },
         {
+          "file": "test/fixtures/phase4-ai-safety-corpus.json",
+          "sha256": "9273acfadb128d747b0c012a9bdb69c2bcbe42cbf9d30998946623b8638eac00"
+        },
+        {
+          "file": "test/fixtures/phase4-ai-safety-provenance.json",
+          "sha256": "a021459c0075915b6118aa6d71bf924ab1748292257b922ae803370b1967e656"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/architecture.yaml",
+          "sha256": "4987b08851c2cbc55eaa1ba2c4d9ec3bd70480f19cec7aed747aeaeaac3cf4a5"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/changes/case-06-repair.patch",
+          "sha256": "ca6b408f51282e2c0a9d950b5105266f0427c12d4edca4d74e88b57b91d92af3"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/changes/case-06.patch",
+          "sha256": "be6126580a0084b8a52dd0458d70d9c53ae8e84a14e5f61b5f5d4a21dfed2abb"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/provenance.json",
+          "sha256": "91c3781f6dd83e16e3540d065394ee52009e3f5a2bbcbd416ffdb7a7349ac23b"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/frontend/src/app.ts",
+          "sha256": "8ae720fdf185e3630d647af2a49c1a7beed93ccef25592c77d6dd68ced7ffbca"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/frontend/src/format.ts",
+          "sha256": "a10a35311dfe9cfe57e74f9dea4a9390dc198545806623c0d761369c00432c4b"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/gateway/src/logger.ts",
+          "sha256": "7c4d4e902496d2c6bb989f936b2823b14307308bc41e4ea6453038692ffb4a16"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/gateway/src/server.ts",
+          "sha256": "521addc45ba2452b5c6fe4966ffa46ca384c1b1635bef9e641efbb6087cb35a4"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/order-service/src/pricing.ts",
+          "sha256": "a312474eea017078b6edcdeefacd1f512d90fad6808b2e36a320458bcd8dfc6d"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/order-service/src/service.ts",
+          "sha256": "fd16c4ad5984df95f49598c5ae146d01d5f8429019c197b010de215f2c871ee7"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/order-service/src/validation.ts",
+          "sha256": "e64403e7b8bc5af142b39a04b056703153faa78799c6265af89dfa7f86f36ff8"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/payment-service/src/retry.ts",
+          "sha256": "546c00d8690339c8ddefd339b197dd9c3634f73e1ed50c097e91122c53cf9a14"
+        },
+        {
+          "file": "test/fixtures/phase4-case-06/repository/payment-service/src/service.ts",
+          "sha256": "c6191d709d04e71f0290811e600a2b0dc85760325237ae14cc2cfa5d58fe3b52"
+        },
+        {
+          "file": "test/fixtures/phase4-order-platform-taxonomy.json",
+          "sha256": "d4da3cb24407cc84c20282ed50351fcd6982818236ed16e87fc80de2400f3aa6"
+        },
+        {
           "file": "test/fixtures/violation/frontend/src/app.ts",
           "sha256": "072b513d4c3e39dd9989dfa9dad5c83210a588e97669da2d688448194c1091b9"
         },
@@ -91,7 +155,7 @@
           "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
         }
       ],
-      "sha256": "3f3ace902261ba956925fa4f68ebdf3c13411e08411272924499bbff4c2b8e6e"
+      "sha256": "905014e0b92d848953f252effbfa8542202fe35c42099625e0f26ae01896a84d"
     },
     "verification_source": [
       {
@@ -116,7 +180,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "544885720d0a71d354713766c6044d953f755014e2f44f624eed20a4ac171183"
+        "sha256": "f1800b83fc009dfb5d8bd1df858a8d998aa8932c322a3d429b784330dfea7624"
       },
       {
         "file": "scripts/verify-clean-worktree.mjs",
@@ -179,7 +243,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "3cfea17f75e1b53be18b02dba1a50a0723d6c1b50d3f6c0d1f1aa6e40ee93c77",
+    "verification_source_sha256": "afc5ed71a3909af875a051a51b073077feb29228c7c3c74c1c706df9f2eaf633",
     "dependency_source": [
       {
         "file": "package.json",
@@ -215,7 +279,7 @@
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
-      "src/index.ts": "99af7b215d5bbab9c839ed72f85da10ae5a44a57339e3201ab4f8c83f2050f03",
+      "src/index.ts": "a6a5c9bad7d150f01bb55928817ed2ba379ba519df20aa630b855786e2d13d4f",
       "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },
@@ -275,18 +339,22 @@
     },
     "measured_engine_coverage": {
       "statements": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "branches": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "functions": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "lines": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       }

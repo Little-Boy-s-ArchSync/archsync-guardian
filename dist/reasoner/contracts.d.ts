@@ -1,7 +1,8 @@
 export declare const explanationContractVersion: "0.1";
-export declare const repairCandidateContractVersion: "0.1";
+export declare const repairCandidateContractVersion: "0.1.0-preparatory";
 export type UncertaintyLevel = "low" | "medium" | "high";
 export type RepairRisk = "low" | "medium" | "high" | "critical";
+export type RepairVerificationOutcome = "ACCEPTABLE_FOR_REVIEW" | "REJECT_TEST" | "REJECT_CONFORMANCE" | "REJECT_UNSAFE" | "INCONCLUSIVE";
 export interface ReasonerEvidence {
     id: string;
     kind: "source" | "model" | "finding";
@@ -37,16 +38,28 @@ export interface Explanation {
     };
 }
 export interface VerificationResult {
+    decision: RepairVerificationOutcome;
     tests: "pass" | "fail" | "not-run";
     conformance: "pass" | "fail" | "not-run";
     safe_apply: boolean;
     new_blocking_findings: number;
 }
+export interface RepairFileExpectation {
+    path: string;
+    base_sha256: string | null;
+}
+/**
+ * Canonical preparatory P4-103 hand-off shared by generation, deterministic
+ * verification, and human review. Provider output must enter as PROPOSED with
+ * no verification field; only the offline verifier may add that field.
+ */
 export interface RepairCandidate {
-    contract_version: typeof repairCandidateContractVersion;
+    schema_version: typeof repairCandidateContractVersion;
+    candidate_id: string;
     status: "PROPOSED" | "VERIFIED_FOR_REVIEW";
-    patch: string;
-    target_files: string[];
+    target_block_finding_fingerprints: string[];
+    files: RepairFileExpectation[];
+    unified_diff: string;
     rationale: string;
     expected_architecture_impact: string;
     risk: RepairRisk;
@@ -60,5 +73,6 @@ export interface ContractIssue {
 }
 export declare function validateExplanationShape(value: unknown): ContractIssue[];
 export declare function validateRepairCandidateShape(value: unknown): ContractIssue[];
+export declare function validateProposedRepairCandidateShape(value: unknown): ContractIssue[];
 export declare function isReviewableRepairCandidate(candidate: RepairCandidate): boolean;
 //# sourceMappingURL=contracts.d.ts.map
