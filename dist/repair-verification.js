@@ -4,8 +4,9 @@ import { cp, lstat, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile, } f
 import { tmpdir } from "node:os";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
+import { repairCandidateContractVersion, validateProposedRepairCandidateShape, } from "./reasoner/contracts.js";
 const execFileAsync = promisify(execFile);
-export const repairCandidateSchemaVersion = "0.1.0-preparatory";
+export const repairCandidateSchemaVersion = repairCandidateContractVersion;
 export const repairVerificationSchemaVersion = "0.1.0-preparatory";
 export const defaultSandboxCommandAllowlist = [
     "bun",
@@ -165,8 +166,10 @@ function validatePatchSection(section) {
     return normalizedRepairPath(path);
 }
 export function validateRepairCandidate(candidate) {
-    if (candidate.schema_version !== repairCandidateSchemaVersion ||
-        !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/u.test(candidate.candidate_id) ||
+    if (validateProposedRepairCandidateShape(candidate).length > 0) {
+        return failure("INVALID_CANDIDATE", "Repair candidate contract or provider hand-off status is invalid");
+    }
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/u.test(candidate.candidate_id) ||
         candidate.target_block_finding_fingerprints.length === 0 ||
         new Set(candidate.target_block_finding_fingerprints).size !== candidate.target_block_finding_fingerprints.length ||
         candidate.target_block_finding_fingerprints.some((value) => value.length === 0) ||
@@ -672,6 +675,45 @@ export function decideRepairVerification(input) {
     return {
         decision: "ACCEPTABLE_FOR_REVIEW",
         reason: "The patch applied safely, tests passed, targets cleared, and no new BLOCK finding appeared",
+    };
+}
+/**
+ * Binds an offline verifier result to the canonical P4-103 candidate. This is
+ * the only automated transition to VERIFIED_FOR_REVIEW; it never records a
+ * human approval or changes the architecture decision.
+ */
+export function bindRepairVerificationResult(candidate, result) {
+    if (validateProposedRepairCandidateShape(candidate).length > 0) {
+        throw new Error("Only an unverified PROPOSED candidate can receive verifier evidence");
+    }
+    if (candidate.candidate_id !== result.candidate_id) {
+        throw new Error("Repair verification candidate ID does not match");
+    }
+    const tests = result.tests?.status === "PASS"
+        ? "pass"
+        : result.tests?.status === "FAIL"
+            ? "fail"
+            : "not-run";
+    const conformance = result.conformance === null
+        ? "not-run"
+        : result.conformance.missing_target_finding_fingerprints.length === 0 &&
+            result.conformance.remaining_target_finding_fingerprints.length === 0 &&
+            result.conformance.new_block_finding_fingerprints.length === 0
+            ? "pass"
+            : "fail";
+    const verification = {
+        decision: result.decision,
+        tests,
+        conformance,
+        safe_apply: result.patch.status === "APPLIED",
+        new_blocking_findings: result.conformance?.new_block_finding_fingerprints.length ?? 0,
+    };
+    const reviewable = result.decision === "ACCEPTABLE_FOR_REVIEW" &&
+        verification.tests === "pass" && verification.conformance === "pass" && verification.safe_apply;
+    return {
+        ...candidate,
+        status: reviewable ? "VERIFIED_FOR_REVIEW" : "PROPOSED",
+        verification,
     };
 }
 function emptyPatchFailure(candidate, validation) {

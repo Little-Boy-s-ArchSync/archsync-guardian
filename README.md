@@ -1,10 +1,12 @@
 # ArchSync Guardian
 
-`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3. A draft preparatory module now provides fail-closed repair verification without claiming repair generation or Phase 4 acceptance.
+`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3. A draft preparatory Phase 4 boundary now connects grounded explanation, one canonical repair-candidate contract, fail-closed offline verification, and an undecided human-review handoff without claiming repair generation or Phase 4 acceptance.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
-**Phase 4 preparatory status:** versioned Explanation/Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, root-cause taxonomy, and human-review handoff are implemented behind a proposed ADR. Real-provider execution remains prohibited until EXP-101, Lead review, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+**Phase 4 preparatory status:** versioned Explanation and canonical P4-103 Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, complete deterministic taxonomy mapping over the locked 20-case benchmark replay, offline repair verification, and human-review handoff are implemented behind a proposed ADR. The exact locked case-06 fixture and all 12 development safety cases run through deterministic/fake boundaries in tests. These are regression checks, not model, provider, repair-quality, or research results. Real-provider execution remains prohibited until EXP-101, Lead review, dataset/configuration freeze, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+
+See [`docs/phase-4-integration-status.md`](docs/phase-4-integration-status.md) for task-by-task coverage and remaining human/provider gates.
 
 ## Repository boundary
 

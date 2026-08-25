@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 function canonicalCandidate(candidate) {
     return JSON.stringify({
-        contract_version: candidate.contract_version,
+        schema_version: candidate.schema_version,
+        candidate_id: candidate.candidate_id,
         status: candidate.status,
-        patch: candidate.patch,
-        target_files: [...candidate.target_files].sort(),
+        target_block_finding_fingerprints: [...candidate.target_block_finding_fingerprints].sort(),
+        files: [...candidate.files].sort((left, right) => left.path.localeCompare(right.path)),
+        unified_diff: candidate.unified_diff,
         rationale: candidate.rationale,
         expected_architecture_impact: candidate.expected_architecture_impact,
         risk: candidate.risk,

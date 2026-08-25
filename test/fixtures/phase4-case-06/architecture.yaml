@@ -1,0 +1,118 @@
+version: "0.1"
+metadata:
+  name: order-platform-benchmark
+  description: Five-component baseline for ArchSync Phase 1.
+  owners:
+    - architecture-team
+  tags:
+    - benchmark
+    - typescript
+components:
+  frontend:
+    name: Storefront
+    type: frontend
+    layer: experience
+    technology: TypeScript
+  gateway:
+    name: API Gateway
+    type: gateway
+    layer: edge
+    technology: Node.js
+  order-service:
+    name: Order Service
+    type: service
+    layer: domain
+    technology: Node.js
+  payment-service:
+    name: Payment Service
+    type: service
+    layer: domain
+    technology: Node.js
+  postgres:
+    name: PostgreSQL
+    type: database
+    layer: data
+relationships:
+  - id: frontend-to-gateway
+    from: frontend
+    to: gateway
+    type: http
+  - id: gateway-to-order
+    from: gateway
+    to: order-service
+    type: http
+  - id: order-to-payment
+    from: order-service
+    to: payment-service
+    type: http
+  - id: order-to-postgres
+    from: order-service
+    to: postgres
+    type: data
+  - id: payment-to-postgres
+    from: payment-service
+    to: postgres
+    type: data
+rules:
+  - id: ARCH-001
+    type: deny
+    from: frontend
+    to: payment-service
+    severity: error
+    rationale: Frontend requests must pass through Gateway and Order Service.
+  - id: ARCH-002
+    type: deny
+    from: frontend
+    to: postgres
+    severity: critical
+    rationale: Databases must never be accessed from the experience layer.
+  - id: ARCH-003
+    type: deny
+    from: gateway
+    to: postgres
+    severity: critical
+    rationale: Gateway is an edge component and must not access application data directly.
+  - id: ARCH-004
+    type: require
+    from: order-service
+    to: payment-service
+    relationship_type: http
+    severity: error
+    rationale: Payment orchestration belongs to Order Service.
+  - id: ARCH-005
+    type: allow
+    from: gateway
+    to: order-service
+    severity: error
+    rationale: Gateway traffic may only be forwarded to Order Service.
+  - id: ARCH-006
+    type: require-path
+    from: frontend
+    to: order-service
+    relationship_type: http
+    severity: error
+    rationale: Every frontend request path must reach Order Service through the gateway.
+quality_goals:
+  - id: PERF-001
+    attribute: performance
+    scope: order-service
+    metric: p95_latency_ms
+    operator: "<="
+    target: 200
+    unit: ms
+    priority: high
+  - id: SEC-001
+    attribute: security
+    scope: postgres
+    metric: public_access
+    operator: "="
+    target: false
+    priority: critical
+  - id: COST-001
+    attribute: cost
+    scope: "*"
+    metric: monthly_cost_usd
+    operator: "<="
+    target: 150
+    unit: USD
+    priority: medium

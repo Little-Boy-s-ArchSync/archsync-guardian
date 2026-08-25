@@ -1,24 +1,11 @@
 import type { GuardianFinding, GuardianResult } from "./contracts.js";
+import { type RepairCandidate, type RepairVerificationOutcome } from "./reasoner/contracts.js";
 export declare const repairCandidateSchemaVersion: "0.1.0-preparatory";
 export declare const repairVerificationSchemaVersion: "0.1.0-preparatory";
 export declare const defaultSandboxCommandAllowlist: readonly ["bun", "bun.exe", "npm", "npm.cmd", "pnpm", "pnpm.cmd", "yarn", "yarn.cmd"];
-export type RepairVerificationDecision = "ACCEPTABLE_FOR_REVIEW" | "REJECT_TEST" | "REJECT_CONFORMANCE" | "REJECT_UNSAFE" | "INCONCLUSIVE";
+export type RepairVerificationDecision = RepairVerificationOutcome;
+export type CanonicalRepairCandidate = RepairCandidate;
 export type RepairSafetyCode = "INVALID_CANDIDATE" | "INVALID_PATH" | "RESERVED_PATH" | "BINARY_PATCH" | "UNSUPPORTED_PATCH" | "UNEXPECTED_PATH" | "DIRTY_WORKSPACE" | "SYMLINK_PATH" | "PATCH_DOES_NOT_APPLY" | "PATCH_APPLY_FAILED" | "PATCH_NO_EFFECT";
-export interface RepairFileExpectation {
-    path: string;
-    base_sha256: string | null;
-}
-/**
- * Preparatory P4-103 hand-off. Generation may propose this value, but only the
- * deterministic verifier in this module may classify it as reviewable.
- */
-export interface RepairCandidate {
-    schema_version: typeof repairCandidateSchemaVersion;
-    candidate_id: string;
-    target_block_finding_fingerprints: string[];
-    files: RepairFileExpectation[];
-    unified_diff: string;
-}
 export interface PatchValidationSuccess {
     ok: true;
     paths: string[];
@@ -169,5 +156,11 @@ export declare function guardianResultToRepairSnapshot(result: GuardianResult): 
 export declare function normalizeRepairConformanceSnapshot(snapshot: RepairConformanceSnapshot): RepairConformanceSnapshot;
 export declare function compareRepairConformance(targets: string[], baseline: RepairConformanceComplete, candidate: RepairConformanceComplete): RepairConformanceComparison;
 export declare function decideRepairVerification(input: RepairDecisionInput): RepairDecision;
+/**
+ * Binds an offline verifier result to the canonical P4-103 candidate. This is
+ * the only automated transition to VERIFIED_FOR_REVIEW; it never records a
+ * human approval or changes the architecture decision.
+ */
+export declare function bindRepairVerificationResult(candidate: RepairCandidate, result: RepairVerificationResult): RepairCandidate;
 export declare function verifyRepairCandidate(options: VerifyRepairOptions): Promise<RepairVerificationResult>;
 //# sourceMappingURL=repair-verification.d.ts.map

@@ -5,6 +5,7 @@ import {
   type Explanation,
   type RepairCandidate,
   validateExplanationShape,
+  validateProposedRepairCandidateShape,
   validateRepairCandidateShape,
 } from "./contracts.js";
 
@@ -27,10 +28,12 @@ function explanation(): Explanation {
 
 function candidate(): RepairCandidate {
   return {
-    contract_version: "0.1",
+    schema_version: "0.1.0-preparatory",
+    candidate_id: "repair-001",
     status: "PROPOSED",
-    patch: "diff --git a/a.ts b/a.ts",
-    target_files: ["a.ts"],
+    target_block_finding_fingerprints: ["ARCH-001|a|b"],
+    files: [{ path: "a.ts", base_sha256: "a".repeat(64) }],
+    unified_diff: "diff --git a/a.ts b/a.ts\n",
     rationale: "Remove the bypass.",
     expected_architecture_impact: "Resolve ARCH-001.",
     risk: "medium",
@@ -89,6 +92,7 @@ describe("Phase 4 contracts", () => {
       ...candidate(),
       status: "VERIFIED_FOR_REVIEW",
       verification: {
+        decision: "ACCEPTABLE_FOR_REVIEW",
         tests: "pass",
         conformance: "pass",
         safe_apply: true,
@@ -98,6 +102,7 @@ describe("Phase 4 contracts", () => {
     expect(validateRepairCandidateShape(value)).toEqual([]);
     expect(isReviewableRepairCandidate(value)).toBe(true);
     for (const verification of [
+      { ...value.verification!, decision: "INCONCLUSIVE" as const },
       { ...value.verification!, tests: "fail" as const },
       { ...value.verification!, conformance: "fail" as const },
       { ...value.verification!, safe_apply: false },
@@ -110,20 +115,76 @@ describe("Phase 4 contracts", () => {
   it("rejects malformed repair candidates and missing verification", () => {
     expect(validateRepairCandidateShape(undefined)).toEqual([{ path: "/", message: "must be an object" }]);
     const issues = validateRepairCandidateShape({
-      contract_version: "2",
+      schema_version: "2",
+      candidate_id: "",
       status: "ACCEPTED",
-      patch: "",
+      unified_diff: "",
       rationale: 1,
       expected_architecture_impact: null,
       rollback: "",
-      target_files: [],
+      target_block_finding_fingerprints: [],
+      files: [],
       verification_commands: [1],
       risk: "none",
     });
-    expect(issues).toHaveLength(9);
+    expect(issues.map(({ path }) => path)).toEqual([
+      "/schema_version",
+      "/status",
+      "/candidate_id",
+      "/unified_diff",
+      "/rationale",
+      "/expected_architecture_impact",
+      "/rollback",
+      "/target_block_finding_fingerprints",
+      "/verification_commands",
+      "/files",
+      "/risk",
+    ]);
     expect(validateRepairCandidateShape({ ...candidate(), status: "VERIFIED_FOR_REVIEW" })).toContainEqual({
       path: "/verification",
       message: "is required before review",
     });
+    expect(validateProposedRepairCandidateShape({
+      ...candidate(),
+      status: "VERIFIED_FOR_REVIEW",
+      verification: {
+        decision: "ACCEPTABLE_FOR_REVIEW",
+        tests: "pass",
+        conformance: "pass",
+        safe_apply: true,
+        new_blocking_findings: 0,
+      },
+    }).map(({ path }) => path)).toEqual(["/status", "/verification"]);
+    expect(validateProposedRepairCandidateShape(null)).toEqual([{ path: "/", message: "must be an object" }]);
+  });
+
+  it("rejects malformed file manifests and verifier summaries", () => {
+    const issues = validateRepairCandidateShape({
+      ...candidate(),
+      files: [
+        null,
+        { path: "", base_sha256: 1 },
+        { path: "bad-hash.ts", base_sha256: "BAD" },
+        { path: "new.ts", base_sha256: null },
+      ],
+      verification: {
+        decision: "PROVIDER_SAYS_OK",
+        tests: "maybe",
+        conformance: "maybe",
+        safe_apply: "yes",
+        new_blocking_findings: -1,
+      },
+    });
+    expect(issues.map(({ path }) => path)).toEqual([
+      "/files/0",
+      "/files/1/path",
+      "/files/1/base_sha256",
+      "/files/2/base_sha256",
+      "/verification/decision",
+      "/verification/tests",
+      "/verification/conformance",
+      "/verification/safe_apply",
+      "/verification/new_blocking_findings",
+    ]);
   });
 });

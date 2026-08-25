@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "status": "locked-deterministic-replay",
+  "source": {
+    "repository": "Little-Boy-s-ArchSync/archsync-benchmark",
+    "commit": "24d63ebf2fc3075a1d64f1eaff38cdc0b7f586fb",
+    "ground_truth_sha256": "5d3ce2976dfcce59796dd58cee60dce51233e0f44fde8c41bd89b013e7f23e92"
+  },
+  "cases": [
+    { "id": "case-01", "category": "no-impact", "findings": [] },
+    { "id": "case-02", "category": "no-impact", "findings": [] },
+    { "id": "case-03", "category": "no-impact", "findings": [] },
+    { "id": "case-04", "category": "no-impact", "findings": [] },
+    { "id": "case-05", "category": "no-impact", "findings": [] },
+    {
+      "id": "case-06",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "deny-rule",
+          "message": "Forbidden relationship 'frontend|http|payment-service' matches deny rule 'ARCH-001'",
+          "rule_id": "ARCH-001",
+          "detector_confidence": 1,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'frontend|http|payment-service' was added to the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-07",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "deny-rule",
+          "message": "Forbidden relationship 'frontend|data|postgres' matches deny rule 'ARCH-002'",
+          "rule_id": "ARCH-002",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'frontend|data|postgres' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-08",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "required-edge",
+          "message": "Required relationship 'order-service|http|payment-service' is missing for rule 'ARCH-004'",
+          "rule_id": "ARCH-004",
+          "detector_confidence": 1,
+          "expected_root_cause": "missing-required-dependency"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'order-service|http|payment-service' is missing from the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "stale-baseline"
+        }
+      ]
+    },
+    {
+      "id": "case-09",
+      "category": "evolution",
+      "findings": [
+        {
+          "kind": "architecture-evolution",
+          "message": "Component 'redis' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'order-service|data|redis' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-10",
+      "category": "evolution",
+      "findings": [
+        {
+          "kind": "architecture-evolution",
+          "message": "Component 'order-events' was added to the observed architecture",
+          "detector_confidence": 0.98,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Component 'order-worker' was added to the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'order-events|async|order-worker' was added to the observed architecture",
+          "detector_confidence": 0.98,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'order-service|async|order-events' was added to the observed architecture",
+          "detector_confidence": 0.98,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    { "id": "case-11", "category": "no-impact", "findings": [] },
+    { "id": "case-12", "category": "no-impact", "findings": [] },
+    { "id": "case-13", "category": "no-impact", "findings": [] },
+    { "id": "case-14", "category": "no-impact", "findings": [] },
+    {
+      "id": "case-15",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "deny-rule",
+          "message": "Forbidden relationship 'gateway|data|postgres' matches deny rule 'ARCH-003'",
+          "rule_id": "ARCH-003",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "allow-rule",
+          "message": "Relationship 'gateway|data|postgres' is outside allow rule 'ARCH-005'",
+          "rule_id": "ARCH-005",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'gateway|data|postgres' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-16",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "allow-rule",
+          "message": "Relationship 'gateway|http|payment-service' is outside allow rule 'ARCH-005'",
+          "rule_id": "ARCH-005",
+          "detector_confidence": 1,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'gateway|http|payment-service' was added to the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-17",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "required-path",
+          "message": "Required path from 'frontend' to 'order-service' is missing for rule 'ARCH-006'",
+          "rule_id": "ARCH-006",
+          "detector_confidence": 1,
+          "expected_root_cause": "missing-required-dependency"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'frontend|http|gateway' is missing from the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "stale-baseline"
+        }
+      ]
+    },
+    {
+      "id": "case-18",
+      "category": "violation",
+      "findings": [
+        {
+          "kind": "deny-rule",
+          "message": "Forbidden relationship 'frontend|data|postgres' matches deny rule 'ARCH-002'",
+          "rule_id": "ARCH-002",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "boundary-bypass"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'frontend|data|postgres' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-19",
+      "category": "evolution",
+      "findings": [
+        {
+          "kind": "architecture-evolution",
+          "message": "Component 'fraud-service' was added to the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'order-service|http|fraud-service' was added to the observed architecture",
+          "detector_confidence": 1,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    },
+    {
+      "id": "case-20",
+      "category": "evolution",
+      "findings": [
+        {
+          "kind": "architecture-evolution",
+          "message": "Component 'payment-cache' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        },
+        {
+          "kind": "architecture-evolution",
+          "message": "Relationship 'payment-service|data|payment-cache' was added to the observed architecture",
+          "detector_confidence": 0.99,
+          "expected_root_cause": "new-infrastructure"
+        }
+      ]
+    }
+  ],
+  "research_claim": null,
+  "human_approval": null
+}

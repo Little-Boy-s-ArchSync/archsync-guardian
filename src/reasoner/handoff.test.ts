@@ -5,17 +5,28 @@ import { createReviewHandoff, isHumanApproved, recordHumanReview } from "./hando
 
 function candidate(status: RepairCandidate["status"] = "PROPOSED"): RepairCandidate {
   return {
-    contract_version: "0.1",
+    schema_version: "0.1.0-preparatory",
+    candidate_id: "repair-001",
     status,
-    patch: "diff",
-    target_files: ["b.ts", "a.ts"],
+    target_block_finding_fingerprints: ["ARCH-001|b", "ARCH-001|a"],
+    files: [
+      { path: "b.ts", base_sha256: "b".repeat(64) },
+      { path: "a.ts", base_sha256: "a".repeat(64) },
+    ],
+    unified_diff: "diff\n",
     rationale: "reason",
     expected_architecture_impact: "impact",
     risk: "high",
     verification_commands: ["pnpm test"],
     rollback: "revert",
     ...(status === "VERIFIED_FOR_REVIEW" ? {
-      verification: { tests: "pass", conformance: "pass", safe_apply: true, new_blocking_findings: 0 },
+      verification: {
+        decision: "ACCEPTABLE_FOR_REVIEW" as const,
+        tests: "pass" as const,
+        conformance: "pass" as const,
+        safe_apply: true,
+        new_blocking_findings: 0,
+      },
     } : {}),
   };
 }

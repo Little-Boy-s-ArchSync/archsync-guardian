@@ -16,10 +16,17 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 import { promisify } from "node:util";
 
 import type { GuardianFinding, GuardianResult } from "./contracts.js";
+import {
+  repairCandidateContractVersion,
+  validateProposedRepairCandidateShape,
+  type RepairCandidate,
+  type RepairFileExpectation,
+  type RepairVerificationOutcome,
+} from "./reasoner/contracts.js";
 
 const execFileAsync = promisify(execFile);
 
-export const repairCandidateSchemaVersion = "0.1.0-preparatory" as const;
+export const repairCandidateSchemaVersion = repairCandidateContractVersion;
 export const repairVerificationSchemaVersion = "0.1.0-preparatory" as const;
 export const defaultSandboxCommandAllowlist = [
   "bun",
@@ -37,12 +44,8 @@ const defaultTestTimeoutMs = 120_000;
 const maximumTestTimeoutMs = 600_000;
 const defaultMaximumLogBytes = 262_144;
 
-export type RepairVerificationDecision =
-  | "ACCEPTABLE_FOR_REVIEW"
-  | "REJECT_TEST"
-  | "REJECT_CONFORMANCE"
-  | "REJECT_UNSAFE"
-  | "INCONCLUSIVE";
+export type RepairVerificationDecision = RepairVerificationOutcome;
+export type CanonicalRepairCandidate = RepairCandidate;
 
 export type RepairSafetyCode =
   | "INVALID_CANDIDATE"
@@ -56,23 +59,6 @@ export type RepairSafetyCode =
   | "PATCH_DOES_NOT_APPLY"
   | "PATCH_APPLY_FAILED"
   | "PATCH_NO_EFFECT";
-
-export interface RepairFileExpectation {
-  path: string;
-  base_sha256: string | null;
-}
-
-/**
- * Preparatory P4-103 hand-off. Generation may propose this value, but only the
- * deterministic verifier in this module may classify it as reviewable.
- */
-export interface RepairCandidate {
-  schema_version: typeof repairCandidateSchemaVersion;
-  candidate_id: string;
-  target_block_finding_fingerprints: string[];
-  files: RepairFileExpectation[];
-  unified_diff: string;
-}
 
 export interface PatchValidationSuccess {
   ok: true;
@@ -366,8 +352,10 @@ function validatePatchSection(section: string[]): string | PatchValidationFailur
 }
 
 export function validateRepairCandidate(candidate: RepairCandidate): PatchValidationResult {
+  if (validateProposedRepairCandidateShape(candidate).length > 0) {
+    return failure("INVALID_CANDIDATE", "Repair candidate contract or provider hand-off status is invalid");
+  }
   if (
-    candidate.schema_version !== repairCandidateSchemaVersion ||
     !/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/u.test(candidate.candidate_id) ||
     candidate.target_block_finding_fingerprints.length === 0 ||
     new Set(candidate.target_block_finding_fingerprints).size !== candidate.target_block_finding_fingerprints.length ||
@@ -937,6 +925,49 @@ export function decideRepairVerification(input: RepairDecisionInput): RepairDeci
   return {
     decision: "ACCEPTABLE_FOR_REVIEW",
     reason: "The patch applied safely, tests passed, targets cleared, and no new BLOCK finding appeared",
+  };
+}
+
+/**
+ * Binds an offline verifier result to the canonical P4-103 candidate. This is
+ * the only automated transition to VERIFIED_FOR_REVIEW; it never records a
+ * human approval or changes the architecture decision.
+ */
+export function bindRepairVerificationResult(
+  candidate: RepairCandidate,
+  result: RepairVerificationResult,
+): RepairCandidate {
+  if (validateProposedRepairCandidateShape(candidate).length > 0) {
+    throw new Error("Only an unverified PROPOSED candidate can receive verifier evidence");
+  }
+  if (candidate.candidate_id !== result.candidate_id) {
+    throw new Error("Repair verification candidate ID does not match");
+  }
+  const tests = result.tests?.status === "PASS"
+    ? "pass"
+    : result.tests?.status === "FAIL"
+      ? "fail"
+      : "not-run";
+  const conformance = result.conformance === null
+    ? "not-run"
+    : result.conformance.missing_target_finding_fingerprints.length === 0 &&
+        result.conformance.remaining_target_finding_fingerprints.length === 0 &&
+        result.conformance.new_block_finding_fingerprints.length === 0
+      ? "pass"
+      : "fail";
+  const verification = {
+    decision: result.decision,
+    tests,
+    conformance,
+    safe_apply: result.patch.status === "APPLIED",
+    new_blocking_findings: result.conformance?.new_block_finding_fingerprints.length ?? 0,
+  } as const;
+  const reviewable = result.decision === "ACCEPTABLE_FOR_REVIEW" &&
+    verification.tests === "pass" && verification.conformance === "pass" && verification.safe_apply;
+  return {
+    ...candidate,
+    status: reviewable ? "VERIFIED_FOR_REVIEW" : "PROPOSED",
+    verification,
   };
 }
 

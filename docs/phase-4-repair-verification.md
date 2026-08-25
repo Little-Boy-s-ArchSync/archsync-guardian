@@ -5,8 +5,10 @@
 This document describes a preparatory, deterministic verification bundle for
 P4-110 through P4-114. It does not generate repairs, call an LLM, approve an
 architecture change, merge code, or establish Phase 4 research evidence. The
-P4-103 candidate schema is deliberately marked `0.1.0-preparatory` until its
-upstream design and human governance decisions are accepted.
+single P4-103 candidate schema is deliberately marked `0.1.0-preparatory`
+until its upstream design and human governance decisions are accepted. It
+replaces the earlier divergent reasoner-only proposal and verifier-only patch
+manifest; generation, verification, and review now share one canonical shape.
 
 `ACCEPTABLE_FOR_REVIEW` means only that a candidate survived the automated
 technical gates. A human still owns code review, architecture intent, security
@@ -17,11 +19,14 @@ review, approval, and merge.
 A generator hands the verifier a `RepairCandidate` with:
 
 - an opaque candidate identifier;
+- status `PROPOSED` and no self-asserted verification evidence;
 - one or more target BLOCK-finding fingerprints;
 - the exact relative paths it expects to change;
 - the SHA-256 hash of every existing base file, or `null` for a file expected
-  not to exist; and
-- one textual git-style unified diff.
+  not to exist;
+- one textual git-style unified diff; and
+- rationale, expected architecture impact, risk, proposed verification
+  commands, and rollback information for human review.
 
 The manifest is intentionally redundant with the patch. That redundancy lets
 the verifier reject both an unexpected file and a stale/dirty base before Git
@@ -31,6 +36,7 @@ is invoked.
 {
   "schema_version": "0.1.0-preparatory",
   "candidate_id": "repair-001",
+  "status": "PROPOSED",
   "target_block_finding_fingerprints": ["ARCH-001|..."],
   "files": [
     {
@@ -38,9 +44,20 @@ is invoked.
       "base_sha256": "<lowercase SHA-256>"
     }
   ],
-  "unified_diff": "diff --git a/frontend/src/database.ts b/frontend/src/database.ts\n..."
+  "unified_diff": "diff --git a/frontend/src/database.ts b/frontend/src/database.ts\n...",
+  "rationale": "Remove the direct data dependency.",
+  "expected_architecture_impact": "Clear the declared ARCH-001 finding.",
+  "risk": "high",
+  "verification_commands": ["pnpm test"],
+  "rollback": "Restore the file bound by base_sha256."
 }
 ```
+
+The provider boundary rejects `VERIFIED_FOR_REVIEW` and any `verification`
+field in generated output. After the offline verifier returns its immutable
+decision, `bindRepairVerificationResult` may attach that evidence and promote
+the candidate only when patch application, tests, and the conformance recheck
+all pass. This transition still does not approve or merge anything.
 
 ## Verification pipeline
 
@@ -133,6 +150,16 @@ typecheck, build, package, and 100% coverage gates. Its test suite covers the
 five decisions plus path traversal, reserved paths, binary/mode/rename patches,
 stale hashes, symlinks, Git preflight/application failures, platform isolation,
 timeouts, redaction, cleanup, and injected baseline/candidate rechecks.
+
+The integration suite also replays the exact hash-locked Order Platform
+`case-06` source, architecture, and violation patch, verifies the inverse
+repair on a disposable copy, and leaves the source workspace BLOCKed. Its
+fixture test executor is an in-process deterministic invariant check because
+the benchmark source snapshot has no project test command; it is not evidence
+that an external repository's tests passed. A separate locked snapshot maps
+every deterministic finding emitted by the available 20-case corpus, while a
+fake-provider regression runs all 12 available safety cases. Neither run is a
+real-provider or human-adjudicated evaluation.
 
 This bundle is preparatory technical work only. A future accepted Phase 4 ADR,
 frozen generation protocol, human rubric, benchmark, and evidence manifest are

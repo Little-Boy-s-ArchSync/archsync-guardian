@@ -13,8 +13,10 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { GuardianFinding, GuardianResult } from "./contracts.js";
+import type { RepairCandidate } from "./reasoner/contracts.js";
 import {
   applyRepairCandidate,
+  bindRepairVerificationResult,
   compareRepairConformance,
   createPlatformNoNetworkExecutor,
   createRepairSandbox,
@@ -40,9 +42,9 @@ import {
   type NoNetworkCommandExecutor,
   type ProcessResult,
   type ProcessRunner,
-  type RepairCandidate,
   type RepairConformanceSnapshot,
   type RepairSandbox,
+  type RepairVerificationResult,
 } from "./repair-verification.js";
 
 const originalSource = "export const value = 1;\n";
@@ -88,9 +90,15 @@ function candidate(overrides: Partial<RepairCandidate> = {}): RepairCandidate {
   return {
     schema_version: repairCandidateSchemaVersion,
     candidate_id: "repair-001",
+    status: "PROPOSED",
     target_block_finding_fingerprints: [targetFinding],
     files: [{ path: "src/value.ts", base_sha256: sha256(originalSource) }],
     unified_diff: modifyPatch(),
+    rationale: "Replace the fixture value without changing architecture intent.",
+    expected_architecture_impact: "Clear the declared deterministic BLOCK finding.",
+    risk: "low",
+    verification_commands: ["pnpm test"],
+    rollback: "Restore src/value.ts from the bound base hash.",
     ...overrides,
   };
 }
@@ -175,7 +183,6 @@ describe("repair candidate schema and unified diff validation", () => {
   });
 
   it.each([
-    "",
     `${"a".repeat(513)}`,
     "src/va\0lue.ts",
     "src\\value.ts",
@@ -189,6 +196,12 @@ describe("repair candidate schema and unified diff validation", () => {
     expect(validateRepairCandidate(candidate({
       files: [{ path, base_sha256: sha256(originalSource) }],
     }))).toMatchObject({ ok: false, code: "INVALID_PATH" });
+  });
+
+  it("rejects an empty manifest path at the canonical contract boundary", () => {
+    expect(validateRepairCandidate(candidate({
+      files: [{ path: "", base_sha256: sha256(originalSource) }],
+    }))).toMatchObject({ ok: false, code: "INVALID_CANDIDATE" });
   });
 
   it.each([".git/config", ".archsync/cache", ".env", ".env.local"])(
@@ -707,6 +720,101 @@ describe("ArchSync rechecks and deterministic decisions", () => {
     [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "ACCEPTABLE_FOR_REVIEW"],
   ] as const)("returns %s deterministically", (input, decision) => {
     expect(decideRepairVerification(input)).toMatchObject({ decision });
+  });
+
+  it("binds only matching offline verifier evidence and promotes only a complete pass", () => {
+    const complete: RepairVerificationResult = {
+      schema_version: repairVerificationSchemaVersion,
+      candidate_id: "repair-001",
+      decision: "ACCEPTABLE_FOR_REVIEW",
+      reason: "complete",
+      patch: {
+        status: "APPLIED",
+        paths: ["src/value.ts"],
+        before_sha256: { "src/value.ts": sha256(originalSource) },
+        after_sha256: { "src/value.ts": sha256(repairedSource) },
+      },
+      tests: {
+        status: "PASS",
+        command: "pnpm",
+        args: ["test"],
+        exit_code: 0,
+        duration_ms: 1,
+        stdout: "",
+        stderr: "",
+      },
+      conformance: {
+        baseline_block_finding_fingerprints: [targetFinding],
+        candidate_block_finding_fingerprints: [],
+        missing_target_finding_fingerprints: [],
+        remaining_target_finding_fingerprints: [],
+        new_block_finding_fingerprints: [],
+      },
+      sandbox_cleanup: "COMPLETED",
+    };
+    expect(bindRepairVerificationResult(candidate(), complete)).toMatchObject({
+      status: "VERIFIED_FOR_REVIEW",
+      verification: { decision: "ACCEPTABLE_FOR_REVIEW", tests: "pass", conformance: "pass", safe_apply: true },
+    });
+
+    const failures: RepairVerificationResult[] = [
+      {
+        ...complete,
+        decision: "REJECT_TEST",
+        patch: { status: "REJECTED", code: "PATCH_DOES_NOT_APPLY", message: "bad", paths: ["src/value.ts"] },
+        tests: { ...complete.tests!, status: "FAIL", exit_code: 1 },
+        conformance: {
+          ...complete.conformance!,
+          missing_target_finding_fingerprints: ["missing"],
+          new_block_finding_fingerprints: ["new"],
+        },
+      },
+      {
+        ...complete,
+        decision: "INCONCLUSIVE",
+        patch: { status: "INCONCLUSIVE", code: "NOT_ATTEMPTED", message: "none", paths: [] },
+        tests: null,
+        conformance: null,
+      },
+      {
+        ...complete,
+        decision: "REJECT_CONFORMANCE",
+        tests: { ...complete.tests!, status: "TIMEOUT", exit_code: null },
+        conformance: {
+          ...complete.conformance!,
+          remaining_target_finding_fingerprints: [targetFinding],
+        },
+      },
+      {
+        ...complete,
+        decision: "REJECT_CONFORMANCE",
+        conformance: {
+          ...complete.conformance!,
+          new_block_finding_fingerprints: ["new"],
+        },
+      },
+    ];
+    expect(failures.map((result) => bindRepairVerificationResult(candidate(), result))).toMatchObject([
+      { status: "PROPOSED", verification: { tests: "fail", conformance: "fail", safe_apply: false, new_blocking_findings: 1 } },
+      { status: "PROPOSED", verification: { tests: "not-run", conformance: "not-run", safe_apply: false, new_blocking_findings: 0 } },
+      { status: "PROPOSED", verification: { tests: "not-run", conformance: "fail", safe_apply: true } },
+      { status: "PROPOSED", verification: { tests: "pass", conformance: "fail", safe_apply: true, new_blocking_findings: 1 } },
+    ]);
+    expect(() => bindRepairVerificationResult(
+      candidate({
+        status: "VERIFIED_FOR_REVIEW",
+        verification: {
+          decision: "ACCEPTABLE_FOR_REVIEW",
+          tests: "pass",
+          conformance: "pass",
+          safe_apply: true,
+          new_blocking_findings: 0,
+        },
+      }),
+      complete,
+    )).toThrow("unverified PROPOSED");
+    expect(() => bindRepairVerificationResult(candidate(), { ...complete, candidate_id: "other" }))
+      .toThrow("candidate ID");
   });
 });
 
