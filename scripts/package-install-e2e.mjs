@@ -75,6 +75,8 @@ try {
   assert.ok(packedFiles.includes("dist/bin.js"));
   assert.ok(packedFiles.includes("dist/provenance.json"));
   assert.ok(packedFiles.includes("dist/version.js"));
+  assert.ok(packedFiles.includes("specs/explanation.schema.json"));
+  assert.ok(packedFiles.includes("specs/repair-candidate.schema.json"));
   assert.ok(packedFiles.includes("node_modules/@archsync/core/package.json"));
   assert.ok(packedFiles.includes("node_modules/yaml/bin.mjs"));
   const allowedBundleRoots = new Set([
@@ -93,7 +95,7 @@ try {
   assert.deepEqual(bundledRoots, allowedBundleRoots);
   assert.equal(
     packedFiles.every((path) =>
-      path === "package.json" || path === "README.md" || path.startsWith("dist/") ||
+      path === "package.json" || path === "README.md" || path.startsWith("dist/") || path.startsWith("specs/") ||
       path.startsWith("node_modules/"),
     ),
     true,
@@ -108,6 +110,11 @@ try {
     // pnpm may expose shims from PNPM_HOME/bin (not PNPM_HOME itself),
     // particularly in a configured Windows user environment.
     PNPM_HOME: temporary,
+    // pnpm dlx otherwise shares a process-external cache. Concurrent verification
+    // worktrees can race while populating the same entry, so every package test
+    // gets an isolated cache on Unix and Windows.
+    XDG_CACHE_HOME: join(temporary, "cache"),
+    LOCALAPPDATA: join(temporary, "local-app-data"),
     PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ""}`,
   };
   const installation = runPnpm([
@@ -153,7 +160,8 @@ try {
 
   const fallbackResult = runPnpm([
     "dlx",
-    `--package=${guardianTarball}`,
+    "--package",
+    guardianTarball,
     "archsync",
     "version",
     "--json",
@@ -172,7 +180,7 @@ try {
     assert.ok(manifest, "Installed Guardian package.json was not found");
     return readFile(join(globalDirectory, manifest), "utf8");
   }));
-  assert.deepEqual(installedManifest.files, ["dist", "README.md"]);
+  assert.deepEqual(installedManifest.files, ["dist", "specs", "README.md"]);
 
   if (evidencePath) {
     const pnpmVersion = runPnpm(["--version"]).stdout.trim();

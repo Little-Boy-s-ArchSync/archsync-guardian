@@ -6,6 +6,8 @@
 
 Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
+**Phase 4 preparatory status:** versioned Explanation/Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, root-cause taxonomy, and human-review handoff are implemented behind a proposed ADR. Real-provider execution remains prohibited until EXP-101, Lead review, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+
 ## Repository boundary
 
 Guardian depends on `@archsync/core`. It does not own the Architecture Model schema and does not treat draw.io or runtime observations as a source of truth.
@@ -171,4 +173,4 @@ evidence/             deterministic Phase 2 and Phase 3 evidence manifests
 docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 ```
 
-See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. LLM reasoning, automatic repair, MCP, IaC and runtime evidence remain out of scope.
+See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. Phase 4 reasoning remains a preparatory, evidence-only foundation; automatic repair execution, MCP transport, IaC and runtime evidence remain outside this integration branch.

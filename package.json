@@ -14,6 +14,7 @@
   },
   "files": [
     "dist",
+    "specs",
     "README.md"
   ],
   "bundledDependencies": [
@@ -47,7 +48,10 @@
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
     "privacy:verify": "node scripts/verify-offline.mjs",
-    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm phase3:verify",
+    "phase4:assets": "node scripts/verify-phase4-assets.mjs",
+    "phase4:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm phase4:assets",
+    "verify": "pnpm phase3:verify && pnpm phase4:assets",
+    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
     "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
   },

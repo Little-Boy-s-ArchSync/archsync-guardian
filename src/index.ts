@@ -8,3 +8,4 @@ export * from "./guardian.js";
 export * from "./model-cli.js";
 export * from "./phase3.js";
 export * from "./privacy.js";
+export * from "./reasoner/index.js";
