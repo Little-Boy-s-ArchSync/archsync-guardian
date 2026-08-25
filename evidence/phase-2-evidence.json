@@ -80,7 +80,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
+        "sha256": "ec32c6ffffc9d9a9a5f8b760c271bd48c67632a6b8d73d78233db59c612db1d1"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -131,7 +131,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "a7204dffb669c3d4e1af65bbb2d5182bd9bbef2b738827f80c882c4e375cc556",
+    "verification_source_sha256": "2032213b44ae6b8d88b7c22f8d86510e41071d47dcf55e595f17d6ae04b66e5e",
     "dependency_source": [
       {
         "file": "package.json",
@@ -226,26 +226,23 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 2379,
-        "total": 2379,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "branches": {
-        "covered": 1001,
-        "total": 1001,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "functions": {
-        "covered": 118,
-        "total": 118,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "lines": {
-        "covered": 2379,
-        "total": 2379,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       }
     },
+    "coverage_count_policy": "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     "cli_smoke_checks": 23,
     "clean_package_install": "required on Windows, macOS and Linux",
     "canonical_benchmark": {
