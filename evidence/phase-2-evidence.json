@@ -226,13 +226,13 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 2797,
-        "total": 2797,
+        "covered": 2796,
+        "total": 2796,
         "percent": 100
       },
       "branches": {
-        "covered": 1146,
-        "total": 1146,
+        "covered": 1145,
+        "total": 1145,
         "percent": 100
       },
       "functions": {
@@ -241,8 +241,8 @@
         "percent": 100
       },
       "lines": {
-        "covered": 2797,
-        "total": 2797,
+        "covered": 2796,
+        "total": 2796,
         "percent": 100
       }
     },

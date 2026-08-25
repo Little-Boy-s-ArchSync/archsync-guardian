@@ -269,8 +269,7 @@ async function canonicalPotentialPath(path: string): Promise<string> {
   while (true) {
     try {
       return resolve(await realpath(existing), ...suffix);
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    } catch {
       const parent = dirname(existing);
       suffix.unshift(basename(existing));
       existing = parent;
