@@ -74,7 +74,15 @@ describe("combined Phase 4 deterministic boundary", () => {
     const workspace = await mkdtemp(join(tmpdir(), "archsync-case-06-integration-"));
     temporaryRoots.push(workspace);
     await cp(join(fixtureRoot, "repository"), workspace, { recursive: true });
-    const applied = spawnSync("git", ["apply", "--whitespace=nowarn", join(fixtureRoot, "changes", "case-06.patch")], {
+    const applied = spawnSync("git", [
+      "-c",
+      "core.autocrlf=false",
+      "-c",
+      "core.safecrlf=false",
+      "apply",
+      "--whitespace=nowarn",
+      join(fixtureRoot, "changes", "case-06.patch"),
+    ], {
       cwd: workspace,
       encoding: "utf8",
       shell: false,

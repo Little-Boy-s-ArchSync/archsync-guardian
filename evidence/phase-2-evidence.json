@@ -260,7 +260,7 @@
       },
       {
         "file": "src/doctor.test.ts",
-        "sha256": "19bc2ac68496cda3e7ac5cad73597dce9352454a786b827779875534db08e043"
+        "sha256": "31d5a538d80f7f2c04a66292420a63fb40375e22c8316f0878d0a19926c3ff33"
       },
       {
         "file": "src/guardian.test.ts",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "6e49a50c0dedbabc2580ec1a3797c6b49bde0742e4cb72f346a45a63f797dc20",
+    "verification_source_sha256": "f2f0a147a37a0c0e7bf2ecf3267aa606bef88fe57d3ae66a894d6f5e923c7f1e",
     "dependency_source": [
       {
         "file": "package.json",

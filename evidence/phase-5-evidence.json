@@ -25,7 +25,7 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "3cbe1b5a2a630219b7832e8ba00c81c54dab156eb98f32cc29a7b1cfc40a3793",
+  "generated_dist_sha256": "54d354bb40f68d056e60ae666197c9513a1d728a3fcdfc8951229210a240e0f1",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
