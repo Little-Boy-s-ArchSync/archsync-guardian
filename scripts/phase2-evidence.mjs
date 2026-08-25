@@ -61,9 +61,8 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
-      covered: value.covered,
-      total: value.total,
       percent: value.pct,
+      all_items_covered: true,
     };
   }
   return measured;
@@ -194,6 +193,7 @@ const evidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
+    coverage_count_policy: "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     cli_smoke_checks: 23,
     clean_package_install: "required on Windows, macOS and Linux",
     canonical_benchmark: {

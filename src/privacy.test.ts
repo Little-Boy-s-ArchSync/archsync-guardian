@@ -27,6 +27,20 @@ describe("operational privacy", () => {
       home: "/home/member",
       workspace: "/home/member/archsync",
     })).toBe("$WORKSPACE/report.json");
+    expect(redactDiagnosticPath("C:\\Users\\member\\archsync\\report.json", {
+      home: "C:\\Users\\member",
+      workspace: "C:\\Users\\member\\archsync",
+    })).toBe("$WORKSPACE/report.json");
+    expect(redactDiagnosticPath("\\\\server\\share\\report.json", {
+      workspace: "\\\\server\\share",
+    })).toBe("$WORKSPACE/report.json");
+    expect(redactDiagnosticPath("reports/report.json", {
+      workspace: process.cwd(),
+    })).toBe("$WORKSPACE/reports/report.json");
+    expect(redactSensitiveText("relative-root/report.json", {
+      workspace: "relative-root",
+      home: "/",
+    })).toBe("$WORKSPACE/report.json");
     expect(redactSensitiveText("/kept/when/root-is-home", {
       home: "/",
       workspace: "/workspace",

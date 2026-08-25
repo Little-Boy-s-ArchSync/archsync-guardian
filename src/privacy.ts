@@ -15,9 +15,23 @@ const credentialPatterns: readonly [RegExp, string][] = [
   [/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu, "[REDACTED_EMAIL]"],
 ];
 
+function isPortableAbsolute(path: string): boolean {
+  if (path.startsWith("/") || path.startsWith("\\\\")) return true;
+  return /^[A-Za-z]:[\\/]/u.test(path);
+}
+
 function replacePath(value: string, path: string, label: string): string {
-  const normalized = resolve(path);
-  return normalized.length > 1 ? value.replaceAll(normalized, label) : value;
+  const candidates = new Set([
+    path,
+    path.replaceAll("\\", "/"),
+    path.replaceAll("/", "\\"),
+  ]);
+  if (!isPortableAbsolute(path)) candidates.add(resolve(path));
+  let output = value;
+  for (const candidate of candidates) {
+    if (candidate.length > 1) output = output.replaceAll(candidate, label);
+  }
+  return output;
 }
 
 /**
@@ -38,5 +52,6 @@ export function redactSensitiveText(
 }
 
 export function redactDiagnosticPath(path: string, context: RedactionContext = {}): string {
-  return redactSensitiveText(resolve(path), context);
+  const absolute = isPortableAbsolute(path) ? path : resolve(path);
+  return redactSensitiveText(absolute, context).replaceAll("\\", "/");
 }

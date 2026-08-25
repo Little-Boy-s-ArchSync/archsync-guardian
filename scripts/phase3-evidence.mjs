@@ -50,9 +50,8 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
-      covered: value.covered,
-      total: value.total,
       percent: value.pct,
+      all_items_covered: true,
     };
   }
   return measured;
@@ -245,6 +244,7 @@ const dependencyHashes = {
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
   "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
   "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
+  "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
 };
 const staticEvidence = {
   phase: 3,
@@ -275,6 +275,7 @@ const staticEvidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
+    coverage_count_policy: "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     cli_smoke_checks: 23,
     clean_package_install: "required on Windows, macOS and Linux",
   },
