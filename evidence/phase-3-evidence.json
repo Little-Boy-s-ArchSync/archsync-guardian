@@ -29,7 +29,7 @@
     "pnpm-lock.yaml": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de",
     "scripts/package-install-e2e.mjs": "117b45256c317fdbe3f1aea4353fc179567be3f96015bc8ba8fe836b2bb76cfa",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
-    "scripts/phase3-evidence.mjs": "6e0bc5a8be5314e84cb9234ddd1144398aa57617c34bf6ad57827de84d28f3ae"
+    "scripts/phase3-evidence.mjs": "4ab4d4c17a2d156ef4657c980563d8a4d0f884f7d73483cf08ed2153bdcbbfbf"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -227,18 +227,22 @@
     },
     "measured_engine_coverage": {
       "statements": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "branches": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "functions": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       },
       "lines": {
+        "complete": true,
         "percent": 100,
         "all_items_covered": true
       }
@@ -262,85 +266,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 114.19,
+      "cold_total_ms": 126.97,
       "warm_total_ms": [
-        71.16,
-        73.11,
-        68.23,
-        67.01,
-        63.16
+        75.98,
+        76.94,
+        72.41,
+        71.1,
+        69.62
       ],
       "warm_baseline_load_ms": [
-        6.45,
-        6.82,
-        6.43,
-        6.13,
-        6.01
+        7.26,
+        6.3,
+        7.82,
+        5.95,
+        6.76
       ],
       "warm_incremental_scan_ms": [
-        1.44,
-        1.33,
-        1.35,
-        1.14,
-        1.34
+        1.41,
+        1.56,
+        1.43,
+        1.17,
+        1.33
       ],
-      "warm_median_total_ms": 68.23,
-      "warm_median_baseline_load_ms": 6.43,
-      "warm_median_incremental_scan_ms": 1.34
+      "warm_median_total_ms": 72.41,
+      "warm_median_baseline_load_ms": 6.76,
+      "warm_median_incremental_scan_ms": 1.41
     },
     "violation": {
-      "cold_total_ms": 96.69,
+      "cold_total_ms": 96.37,
       "warm_total_ms": [
-        65.4,
-        61.35,
-        62.42,
-        57.81,
-        61.27
+        63.47,
+        72.28,
+        72.08,
+        72.62,
+        72.67
       ],
       "warm_baseline_load_ms": [
-        6.07,
-        7.61,
-        5.48,
-        5.64,
-        5.8
+        6.67,
+        8.61,
+        7.81,
+        7.63,
+        7.23
       ],
       "warm_incremental_scan_ms": [
+        1.14,
         1.07,
-        0.96,
-        1.12,
-        1.04,
-        1.08
+        1.28,
+        1.21,
+        1.1
       ],
-      "warm_median_total_ms": 61.35,
-      "warm_median_baseline_load_ms": 5.8,
-      "warm_median_incremental_scan_ms": 1.07
+      "warm_median_total_ms": 72.28,
+      "warm_median_baseline_load_ms": 7.63,
+      "warm_median_incremental_scan_ms": 1.14
     },
     "evolution": {
-      "cold_total_ms": 102.37,
+      "cold_total_ms": 98.53,
       "warm_total_ms": [
-        71.13,
-        62.17,
-        70.35,
-        62.52,
-        61.24
+        66.27,
+        65.65,
+        67.91,
+        72.4,
+        70.13
       ],
       "warm_baseline_load_ms": [
-        7,
-        6,
-        6.73,
-        5.94,
-        5.97
+        6.53,
+        6.45,
+        6.42,
+        7.8,
+        6.41
       ],
       "warm_incremental_scan_ms": [
-        1.23,
-        1.15,
-        1.36,
-        1.01,
-        0.98
+        1.14,
+        1.11,
+        1.05,
+        0.95,
+        1.26
       ],
-      "warm_median_total_ms": 62.52,
-      "warm_median_baseline_load_ms": 6,
-      "warm_median_incremental_scan_ms": 1.15
+      "warm_median_total_ms": 67.91,
+      "warm_median_baseline_load_ms": 6.45,
+      "warm_median_incremental_scan_ms": 1.11
     }
   }
 }

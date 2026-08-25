@@ -11,7 +11,7 @@ pnpm phase2:verify
 
 Any change to a bound implementation, input, verifier or dependency makes the committed Phase 2 manifest stale until the complete gate is rerun and the regenerated evidence is reviewed.
 
-The manifest records the exact covered and total item counts from `coverage/coverage-summary.json` and rejects any statement, branch, function or line metric below 100%. The thin terminal/demo process boundary is verified separately by 23 built-binary CLI checks.
+The verifier reads the exact covered and total item counts from `coverage/coverage-summary.json`, rejects any statement, branch, function or line metric below 100%, and rejects any covered/total mismatch. The committed manifest records the portable result (`complete: true`, `percent: 100`) because V8 can instrument a different absolute number of branches on different operating systems even when every branch is covered. The raw CI coverage artifact retains the platform-specific counts. The thin terminal/demo process boundary is verified separately by 23 built-binary CLI checks.
 
 The canonical 20-case end-to-end result and 40-signal detector challenge result are generated and verified in `archsync-benchmark`, which owns the source patches, annotated source signals and ground truth.
 
