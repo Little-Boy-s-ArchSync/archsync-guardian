@@ -80,7 +80,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
+        "sha256": "e3589813afb5d3bd2496e40d8a093a182369fec885488076d228bb49bc032f81"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -131,7 +131,7 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "085b9f4fed102dd83e2846b4759ad07dda05bf3b8501194cea7014c4c7e392b9",
+    "verification_source_sha256": "d79070637fd89330530423f137772ba2a550b8582ff924316eb3ab65390ac80f",
     "dependency_source": [
       {
         "file": "package.json",
@@ -226,23 +226,19 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 2796,
-        "total": 2796,
+        "complete": true,
         "percent": 100
       },
       "branches": {
-        "covered": 1145,
-        "total": 1145,
+        "complete": true,
         "percent": 100
       },
       "functions": {
-        "covered": 131,
-        "total": 131,
+        "complete": true,
         "percent": 100
       },
       "lines": {
-        "covered": 2796,
-        "total": 2796,
+        "complete": true,
         "percent": 100
       }
     },

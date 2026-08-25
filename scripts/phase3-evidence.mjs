@@ -50,8 +50,7 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
-      covered: value.covered,
-      total: value.total,
+      complete: true,
       percent: value.pct,
     };
   }
