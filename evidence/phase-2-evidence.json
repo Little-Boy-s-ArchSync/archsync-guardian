@@ -204,7 +204,7 @@
       },
       {
         "file": "docs/OPERATIONS-PRIVACY.md",
-        "sha256": "b5532fafb46266bfdbb9aba714c827531bb12ce4459a55f7d7c009ce62d76c98"
+        "sha256": "9f8604365d1198810d5becb82e3c0f34f01fe4fb8a65a72827d9771a149e3299"
       },
       {
         "file": "docs/contract-compatibility.md",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "884d2a0567ce5931da19261e881d98bb965d3f5f158579fc49ac7bdfae107d93",
+    "verification_source_sha256": "2d105fa2be61a663af521ac2279dc094988710dbd263950dd14c6979bf233d9f",
     "dependency_source": [
       {
         "file": "package.json",

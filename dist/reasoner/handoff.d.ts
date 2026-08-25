@@ -7,6 +7,10 @@ export interface ReviewHandoff {
     risk: RepairRisk;
     evidence_ids: string[];
     verification: RepairCandidate["verification"] | null;
+    filesystem_isolation: null | {
+        status: "approved" | "not-approved";
+        attestation_sha256: string | null;
+    };
     rollback: string;
     decision: null | {
         actor_type: "human";

@@ -47,3 +47,10 @@ The manifest intentionally records ADR-0005, Phase 5 Lead approval and Security
 approval as Proposed/Pending. It explicitly records that neither P4-120 nor a
 Phase 4/5 benchmark freeze is claimed. Evidence verification proves technical
 reproducibility; it cannot turn a pending human gate into an approval.
+
+The Phase 4 repair tests also prove a default-deny execution boundary: an
+opaque, versioned filesystem-and-network isolation capability must be issued
+for the exact workspace before an executor is called. No production issuer is
+configured. The deterministic `TEST_ONLY` adapter cannot yield
+`ACCEPTABLE_FOR_REVIEW`; absent, forged, mismatched and expired capabilities
+remain non-spawning, inconclusive evidence.

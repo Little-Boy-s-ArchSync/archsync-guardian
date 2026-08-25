@@ -58,7 +58,15 @@
     "verification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["decision", "tests", "conformance", "safe_apply", "new_blocking_findings"],
+      "required": [
+        "decision",
+        "tests",
+        "conformance",
+        "safe_apply",
+        "new_blocking_findings",
+        "filesystem_isolation",
+        "isolation_attestation_sha256"
+      ],
       "properties": {
         "decision": {
           "enum": [
@@ -72,8 +80,26 @@
         "tests": { "enum": ["pass", "fail", "not-run"] },
         "conformance": { "enum": ["pass", "fail", "not-run"] },
         "safe_apply": { "type": "boolean" },
-        "new_blocking_findings": { "type": "integer", "minimum": 0 }
-      }
+        "new_blocking_findings": { "type": "integer", "minimum": 0 },
+        "filesystem_isolation": { "enum": ["approved", "not-approved"] },
+        "isolation_attestation_sha256": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "filesystem_isolation": { "const": "approved" } } },
+          "then": {
+            "properties": {
+              "isolation_attestation_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          },
+          "else": { "properties": { "isolation_attestation_sha256": { "type": "null" } } }
+        }
+      ]
     }
   },
   "allOf": [

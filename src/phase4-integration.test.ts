@@ -8,13 +8,13 @@ import { loadArchitecture } from "@archsync/core";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { checkRepository } from "./guardian.js";
+import { createTestOnlyRepairIsolationExecutor } from "./repair-isolation.js";
 import {
   bindRepairVerificationResult,
   guardianResultToRepairSnapshot,
   repairCandidateSchemaVersion,
   validateRepairCandidate,
   verifyRepairCandidate,
-  type NoNetworkCommandExecutor,
 } from "./repair-verification.js";
 import type { RepairCandidate, ReasonerEvidence } from "./reasoner/contracts.js";
 import { validateProposedRepairCandidateShape } from "./reasoner/contracts.js";
@@ -158,8 +158,8 @@ describe("combined Phase 4 deterministic boundary", () => {
       paths: ["frontend/src/app.ts"],
     });
 
-    const fixtureExecutor: NoNetworkCommandExecutor = {
-      network_isolation: "ENFORCED",
+    const fixtureExecutor = async (sandboxWorkspace: string) => createTestOnlyRepairIsolationExecutor({
+      workspace: sandboxWorkspace,
       async execute(invocation) {
         const content = await readFile(join(invocation.cwd, "frontend", "src", "app.ts"), "utf8");
         const safe = !content.includes("paymentServiceUrl") && !content.includes("payDirectly");
@@ -170,7 +170,7 @@ describe("combined Phase 4 deterministic boundary", () => {
           timed_out: false,
         };
       },
-    };
+    });
     const verified = await verifyRepairCandidate({
       source_root: workspace,
       candidate,
@@ -178,11 +178,18 @@ describe("combined Phase 4 deterministic boundary", () => {
         await checkRepository(architecture, candidateWorkspace),
       ),
       test_command: { command: "pnpm", args: ["test"] },
-      command_executor: fixtureExecutor,
+      command_executor_factory: (sandbox) => fixtureExecutor(sandbox.workspace),
     });
-    expect(verified.decision).toBe("ACCEPTABLE_FOR_REVIEW");
+    expect(verified).toMatchObject({
+      decision: "INCONCLUSIVE",
+      tests: { status: "PASS", filesystem_isolation: { status: "TEST_ONLY" } },
+      filesystem_isolation: { status: "TEST_ONLY", reason: "FILESYSTEM_ISOLATION_TEST_ONLY" },
+    });
     const bound = bindRepairVerificationResult(candidate, verified);
-    expect(bound.status).toBe("VERIFIED_FOR_REVIEW");
+    expect(bound).toMatchObject({
+      status: "PROPOSED",
+      verification: { filesystem_isolation: "not-approved", isolation_attestation_sha256: null },
+    });
     const handoff = createReviewHandoff("case-06-human-review", bound, ["finding-arch001"]);
     expect(handoff.decision).toBeNull();
     expect(isHumanApproved(handoff)).toBe(false);
@@ -262,6 +269,8 @@ describe("combined Phase 4 deterministic boundary", () => {
                 conformance: "pass",
                 safe_apply: true,
                 new_blocking_findings: 0,
+                filesystem_isolation: "approved",
+                isolation_attestation_sha256: "a".repeat(64),
               },
             })
           : validCandidate();

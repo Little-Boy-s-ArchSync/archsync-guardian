@@ -43,6 +43,8 @@ export interface VerificationResult {
     conformance: "pass" | "fail" | "not-run";
     safe_apply: boolean;
     new_blocking_findings: number;
+    filesystem_isolation: "approved" | "not-approved";
+    isolation_attestation_sha256: string | null;
 }
 export interface RepairFileExpectation {
     path: string;

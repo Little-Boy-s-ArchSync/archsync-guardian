@@ -97,6 +97,8 @@ describe("Phase 4 contracts", () => {
         conformance: "pass",
         safe_apply: true,
         new_blocking_findings: 0,
+        filesystem_isolation: "approved",
+        isolation_attestation_sha256: "a".repeat(64),
       },
     };
     expect(validateRepairCandidateShape(value)).toEqual([]);
@@ -107,6 +109,8 @@ describe("Phase 4 contracts", () => {
       { ...value.verification!, conformance: "fail" as const },
       { ...value.verification!, safe_apply: false },
       { ...value.verification!, new_blocking_findings: 1 },
+      { ...value.verification!, filesystem_isolation: "not-approved" as const, isolation_attestation_sha256: null },
+      { ...value.verification!, isolation_attestation_sha256: null },
     ]) {
       expect(isReviewableRepairCandidate({ ...value, verification })).toBe(false);
     }
@@ -153,6 +157,8 @@ describe("Phase 4 contracts", () => {
         conformance: "pass",
         safe_apply: true,
         new_blocking_findings: 0,
+        filesystem_isolation: "approved",
+        isolation_attestation_sha256: "a".repeat(64),
       },
     }).map(({ path }) => path)).toEqual(["/status", "/verification"]);
     expect(validateProposedRepairCandidateShape(null)).toEqual([{ path: "/", message: "must be an object" }]);
@@ -185,6 +191,37 @@ describe("Phase 4 contracts", () => {
       "/verification/conformance",
       "/verification/safe_apply",
       "/verification/new_blocking_findings",
+      "/verification/filesystem_isolation",
+      "/verification/isolation_attestation_sha256",
     ]);
+    const baseVerification = {
+      decision: "INCONCLUSIVE" as const,
+      tests: "not-run" as const,
+      conformance: "not-run" as const,
+      safe_apply: false,
+      new_blocking_findings: 0,
+    };
+    for (const verification of [
+      {
+        ...baseVerification,
+        filesystem_isolation: "approved",
+        isolation_attestation_sha256: null,
+      },
+      {
+        ...baseVerification,
+        filesystem_isolation: "not-approved",
+        isolation_attestation_sha256: "b".repeat(64),
+      },
+      {
+        ...baseVerification,
+        filesystem_isolation: "approved",
+        isolation_attestation_sha256: "not-a-sha",
+      },
+    ]) {
+      expect(validateRepairCandidateShape({ ...candidate(), verification })).toContainEqual({
+        path: "/verification/isolation_attestation_sha256",
+        message: expect.any(String),
+      });
+    }
   });
 });

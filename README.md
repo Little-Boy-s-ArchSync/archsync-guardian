@@ -6,7 +6,7 @@
 
 Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
-**Phase 4 preparatory status:** versioned Explanation and canonical P4-103 Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, complete deterministic taxonomy mapping over the locked 20-case benchmark replay, offline repair verification, and human-review handoff are implemented behind a proposed ADR. The exact locked case-06 fixture and all 12 development safety cases run through deterministic/fake boundaries in tests. These are regression checks, not model, provider, repair-quality, or research results. Real-provider execution remains prohibited until EXP-101, Lead review, dataset/configuration freeze, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+**Phase 4 preparatory status:** versioned Explanation and canonical P4-103 Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, complete deterministic taxonomy mapping over the locked 20-case benchmark replay, default-deny repair verification, and human-review handoff are implemented behind a proposed ADR. Project tests require an opaque, short-lived filesystem-and-network isolation capability bound to the exact workspace; no production issuer or approved isolator is configured, and the explicitly `TEST_ONLY` in-process adapter cannot produce reviewable evidence. The exact locked case-06 fixture and all 12 development safety cases run through deterministic/fake boundaries in tests. These are regression checks, not model, provider, repair-quality, or research results. Real-provider execution remains prohibited until EXP-101, Lead review, dataset/configuration freeze, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
 
 See [`docs/phase-4-integration-status.md`](docs/phase-4-integration-status.md) for task-by-task coverage and remaining human/provider gates.
 
@@ -191,6 +191,7 @@ src/iac-terraform.ts  narrow, non-executing Terraform resource parser
 src/iac-kubernetes.ts multi-document Kubernetes parser and reference resolver
 src/iac-normalize.ts  identity map, graph normalization, claims and conflicts
 src/iac-security.ts   preparatory deterministic infrastructure security rules
+src/repair-isolation.ts  opaque, default-deny project-test isolation capability
 src/repair-verification.ts  preparatory repair sandbox, patch/test/recheck gates
 src/runtime/          privacy-minimized runtime evidence and observed graph
 src/evolution/        per-goal scorecards and fail-closed approval records

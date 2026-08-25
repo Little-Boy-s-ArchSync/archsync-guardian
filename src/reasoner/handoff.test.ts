@@ -31,6 +31,8 @@ function candidate(status: RepairCandidate["status"] = "PROPOSED"): RepairCandid
         conformance: "pass" as const,
         safe_apply: true,
         new_blocking_findings: 0,
+        filesystem_isolation: "approved" as const,
+        isolation_attestation_sha256: "a".repeat(64),
       },
     } : {}),
   };
@@ -43,6 +45,7 @@ describe("human-review handoff", () => {
     expect(first).toEqual(second);
     expect(first.evidence_ids).toEqual(["a", "z"]);
     expect(first.verification).toBeNull();
+    expect(first.filesystem_isolation).toBeNull();
     expect(first.decision).toBeNull();
     expect(first.candidate_hash).toMatch(/^[0-9a-f]{64}$/);
     expect(isHumanApproved(first)).toBe(false);
@@ -61,6 +64,10 @@ describe("human-review handoff", () => {
     });
     expect(isHumanApproved(decided)).toBe(true);
     expect(decided.verification).not.toBeNull();
+    expect(decided.filesystem_isolation).toEqual({
+      status: "approved",
+      attestation_sha256: "a".repeat(64),
+    });
     expect(() => recordHumanReview(decided, decided.decision!)).toThrow("immutable decision");
   });
 
@@ -107,6 +114,9 @@ describe("human-review handoff", () => {
       { ...valid, verification: { ...accepted, conformance: "fail" } },
       { ...valid, verification: { ...accepted, safe_apply: false } },
       { ...valid, verification: { ...accepted, new_blocking_findings: 1 } },
+      { ...valid, filesystem_isolation: null },
+      { ...valid, filesystem_isolation: { status: "not-approved", attestation_sha256: null } },
+      { ...valid, filesystem_isolation: { status: "approved", attestation_sha256: "b".repeat(64) } },
     ];
     const approval = {
       actor_type: "human" as const,

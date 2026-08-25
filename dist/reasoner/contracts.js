@@ -109,6 +109,21 @@ export function validateRepairCandidateShape(value) {
         if (!Number.isInteger(value.verification.new_blocking_findings) || value.verification.new_blocking_findings < 0) {
             issues.push({ path: "/verification/new_blocking_findings", message: "must be a non-negative integer" });
         }
+        if (!(value.verification.filesystem_isolation === "approved" || value.verification.filesystem_isolation === "not-approved")) {
+            issues.push({ path: "/verification/filesystem_isolation", message: "must be approved or not-approved" });
+        }
+        if (value.verification.isolation_attestation_sha256 !== null &&
+            (typeof value.verification.isolation_attestation_sha256 !== "string" ||
+                !/^[a-f0-9]{64}$/u.test(value.verification.isolation_attestation_sha256))) {
+            issues.push({ path: "/verification/isolation_attestation_sha256", message: "must be null or lowercase SHA-256" });
+        }
+        if ((value.verification.filesystem_isolation === "approved") !==
+            (typeof value.verification.isolation_attestation_sha256 === "string")) {
+            issues.push({
+                path: "/verification/isolation_attestation_sha256",
+                message: "must be present exactly when filesystem isolation is approved",
+            });
+        }
     }
     return issues;
 }
@@ -128,6 +143,9 @@ export function isReviewableRepairCandidate(candidate) {
     return candidate.status === "VERIFIED_FOR_REVIEW" && candidate.verification !== undefined &&
         candidate.verification.decision === "ACCEPTABLE_FOR_REVIEW" &&
         candidate.verification.safe_apply && candidate.verification.tests === "pass" &&
-        candidate.verification.conformance === "pass" && candidate.verification.new_blocking_findings === 0;
+        candidate.verification.conformance === "pass" && candidate.verification.new_blocking_findings === 0 &&
+        candidate.verification.filesystem_isolation === "approved" &&
+        typeof candidate.verification.isolation_attestation_sha256 === "string" &&
+        /^[a-f0-9]{64}$/u.test(candidate.verification.isolation_attestation_sha256);
 }
 //# sourceMappingURL=contracts.js.map

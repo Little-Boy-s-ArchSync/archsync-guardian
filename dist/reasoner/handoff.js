@@ -22,7 +22,10 @@ function hasAcceptableVerification(handoff) {
         handoff.verification.tests === "pass" &&
         handoff.verification.conformance === "pass" &&
         handoff.verification.safe_apply &&
-        handoff.verification.new_blocking_findings === 0;
+        handoff.verification.new_blocking_findings === 0 &&
+        handoff.filesystem_isolation?.status === "approved" &&
+        typeof handoff.filesystem_isolation.attestation_sha256 === "string" &&
+        handoff.filesystem_isolation.attestation_sha256 === handoff.verification.isolation_attestation_sha256;
 }
 export function createReviewHandoff(handoffId, candidate, evidenceIds) {
     if (!handoffId.trim())
@@ -42,6 +45,12 @@ export function createReviewHandoff(handoffId, candidate, evidenceIds) {
         risk: candidate.risk,
         evidence_ids: [...new Set(evidenceIds)].sort(),
         verification: candidate.verification ?? null,
+        filesystem_isolation: candidate.verification
+            ? {
+                status: candidate.verification.filesystem_isolation,
+                attestation_sha256: candidate.verification.isolation_attestation_sha256,
+            }
+            : null,
         rollback: candidate.rollback,
         decision: null,
     };

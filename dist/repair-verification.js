@@ -4,10 +4,12 @@ import { cp, lstat, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile, } f
 import { tmpdir } from "node:os";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
+import { assessRepairIsolationCapability, repairIsolationAttestationSchemaVersion, } from "./repair-isolation.js";
 import { repairCandidateContractVersion, validateProposedRepairCandidateShape, } from "./reasoner/contracts.js";
 const execFileAsync = promisify(execFile);
 export const repairCandidateSchemaVersion = repairCandidateContractVersion;
 export const repairVerificationSchemaVersion = "0.1.0-preparatory";
+export { repairIsolationAttestationSchemaVersion };
 export const defaultSandboxCommandAllowlist = [
     "bun",
     "bun.exe",
@@ -351,6 +353,17 @@ export function sanitizeVerificationLog(value, sandboxRoot, sensitiveValues = []
 function commandIsAllowed(command, allowlist) {
     return command === basename(command) && allowlist.includes(command.toLowerCase());
 }
+function isolationNotEvaluated(reason = "FILESYSTEM_ISOLATION_NOT_EVALUATED") {
+    return {
+        schema_version: repairIsolationAttestationSchemaVersion,
+        status: "REJECTED",
+        reason,
+        capability_id: null,
+        isolator_id: null,
+        approval_id: null,
+        attestation_sha256: null,
+    };
+}
 export async function runSandboxCommand(sandbox, command, options = {}) {
     const started = Date.now();
     const allowlist = options.allowlist ?? defaultSandboxCommandAllowlist;
@@ -363,6 +376,7 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
             duration_ms: Date.now() - started,
             stdout: "",
             stderr: "",
+            filesystem_isolation: isolationNotEvaluated(),
             reason: "COMMAND_NOT_ALLOWED",
         };
     }
@@ -375,13 +389,14 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
             duration_ms: Date.now() - started,
             stdout: "",
             stderr: "",
+            filesystem_isolation: isolationNotEvaluated(),
             reason: "INVALID_COMMAND_ARGUMENT",
         };
     }
-    const executor = options.executor === undefined
-        ? createPlatformNoNetworkExecutor()
-        : options.executor;
-    if (!executor) {
+    const executor = options.executor;
+    const isolation = await assessRepairIsolationCapability(executor, sandbox.workspace);
+    const testOnlySimulation = isolation.evidence.status === "TEST_ONLY" && process.env.VITEST === "true";
+    if (!isolation.approved && !testOnlySimulation) {
         return {
             status: "INCONCLUSIVE",
             command: command.command,
@@ -390,7 +405,8 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
             duration_ms: Date.now() - started,
             stdout: "",
             stderr: "",
-            reason: "NETWORK_SANDBOX_UNAVAILABLE",
+            filesystem_isolation: isolation.evidence,
+            reason: isolation.evidence.reason,
         };
     }
     const timeout = options.timeout_ms ?? defaultTestTimeoutMs;
@@ -403,6 +419,7 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
             duration_ms: Date.now() - started,
             stdout: "",
             stderr: "",
+            filesystem_isolation: isolation.evidence,
             reason: "INVALID_TIMEOUT",
         };
     }
@@ -427,6 +444,7 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
             duration_ms: Date.now() - started,
             stdout: "",
             stderr: sanitizeVerificationLog(error.message, sandbox.root, options.sensitive_values),
+            filesystem_isolation: isolation.evidence,
             reason: "COMMAND_EXECUTOR_FAILED",
         };
     }
@@ -439,6 +457,7 @@ export async function runSandboxCommand(sandbox, command, options = {}) {
         args: command.args,
         exit_code: result.exit_code,
         duration_ms: Date.now() - started,
+        filesystem_isolation: isolation.evidence,
         ...output,
     };
     if (result.timed_out)
@@ -486,6 +505,7 @@ export async function runProjectTests(sandbox, options = {}) {
             duration_ms: 0,
             stdout: "",
             stderr: "",
+            filesystem_isolation: isolationNotEvaluated(),
             reason: "TEST_COMMAND_NOT_FOUND",
         };
     }
@@ -661,6 +681,12 @@ export function decideRepairVerification(input) {
     if (input.patch_status === "INCONCLUSIVE") {
         return { decision: "INCONCLUSIVE", reason: "Patch verification infrastructure did not complete" };
     }
+    if (input.filesystem_isolation_status !== "APPROVED") {
+        return {
+            decision: "INCONCLUSIVE",
+            reason: "An approved filesystem-isolation capability was not established for project tests",
+        };
+    }
     if (input.tests_status === "TIMEOUT" || input.tests_status === "INCONCLUSIVE" || input.tests_status === undefined) {
         return { decision: "INCONCLUSIVE", reason: "Project tests did not complete conclusively" };
     }
@@ -708,9 +734,15 @@ export function bindRepairVerificationResult(candidate, result) {
         conformance,
         safe_apply: result.patch.status === "APPLIED",
         new_blocking_findings: result.conformance?.new_block_finding_fingerprints.length ?? 0,
+        filesystem_isolation: result.filesystem_isolation?.status === "APPROVED" ? "approved" : "not-approved",
+        isolation_attestation_sha256: result.filesystem_isolation?.status === "APPROVED"
+            ? result.filesystem_isolation.attestation_sha256
+            : null,
     };
     const reviewable = result.decision === "ACCEPTABLE_FOR_REVIEW" &&
-        verification.tests === "pass" && verification.conformance === "pass" && verification.safe_apply;
+        verification.tests === "pass" && verification.conformance === "pass" && verification.safe_apply &&
+        verification.filesystem_isolation === "approved" &&
+        verification.isolation_attestation_sha256 !== null;
     return {
         ...candidate,
         status: reviewable ? "VERIFIED_FOR_REVIEW" : "PROPOSED",
@@ -725,6 +757,7 @@ function emptyPatchFailure(candidate, validation) {
         reason: validation.message,
         patch: { status: "REJECTED", code: validation.code, message: validation.message, paths: [] },
         tests: null,
+        filesystem_isolation: null,
         conformance: null,
         sandbox_cleanup: "NOT_CREATED",
     };
@@ -748,6 +781,7 @@ export async function verifyRepairCandidate(options) {
             reason: `Sandbox creation failed: ${error.message}`,
             patch: { status: "INCONCLUSIVE", code: "NOT_ATTEMPTED", message: "Sandbox was not created", paths: validation.paths },
             tests: null,
+            filesystem_isolation: null,
             conformance: null,
             sandbox_cleanup: "NOT_CREATED",
         };
@@ -763,6 +797,7 @@ export async function verifyRepairCandidate(options) {
                 reason: baseline.message,
                 patch: { status: "INCONCLUSIVE", code: "NOT_ATTEMPTED", message: "Baseline recheck did not complete", paths: validation.paths },
                 tests: null,
+                filesystem_isolation: null,
                 conformance: null,
                 sandbox_cleanup: "COMPLETED",
             };
@@ -779,6 +814,7 @@ export async function verifyRepairCandidate(options) {
                     reason: "One or more declared target BLOCK findings are absent from the baseline recheck",
                     patch: { status: "INCONCLUSIVE", code: "NOT_ATTEMPTED", message: "Target baseline mismatch", paths: validation.paths },
                     tests: null,
+                    filesystem_isolation: null,
                     conformance: comparison,
                     sandbox_cleanup: "COMPLETED",
                 };
@@ -799,14 +835,18 @@ export async function verifyRepairCandidate(options) {
                         ...decision,
                         patch,
                         tests: null,
+                        filesystem_isolation: null,
                         conformance: null,
                         sandbox_cleanup: "COMPLETED",
                     };
                 }
                 else {
+                    const commandExecutor = options.command_executor_factory
+                        ? await options.command_executor_factory(sandbox)
+                        : options.command_executor;
                     const tests = await runProjectTests(sandbox, {
                         ...(options.test_command ? { command: options.test_command } : {}),
-                        ...(options.command_executor !== undefined ? { executor: options.command_executor } : {}),
+                        ...(commandExecutor !== undefined ? { executor: commandExecutor } : {}),
                         ...(options.timeout_ms !== undefined ? { timeout_ms: options.timeout_ms } : {}),
                         ...(options.sensitive_values ? { sensitive_values: options.sensitive_values } : {}),
                     });
@@ -817,6 +857,7 @@ export async function verifyRepairCandidate(options) {
                     const decision = decideRepairVerification({
                         patch_status: patch.status,
                         tests_status: tests.status,
+                        filesystem_isolation_status: tests.filesystem_isolation.status,
                         recheck_complete: candidate.status === "COMPLETE",
                         missing_targets: 0,
                         remaining_targets: comparison?.remaining_target_finding_fingerprints.length ?? 0,
@@ -828,6 +869,7 @@ export async function verifyRepairCandidate(options) {
                         ...decision,
                         patch,
                         tests,
+                        filesystem_isolation: tests.filesystem_isolation,
                         conformance: comparison,
                         sandbox_cleanup: "COMPLETED",
                     };
@@ -843,6 +885,7 @@ export async function verifyRepairCandidate(options) {
             reason: sanitizeVerificationLog(error.message, sandbox.root, options.sensitive_values),
             patch: { status: "INCONCLUSIVE", code: "GIT_UNAVAILABLE", message: "Verification pipeline failed", paths: validation.paths },
             tests: null,
+            filesystem_isolation: null,
             conformance: null,
             sandbox_cleanup: "COMPLETED",
         };

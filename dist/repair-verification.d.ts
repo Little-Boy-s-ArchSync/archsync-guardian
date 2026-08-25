@@ -1,7 +1,10 @@
 import type { GuardianFinding, GuardianResult } from "./contracts.js";
+import { repairIsolationAttestationSchemaVersion, type FilesystemIsolatedCommandExecutor, type ProcessInvocation, type ProcessResult, type ProcessRunner, type RepairIsolationEvidence, type RepairIsolationStatus } from "./repair-isolation.js";
 import { type RepairCandidate, type RepairVerificationOutcome } from "./reasoner/contracts.js";
 export declare const repairCandidateSchemaVersion: "0.1.0-preparatory";
 export declare const repairVerificationSchemaVersion: "0.1.0-preparatory";
+export { repairIsolationAttestationSchemaVersion };
+export type { FilesystemIsolatedCommandExecutor, ProcessInvocation, ProcessResult, ProcessRunner, RepairIsolationAttestation, RepairIsolationCapability, RepairIsolationEvidence, RepairIsolationStatus, } from "./repair-isolation.js";
 export declare const defaultSandboxCommandAllowlist: readonly ["bun", "bun.exe", "npm", "npm.cmd", "pnpm", "pnpm.cmd", "yarn", "yarn.cmd"];
 export type RepairVerificationDecision = RepairVerificationOutcome;
 export type CanonicalRepairCandidate = RepairCandidate;
@@ -22,22 +25,8 @@ export interface RepairSandbox {
     resolve_path(relativePath: string): string;
     cleanup(): Promise<void>;
 }
-export interface ProcessInvocation {
-    command: string;
-    args: string[];
-    cwd: string;
-    env: NodeJS.ProcessEnv;
-    timeout_ms: number;
-    max_output_bytes: number;
-}
-export interface ProcessResult {
-    exit_code: number | null;
-    stdout: string;
-    stderr: string;
-    timed_out: boolean;
-    infrastructure_error?: string;
-}
-export type ProcessRunner = (invocation: ProcessInvocation) => Promise<ProcessResult>;
+/** Network-only wrapping is retained as a defense in depth primitive. It is
+ * not a filesystem-isolation capability and cannot authorize project tests. */
 export interface NoNetworkCommandExecutor {
     network_isolation: "ENFORCED";
     execute(invocation: ProcessInvocation): Promise<ProcessResult>;
@@ -54,6 +43,7 @@ export interface ProjectTestResult {
     duration_ms: number;
     stdout: string;
     stderr: string;
+    filesystem_isolation: RepairIsolationEvidence;
     reason?: string;
 }
 export interface PatchApplySuccess {
@@ -94,6 +84,7 @@ export interface RepairDecisionInput {
     missing_targets: number;
     remaining_targets: number;
     new_blocks: number;
+    filesystem_isolation_status?: RepairIsolationStatus;
 }
 export interface RepairDecision {
     decision: RepairVerificationDecision;
@@ -106,6 +97,7 @@ export interface RepairVerificationResult {
     reason: string;
     patch: PatchApplyResult;
     tests: ProjectTestResult | null;
+    filesystem_isolation: RepairIsolationEvidence | null;
     conformance: RepairConformanceComparison | null;
     sandbox_cleanup: "COMPLETED" | "NOT_CREATED" | "FAILED";
 }
@@ -114,7 +106,8 @@ export interface VerifyRepairOptions {
     candidate: RepairCandidate;
     recheck: RepairRecheck;
     test_command?: SandboxCommand;
-    command_executor?: NoNetworkCommandExecutor | null;
+    command_executor?: FilesystemIsolatedCommandExecutor | null;
+    command_executor_factory?: (sandbox: RepairSandbox) => Promise<FilesystemIsolatedCommandExecutor | null>;
     process_runner?: ProcessRunner;
     sandbox_factory?: typeof createRepairSandbox;
     temp_parent?: string;
@@ -137,7 +130,7 @@ export declare function createPlatformNoNetworkExecutor(platform?: NodeJS.Platfo
 export declare function sandboxEnvironment(workspace: string, source?: NodeJS.ProcessEnv): NodeJS.ProcessEnv;
 export declare function sanitizeVerificationLog(value: string, sandboxRoot: string, sensitiveValues?: string[], maximumBytes?: number): string;
 export declare function runSandboxCommand(sandbox: RepairSandbox, command: SandboxCommand, options?: {
-    executor?: NoNetworkCommandExecutor | null;
+    executor?: FilesystemIsolatedCommandExecutor | null;
     allowlist?: readonly string[];
     timeout_ms?: number;
     sensitive_values?: string[];
@@ -145,7 +138,7 @@ export declare function runSandboxCommand(sandbox: RepairSandbox, command: Sandb
 export declare function detectProjectTestCommand(workspace: string): Promise<SandboxCommand | undefined>;
 export declare function runProjectTests(sandbox: RepairSandbox, options?: {
     command?: SandboxCommand;
-    executor?: NoNetworkCommandExecutor | null;
+    executor?: FilesystemIsolatedCommandExecutor | null;
     timeout_ms?: number;
     sensitive_values?: string[];
 }): Promise<ProjectTestResult>;
