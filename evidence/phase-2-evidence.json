@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "df18c6085b2289a0721776e798ae2188c903bea7ec465a274803766209e8dcb0",
+    "implementation_source_sha256": "bb336f64d44d1c92a21478b3afda845acb14e1dcaa95dcdaf3115de9845cb90b",
     "fixture_tree": {
       "files": [
         {
@@ -80,7 +80,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
+        "sha256": "1516d40b8157a89150e22e859afa6a58ec4c522f497e33252a919815d63ec36f"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -131,26 +131,26 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "085b9f4fed102dd83e2846b4759ad07dda05bf3b8501194cea7014c4c7e392b9",
+    "verification_source_sha256": "6a778b3d4a2ef3207e0d6c2c49702d75bb62aa36e4b5696610c132ae48b2e467",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e"
+        "sha256": "ceb5d7b204574a9728f332f8c3bac8a7de2c753c38186240fac26c82bb290c77"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de"
+        "sha256": "741d68d66acb504e42dd3b95caa98e4b0c79f1d24829582095b9a7b56573c51a"
       },
       {
         "file": "pnpm-workspace.yaml",
         "sha256": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16"
       },
       {
-        "file": "vendor/archsync-core-0.1.1.tgz",
-        "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
+        "file": "vendor/archsync-core-0.1.1-p6-783716d.tgz",
+        "sha256": "943b6e0da88a227835b49c4b505c55af58ca1f4d4edb2c515e9e51972d1e4199"
       }
     ],
-    "dependency_source_sha256": "21035b0222d8f62acd1ab70699c3bf8f3f1189a1f7727e175fb1fe296dc1d9f6"
+    "dependency_source_sha256": "4e8389cf6d4c6f505313583dde8aef6821162a43f0022dbf7956609913899d54"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -166,15 +166,15 @@
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-      "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
+      "src/index.ts": "e7c3bb70b3ce10eff5e2f03980b76da123d7a040e21f9fcbbe7a0ce0d7aca878",
       "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },
   "core_dependency": {
-    "repository_commit": "f7812c471887029951b5e5ad4105a72f0b29d0ed",
-    "vendored_package": "vendor/archsync-core-0.1.1.tgz",
-    "vendored_package_sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1"
+    "repository_commit": "783716d7961690b1e8c1cda4acb956777977a853",
+    "vendored_package": "vendor/archsync-core-0.1.1-p6-783716d.tgz",
+    "vendored_package_sha256": "943b6e0da88a227835b49c4b505c55af58ca1f4d4edb2c515e9e51972d1e4199",
+    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1 plus proposed quality-goal v0.2 contract"
   },
   "analyzer": {
     "id": "archsync-typescript",
@@ -226,23 +226,23 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 2627,
+        "total": 2627,
         "percent": 100
       },
       "branches": {
-        "covered": 803,
-        "total": 803,
+        "covered": 1078,
+        "total": 1078,
         "percent": 100
       },
       "functions": {
-        "covered": 94,
-        "total": 94,
+        "covered": 135,
+        "total": 135,
         "percent": 100
       },
       "lines": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 2627,
+        "total": 2627,
         "percent": 100
       }
     },

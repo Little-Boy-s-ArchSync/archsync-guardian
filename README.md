@@ -1,5 +1,7 @@
 # ArchSync Guardian
 
+The draft Phase 6 runtime-awareness foundation adds privacy-minimized OTLP fixture ingestion, deterministic observed-runtime graphs, evidence-grounded per-goal scorecards and a fail-closed human approval record. The design is proposed, not approved or experimentally validated; see [`docs/adr/0005-runtime-evidence-proposed.md`](docs/adr/0005-runtime-evidence-proposed.md).
+
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
