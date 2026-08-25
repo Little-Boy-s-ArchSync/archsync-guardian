@@ -25,3 +25,23 @@ pnpm phase3:verify
 ```
 
 The committed timing values are observed measurements from the environment recorded in the evidence file. Verification recomputes functional outcomes and provenance hashes, validates every raw timing sample and recomputes the stored medians instead of pretending timings are deterministic across machines.
+
+`phase-5-evidence.json` binds the preparatory, non-executing IaC foundation to
+the complete implementation/test source, committed `dist` output, Terraform and
+Kubernetes fixtures, positive and hard-negative security corpora, governance
+documents, package metadata and lockfile. It records controlled parser,
+normalization, identity, claim-classification and four-rule security outcomes,
+plus the repository-wide 100% coverage totals.
+
+Generate and verify it only after the implementation and documentation are
+intentional:
+
+```bash
+pnpm phase5:evidence:update
+pnpm phase5:verify
+```
+
+The manifest intentionally records ADR-0005, Phase 5 Lead approval and Security
+approval as Proposed/Pending. It explicitly records that neither P4-120 nor a
+Phase 4/5 benchmark freeze is claimed. Evidence verification proves technical
+reproducibility; it cannot turn a pending human gate into an approval.

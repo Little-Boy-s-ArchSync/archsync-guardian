@@ -46,12 +46,16 @@
     "evidence:verify": "node scripts/phase2-evidence.mjs",
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
+    "phase5:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase5-evidence.mjs --write",
+    "phase5:evidence:verify": "node scripts/phase5-evidence.mjs",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
-    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
+    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify",
+    "phase5:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify && pnpm phase5:evidence:verify"
   },
   "dependencies": {
     "@archsync/core": "file:vendor/archsync-core-0.1.1.tgz",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "yaml": "2.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

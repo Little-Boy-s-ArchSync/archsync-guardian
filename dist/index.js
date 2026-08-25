@@ -5,6 +5,12 @@ export * from "./demo.js";
 export * from "./doctor.js";
 export * from "./version.js";
 export * from "./guardian.js";
+export * from "./iac.js";
+export * from "./iac-contracts.js";
+export * from "./iac-kubernetes.js";
+export * from "./iac-normalize.js";
+export * from "./iac-security.js";
+export * from "./iac-terraform.js";
 export * from "./model-cli.js";
 export * from "./phase3.js";
 //# sourceMappingURL=index.js.map

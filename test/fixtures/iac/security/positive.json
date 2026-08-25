@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    { "id": "data/orders-db", "kind": "database", "exposure": "public", "approved": true, "trust_boundary": "data" },
+    { "id": "public/orders-ingress", "kind": "ingress", "exposure": "public", "approved": false, "trust_boundary": "public" },
+    { "id": "integration/orders-events", "kind": "broker", "exposure": "private", "approved": false, "trust_boundary": "integration" },
+    { "id": "data/orders-cache", "kind": "cache", "exposure": "private", "approved": false, "trust_boundary": "data" },
+    { "id": "application/orders-api", "kind": "service", "exposure": "internal", "approved": true, "trust_boundary": "application" }
+  ],
+  "edges": [
+    { "from": "public/orders-ingress", "to": "application/orders-api", "type": "routes-to", "approved_trust_transition": false }
+  ]
+}

@@ -10,7 +10,7 @@
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
     "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
-    "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
+    "src/index.ts": "26f5aa44159d1446ac2a635b00df697e7c6730b9a09c23e5d5bc8f329950770b",
     "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
@@ -22,11 +22,11 @@
     "test/fixtures/violation/frontend/src/database.ts": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
   },
   "dependency_sha256": {
-    ".github/workflows/ci.yml": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41",
+    ".github/workflows/ci.yml": "3be39a04327451d091c18cc6448b32ffb257af8a22653c54d3bc0944e35159d3",
     "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
     "vendor/archsync-core-0.1.1.tgz": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "package.json": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e",
-    "pnpm-lock.yaml": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de",
+    "package.json": "2303bda4fc905cd0ba8c9b049c5afa81f6a921060b7fe002d7fe1ce18963ef0e",
+    "pnpm-lock.yaml": "af8ceaed554f27621a99bd4c38a2671dfd8ffe9faf8a54af1ace5d860bee6f32",
     "scripts/package-install-e2e.mjs": "29326ac0a237662367bdab457b9e5741a367e062eb9d9dfd466af875e7ec9cbe",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7"
   },
@@ -226,23 +226,23 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 3219,
+        "total": 3219,
         "percent": 100
       },
       "branches": {
-        "covered": 803,
-        "total": 803,
+        "covered": 1270,
+        "total": 1270,
         "percent": 100
       },
       "functions": {
-        "covered": 94,
-        "total": 94,
+        "covered": 156,
+        "total": 156,
         "percent": 100
       },
       "lines": {
-        "covered": 1926,
-        "total": 1926,
+        "covered": 3219,
+        "total": 3219,
         "percent": 100
       }
     },
@@ -256,93 +256,93 @@
     "LLM authority over deterministic rules"
   ],
   "environment": {
-    "platform": "win32",
-    "os_release": "10.0.26200",
-    "node": "v22.16.0",
-    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
-    "logical_cpus": 20
+    "platform": "darwin",
+    "os_release": "25.5.0",
+    "node": "v26.0.0",
+    "cpu": "Apple M1 Pro",
+    "logical_cpus": 10
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 400.38,
+      "cold_total_ms": 124.3,
       "warm_total_ms": [
-        259.07,
-        244.43,
-        256.02,
-        258.36,
-        261.41
+        64.26,
+        63.4,
+        64.71,
+        63.29,
+        62.89
       ],
       "warm_baseline_load_ms": [
-        27.03,
-        27.04,
-        27.68,
-        25.31,
-        26.76
+        6.04,
+        5.6,
+        6.29,
+        6.65,
+        6.53
       ],
       "warm_incremental_scan_ms": [
-        2.3,
-        2.3,
-        2.46,
-        1.79,
-        1.77
+        1.66,
+        1.44,
+        1.32,
+        1.14,
+        1.39
       ],
-      "warm_median_total_ms": 258.36,
-      "warm_median_baseline_load_ms": 27.03,
-      "warm_median_incremental_scan_ms": 2.3
+      "warm_median_total_ms": 63.4,
+      "warm_median_baseline_load_ms": 6.29,
+      "warm_median_incremental_scan_ms": 1.39
     },
     "violation": {
-      "cold_total_ms": 359.33,
+      "cold_total_ms": 109.52,
       "warm_total_ms": [
-        255.92,
-        255.73,
-        252.44,
-        261.31,
-        242.58
+        66.07,
+        68.1,
+        65.76,
+        62.94,
+        65.6
       ],
       "warm_baseline_load_ms": [
-        28.17,
-        27.46,
-        26.89,
-        30.37,
-        25.14
+        6.74,
+        6.42,
+        6.08,
+        6.3,
+        5.91
       ],
       "warm_incremental_scan_ms": [
-        1.69,
-        1.85,
-        1.78,
-        1.7,
-        2.03
+        1.26,
+        1.11,
+        1.29,
+        1.22,
+        1.4
       ],
-      "warm_median_total_ms": 255.73,
-      "warm_median_baseline_load_ms": 27.46,
-      "warm_median_incremental_scan_ms": 1.78
+      "warm_median_total_ms": 65.76,
+      "warm_median_baseline_load_ms": 6.3,
+      "warm_median_incremental_scan_ms": 1.26
     },
     "evolution": {
-      "cold_total_ms": 381.53,
+      "cold_total_ms": 97.06,
       "warm_total_ms": [
-        245.25,
-        262.66,
-        246.78,
-        251.94,
-        263.79
+        61.9,
+        63.51,
+        64.93,
+        63.21,
+        68.76
       ],
       "warm_baseline_load_ms": [
-        26.69,
-        30.35,
-        26.01,
-        28.47,
-        27.04
+        6.2,
+        6.22,
+        6.32,
+        6.36,
+        6.05
       ],
       "warm_incremental_scan_ms": [
-        1.86,
-        1.82,
-        1.71,
-        1.99,
-        2.27
+        1.32,
+        1.39,
+        1.21,
+        1.13,
+        1.3
       ],
-      "warm_median_total_ms": 251.94,
-      "warm_median_baseline_load_ms": 27.04,
-      "warm_median_incremental_scan_ms": 1.86
+      "warm_median_total_ms": 63.51,
+      "warm_median_baseline_load_ms": 6.22,
+      "warm_median_incremental_scan_ms": 1.3
     }
   }
 }
