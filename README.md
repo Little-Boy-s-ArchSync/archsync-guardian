@@ -1,6 +1,6 @@
 # ArchSync Guardian
 
-`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
+`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3. A draft preparatory module now provides fail-closed repair verification without claiming repair generation or Phase 4 acceptance.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
@@ -24,6 +24,7 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 - Emit GitHub annotations and a Markdown report with `PASS`, `BLOCK` or `REVIEW`.
 - Expose every Core, Guardian and Git-gate capability through one cross-platform `archsync` command.
 - Run a real PASS/BLOCK/REVIEW demonstration without Bash, PowerShell-specific syntax or mocked results.
+- Validate and apply a narrowly declared textual repair diff in a disposable workspace, run project tests without network access, inject an ArchSync recheck, and return a deterministic reviewability decision.
 
 ## Setup
 
@@ -162,6 +163,7 @@ The expected end-to-end result is 20/20 deterministic cases with `1.000` full-gr
 src/analyzer.ts       TypeScript source/component -> Observed Graph
 src/guardian.ts       Core conformance orchestration + evidence enrichment
 src/phase3.ts         Git diff, baseline cache, incremental merge and PR reports
+src/repair-verification.ts  preparatory repair sandbox, patch/test/recheck gates
 src/contracts.ts      Observed Graph and Finding v0.1 contracts
 src/benchmark.ts      Phase 2 benchmark evaluator and metrics
 src/model-cli.ts      unified Architecture Model command adapter
@@ -171,4 +173,4 @@ evidence/             deterministic Phase 2 and Phase 3 evidence manifests
 docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 ```
 
-See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. LLM reasoning, automatic repair, MCP, IaC and runtime evidence remain out of scope.
+See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction, [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate, and [`docs/phase-4-repair-verification.md`](docs/phase-4-repair-verification.md) for the draft deterministic verification boundary. LLM reasoning, repair generation, automatic approval/merge, MCP, IaC and runtime evidence remain out of scope.
