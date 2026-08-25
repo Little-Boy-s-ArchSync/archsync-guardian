@@ -41,6 +41,8 @@ export class OpenAICompatibleProvider {
         this.transport = transport;
     }
     async generate(request) {
+        if (request.signal?.aborted)
+            throw new ProviderFailure("cancelled", "provider request cancelled");
         const token = this.credential();
         if (!token)
             throw new ProviderFailure("quota", "provider credential is unavailable");
@@ -55,6 +57,7 @@ export class OpenAICompatibleProvider {
                 ...(request.seed === undefined ? {} : { seed: request.seed }),
             }),
             timeout_ms: request.timeout_ms,
+            ...(request.signal === undefined ? {} : { signal: request.signal }),
         });
         if (result.status === 429)
             throw new ProviderFailure("rate-limit", "provider rate limit");
@@ -76,6 +79,7 @@ export class OpenAICompatibleProvider {
 function isPositiveSafeInteger(value) {
     return Number.isSafeInteger(value) && value > 0;
 }
+const maximumTimerDelayMilliseconds = 2_147_483_647;
 function isNonNegativeFinite(value) {
     return Number.isFinite(value) && value >= 0;
 }
@@ -83,7 +87,8 @@ function reliabilityPolicyIssue(policy, options) {
     const temperature = options.temperature ?? 0;
     const checks = [
         [isPositiveSafeInteger(policy.max_attempts), "max_attempts must be a positive safe integer"],
-        [isPositiveSafeInteger(policy.timeout_ms), "timeout_ms must be a positive safe integer"],
+        [isPositiveSafeInteger(policy.timeout_ms) && policy.timeout_ms <= maximumTimerDelayMilliseconds,
+            "timeout_ms must be a positive safe integer within the platform timer range"],
         [isPositiveSafeInteger(policy.max_input_tokens), "max_input_tokens must be a positive safe integer"],
         [isPositiveSafeInteger(policy.max_output_tokens), "max_output_tokens must be a positive safe integer"],
         [isNonNegativeFinite(policy.max_cost_usd), "max_cost_usd must be a non-negative finite number"],
@@ -103,6 +108,56 @@ function providerResponseIssue(response) {
         [isNonNegativeFinite(response.cost_usd), "provider cost must be a non-negative finite number"],
     ];
     return checks.find(([valid]) => !valid)?.[1];
+}
+function cancellationFailure() {
+    return new ProviderFailure("cancelled", "provider run cancelled");
+}
+function timeoutFailure() {
+    return new ProviderFailure("timeout", "provider attempt exceeded its configured timeout");
+}
+async function generateWithCancellation(provider, request, externalSignal) {
+    const controller = new AbortController();
+    let rejectControl;
+    const control = new Promise((_resolve, reject) => {
+        rejectControl = reject;
+    });
+    const stop = (error) => {
+        rejectControl(error);
+        controller.abort(error);
+    };
+    const timeout = setTimeout(() => { stop(timeoutFailure()); }, request.timeout_ms);
+    const cancel = () => { stop(cancellationFailure()); };
+    externalSignal?.addEventListener("abort", cancel, { once: true });
+    try {
+        return await Promise.race([
+            provider.generate({ ...request, signal: controller.signal }),
+            control,
+        ]);
+    }
+    finally {
+        clearTimeout(timeout);
+        externalSignal?.removeEventListener("abort", cancel);
+    }
+}
+async function waitWithCancellation(environment, milliseconds, signal) {
+    if (signal === undefined) {
+        await environment.wait(milliseconds);
+        return;
+    }
+    if (signal.aborted)
+        throw cancellationFailure();
+    let rejectCancellation;
+    const cancellation = new Promise((_resolve, reject) => {
+        rejectCancellation = reject;
+    });
+    const cancel = () => { rejectCancellation(cancellationFailure()); };
+    signal.addEventListener("abort", cancel, { once: true });
+    try {
+        await Promise.race([environment.wait(milliseconds), cancellation]);
+    }
+    finally {
+        signal.removeEventListener("abort", cancel);
+    }
 }
 function failure(error) {
     if (error instanceof ProviderFailure) {
@@ -169,9 +224,14 @@ export async function executeReasonerRun(provider, prompt, policy, environment, 
         });
         return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
     }
+    if (options.signal?.aborted) {
+        const item = cancellationFailure();
+        failures.push({ attempt: 0, kind: item.kind, message: item.message });
+        return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
+    }
     const runAttempt = async (attempt) => {
         try {
-            const response = await provider.generate(request);
+            const response = await generateWithCancellation(provider, request, options.signal);
             const responseIssue = providerResponseIssue(response);
             if (responseIssue !== undefined) {
                 failures.push({ attempt, kind: "invalid-response", message: responseIssue });
@@ -201,7 +261,14 @@ export async function executeReasonerRun(provider, prompt, policy, environment, 
             if (!retryable || attempt === effectivePolicy.max_attempts) {
                 return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
             }
-            await environment.wait(effectivePolicy.backoff_ms * attempt);
+            try {
+                await waitWithCancellation(environment, effectivePolicy.backoff_ms * attempt, options.signal);
+            }
+            catch (backoffError) {
+                const backoffFailure = failure(backoffError);
+                failures.push({ attempt, kind: backoffFailure.kind, message: backoffFailure.message });
+                return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
+            }
             return runAttempt(attempt + 1);
         }
     };

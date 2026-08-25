@@ -25,14 +25,14 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "07aff9aa103faa9b6830be761a1c3700d885bb1b484183c619b21932b0678b53",
+  "generated_dist_sha256": "7e5cd548339479f48b65baba37a60e30dfcc054254fcd0d5fbee1b5f61213756",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
   "governance_sha256": {
     "README.md": "fb9de4ff1d19991db953325a3b59ad5a94dc7d37b13cacf0a2b1738a71896b78",
     "docs/BOUNDARY.md": "aed32740fbfa42629837e3393046c35dfb9ca6660d084df731c3553887425e3f",
-    "docs/OPERATIONS-PRIVACY.md": "78b42471126ae06d4296519b3bc7c312001702cf2d83a5717dbb6ca16c5bb40c",
+    "docs/OPERATIONS-PRIVACY.md": "b5532fafb46266bfdbb9aba714c827531bb12ce4459a55f7d7c009ce62d76c98",
     "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",
     "docs/schemas/infrastructure-graph-v0.1.schema.json": "a97e352a8873c28d33bae4a9854c5bf36c552ca5c6460a8764230c13c21ffbbd",
     "docs/adr/0005-phase-5-infrastructure-evidence-boundary.md": "577aa0a17919d88c0e66655d58d974caad2f8695543cd905b73bf63aca45d306",

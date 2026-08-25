@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import type { RepairCandidate } from "./contracts.js";
-import { createReviewHandoff, isHumanApproved, recordHumanReview } from "./handoff.js";
+import {
+  createReviewHandoff,
+  isHumanApproved,
+  recordHumanReview,
+  type ReviewHandoff,
+} from "./handoff.js";
 
 function candidate(status: RepairCandidate["status"] = "PROPOSED"): RepairCandidate {
   return {
@@ -66,10 +71,74 @@ describe("human-review handoff", () => {
     })).toThrow("reviewer_id is required");
     expect(() => recordHumanReview(handoff, {
       actor_type: "human", reviewer_id: "r", decision_id: "d", outcome: "approved", rationale: "r", decided_at: "now",
-    })).toThrow("unverified candidate");
+    })).toThrow("exactly verified candidate");
     const rejected = recordHumanReview(handoff, {
       actor_type: "human", reviewer_id: "r", decision_id: "d", outcome: "rejected", rationale: "unsafe", decided_at: "now",
     });
     expect(isHumanApproved(rejected)).toBe(false);
+    const inconclusive = recordHumanReview(createReviewHandoff("handoff-2", candidate(), []), {
+      actor_type: "human", reviewer_id: "r", decision_id: "d2", outcome: "inconclusive", rationale: "unknown", decided_at: "now",
+    });
+    expect(isHumanApproved(inconclusive)).toBe(false);
+  });
+
+  it("runtime-validates candidates before constructing a review handoff", () => {
+    expect(() => createReviewHandoff("handoff-invalid", {
+      ...candidate(),
+      candidate_id: "",
+    }, [])).toThrow("repair candidate is invalid: /candidate_id");
+    expect(() => createReviewHandoff("handoff-tampered", {
+      ...candidate("VERIFIED_FOR_REVIEW"),
+      verification: {
+        ...candidate("VERIFIED_FOR_REVIEW").verification!,
+        decision: "REJECT_TEST",
+      },
+    }, [])).toThrow("acceptable review invariants");
+  });
+
+  it("rejects approval when any embedded verifier invariant is tampered", () => {
+    const valid = createReviewHandoff("handoff-verified", candidate("VERIFIED_FOR_REVIEW"), ["e-1"]);
+    const accepted = valid.verification!;
+    const tampered: ReviewHandoff[] = [
+      { ...valid, candidate_status: "PROPOSED" },
+      { ...valid, verification: null },
+      { ...valid, verification: { ...accepted, decision: "REJECT_TEST" } },
+      { ...valid, verification: { ...accepted, tests: "fail" } },
+      { ...valid, verification: { ...accepted, conformance: "fail" } },
+      { ...valid, verification: { ...accepted, safe_apply: false } },
+      { ...valid, verification: { ...accepted, new_blocking_findings: 1 } },
+    ];
+    const approval = {
+      actor_type: "human" as const,
+      reviewer_id: "reviewer-3",
+      decision_id: "decision-tampered",
+      outcome: "approved" as const,
+      rationale: "approve",
+      decided_at: "2026-08-26T00:00:00Z",
+    };
+    for (const handoff of tampered) {
+      expect(() => recordHumanReview(handoff, approval)).toThrow("exactly verified candidate");
+      expect(isHumanApproved({ ...handoff, decision: approval })).toBe(false);
+    }
+  });
+
+  it("runtime-rejects non-human actors and unknown outcomes", () => {
+    const handoff = createReviewHandoff("handoff-runtime", candidate(), []);
+    expect(() => recordHumanReview(handoff, {
+      actor_type: "provider",
+      reviewer_id: "provider",
+      decision_id: "d",
+      outcome: "rejected",
+      rationale: "r",
+      decided_at: "now",
+    } as never)).toThrow("actor_type must be human");
+    expect(() => recordHumanReview(handoff, {
+      actor_type: "human",
+      reviewer_id: "reviewer",
+      decision_id: "d",
+      outcome: "override",
+      rationale: "r",
+      decided_at: "now",
+    } as never)).toThrow("outcome must be approved, rejected, or inconclusive");
   });
 });

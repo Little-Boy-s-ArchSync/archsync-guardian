@@ -1,10 +1,11 @@
-export type ProviderFailureKind = "timeout" | "rate-limit" | "quota" | "budget" | "invalid-response" | "provider";
+export type ProviderFailureKind = "timeout" | "cancelled" | "rate-limit" | "quota" | "budget" | "invalid-response" | "provider";
 export interface ProviderRequest {
     prompt: string;
     max_tokens: number;
     timeout_ms: number;
     temperature: number;
     seed?: number;
+    signal?: AbortSignal;
 }
 export interface ProviderResponse {
     content: string;
@@ -34,6 +35,7 @@ export interface HttpRequest {
     headers: Record<string, string>;
     body: string;
     timeout_ms: number;
+    signal?: AbortSignal;
 }
 export interface HttpResponse {
     status: number;
@@ -74,6 +76,7 @@ export interface RunManifest {
         output: number;
     };
     cost_usd: number;
+    /** Integration metadata only; this preparatory runner never writes response content. */
     raw_response_path: string;
     status: "success" | "failed";
     failures: Array<{
@@ -90,9 +93,15 @@ export interface ProviderRunResult {
 export interface RunEnvironment {
     run_id: string;
     prompt_version: string;
+    /** Integration metadata only; this preparatory runner never writes response content. */
     raw_response_path: string;
     now: () => string;
     wait: (milliseconds: number) => Promise<void>;
+}
+export interface ProviderRunOptions {
+    temperature?: number;
+    seed?: number;
+    signal?: AbortSignal;
 }
 /**
  * A byte is a conservative upper bound for a tokenizer token. This deliberately
@@ -100,8 +109,5 @@ export interface RunEnvironment {
  * its tokenizer-specific usage.
  */
 export declare function conservativeInputTokenUpperBound(prompt: string): number;
-export declare function executeReasonerRun(provider: ReasonerProvider, prompt: string, policy: ProviderReliabilityPolicy, environment: RunEnvironment, options?: {
-    temperature?: number;
-    seed?: number;
-}): Promise<ProviderRunResult>;
+export declare function executeReasonerRun(provider: ReasonerProvider, prompt: string, policy: ProviderReliabilityPolicy, environment: RunEnvironment, options?: ProviderRunOptions): Promise<ProviderRunResult>;
 //# sourceMappingURL=provider.d.ts.map

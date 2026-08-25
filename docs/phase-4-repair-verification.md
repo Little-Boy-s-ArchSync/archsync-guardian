@@ -59,6 +59,14 @@ decision, `bindRepairVerificationResult` may attach that evidence and promote
 the candidate only when patch application, tests, and the conformance recheck
 all pass. This transition still does not approve or merge anything.
 
+`createReviewHandoff` runtime-validates that canonical candidate before hashing
+it. `recordHumanReview` can record an approval only when the handoff still has
+the exact `ACCEPTABLE_FOR_REVIEW` decision, passing tests and conformance, safe
+application, and zero new blocking findings. `isHumanApproved` rechecks the
+same invariants, so a constructed or later-tampered status field cannot bypass
+the deterministic verifier. Rejection and inconclusive human records remain
+available for non-reviewable candidates.
+
 ## Verification pipeline
 
 The orchestrator performs the following steps in order and cleans the sandbox
@@ -149,7 +157,8 @@ The module is exported from `@archsync/guardian` and is included in the normal
 typecheck, build, package, and 100% coverage gates. Its test suite covers the
 five decisions plus path traversal, reserved paths, binary/mode/rename patches,
 stale hashes, symlinks, Git preflight/application failures, platform isolation,
-timeouts, redaction, cleanup, and injected baseline/candidate rechecks.
+timeouts, redaction, cleanup, injected baseline/candidate rechecks, and tampered
+human-handoff rejection.
 
 The integration suite also replays the exact hash-locked Order Platform
 `case-06` source, architecture, and violation patch, verifies the inverse

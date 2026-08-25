@@ -1,3 +1,7 @@
+import { access, mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -56,18 +60,150 @@ describe("reasoner providers", () => {
     expect(result.manifest.request_hash).toMatch(/^[0-9a-f]{64}$/);
   });
 
+  it("treats raw response paths as metadata and never writes fake-provider content", async () => {
+    const root = await mkdtemp(join(tmpdir(), "archsync-provider-contract-"));
+    const rawPath = join(root, "raw", "run.json");
+    try {
+      for (const outcome of [response, { ...response, output_tokens: policy.max_output_tokens + 1 }]) {
+        const provider = new FakeReasonerProvider("fake", "fixture", [outcome]);
+        await executeReasonerRun(provider, "prompt", policy, {
+          ...environment(),
+          raw_response_path: rawPath,
+        });
+        await expect(access(rawPath)).rejects.toMatchObject({ code: "ENOENT" });
+      }
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it("retries transient failures with bounded backoff", async () => {
+    const controller = new AbortController();
     const provider = new FakeReasonerProvider("fake", "fixture", [
       new ProviderFailure("rate-limit", "429"),
       response,
     ]);
     const env = environment();
-    const result = await executeReasonerRun(provider, "prompt", policy, env);
+    const result = await executeReasonerRun(provider, "prompt", policy, env, { signal: controller.signal });
     expect(result.ok).toBe(true);
     expect(result.manifest.failures).toEqual([{ attempt: 1, kind: "rate-limit", message: "429" }]);
     expect(env.waits).toEqual([10]);
     expect(provider.calls[0]).not.toHaveProperty("seed");
     expect(provider.calls[0]?.temperature).toBe(0);
+  });
+
+  it("fails closed if cancellation lands between an attempt and retry backoff", async () => {
+    const controller = new AbortController();
+    const failure = new ProviderFailure("rate-limit", "429");
+    Object.defineProperty(failure, "message", {
+      configurable: true,
+      get: () => {
+        controller.abort();
+        return "429";
+      },
+    });
+    const provider = new FakeReasonerProvider("fake", "fixture", [failure, response]);
+    const result = await executeReasonerRun(provider, "prompt", policy, environment(), {
+      signal: controller.signal,
+    });
+    expect(provider.calls).toHaveLength(1);
+    expect(result.manifest.attempts).toBe(1);
+    expect(result.manifest.failures.map(({ kind }) => kind)).toEqual(["rate-limit", "cancelled"]);
+  });
+
+  it("fails closed before transport when externally cancelled in advance", async () => {
+    const controller = new AbortController();
+    controller.abort("Bearer cancellation-reason-must-not-leak");
+    let transportCalls = 0;
+    const provider = new OpenAICompatibleProvider("fake", "fixture", "https://provider.invalid", () => "key", async () => {
+      transportCalls += 1;
+      return { status: 200, body: {} };
+    });
+    const result = await executeReasonerRun(provider, "prompt", policy, environment(), { signal: controller.signal });
+    expect(result).toMatchObject({
+      ok: false,
+      manifest: {
+        attempts: 0,
+        status: "failed",
+        failures: [{ attempt: 0, kind: "cancelled", message: "provider run cancelled" }],
+      },
+    });
+    expect(transportCalls).toBe(0);
+    expect(JSON.stringify(result.manifest)).not.toContain("cancellation-reason-must-not-leak");
+  });
+
+  it("owns the per-attempt timeout and aborts the injected transport", async () => {
+    let transportSignal: AbortSignal | undefined;
+    const provider = new OpenAICompatibleProvider("fake", "fixture", "https://provider.invalid", () => "key", async (request) => {
+      transportSignal = request.signal;
+      return await new Promise<never>((_resolve, reject) => {
+        request.signal?.addEventListener("abort", () => { reject(request.signal?.reason); }, { once: true });
+      });
+    });
+    const result = await executeReasonerRun(
+      provider,
+      "prompt",
+      { ...policy, max_attempts: 1, timeout_ms: 10 },
+      environment(),
+    );
+    expect(transportSignal?.aborted).toBe(true);
+    expect(result).toMatchObject({
+      ok: false,
+      manifest: {
+        attempts: 1,
+        failures: [{ attempt: 1, kind: "timeout", message: "provider attempt exceeded its configured timeout" }],
+      },
+    });
+  });
+
+  it("aborts an in-flight transport on external cancellation", async () => {
+    const controller = new AbortController();
+    let markStarted!: () => void;
+    const started = new Promise<void>((resolve) => { markStarted = resolve; });
+    let transportSignal: AbortSignal | undefined;
+    const provider = new OpenAICompatibleProvider("fake", "fixture", "https://provider.invalid", () => "key", async (request) => {
+      transportSignal = request.signal;
+      markStarted();
+      return await new Promise<never>((_resolve, reject) => {
+        request.signal?.addEventListener("abort", () => { reject(request.signal?.reason); }, { once: true });
+      });
+    });
+    const running = executeReasonerRun(provider, "prompt", policy, environment(), { signal: controller.signal });
+    await started;
+    controller.abort("password=external-reason-must-not-leak");
+    const result = await running;
+    expect(transportSignal?.aborted).toBe(true);
+    expect(result.manifest.failures).toEqual([{
+      attempt: 1,
+      kind: "cancelled",
+      message: "provider run cancelled",
+    }]);
+    expect(JSON.stringify(result.manifest)).not.toContain("external-reason-must-not-leak");
+  });
+
+  it("cancels retry backoff before another transport attempt", async () => {
+    const controller = new AbortController();
+    let transportCalls = 0;
+    const provider = new OpenAICompatibleProvider("fake", "fixture", "https://provider.invalid", () => "key", async () => {
+      transportCalls += 1;
+      return { status: 429, body: {} };
+    });
+    let markWaiting!: () => void;
+    const waiting = new Promise<void>((resolve) => { markWaiting = resolve; });
+    const env = environment();
+    env.wait = async (milliseconds) => {
+      env.waits.push(milliseconds);
+      markWaiting();
+      await new Promise<void>(() => {});
+    };
+    const running = executeReasonerRun(provider, "prompt", policy, env, { signal: controller.signal });
+    await waiting;
+    controller.abort();
+    const result = await running;
+    expect(transportCalls).toBe(1);
+    expect(env.waits).toEqual([10]);
+    expect(result.manifest.attempts).toBe(1);
+    expect(result.manifest.failures.map(({ kind }) => kind)).toEqual(["rate-limit", "cancelled"]);
   });
 
   it("classifies timeouts, exhausts retries, and preserves failed attempts", async () => {
@@ -152,6 +288,7 @@ describe("reasoner providers", () => {
       { policy: { max_attempts: 0 }, field: "max_attempts" },
       { policy: { max_attempts: -1 }, field: "max_attempts" },
       { policy: { timeout_ms: -1 }, field: "timeout_ms" },
+      { policy: { timeout_ms: 2_147_483_648 }, field: "timeout_ms" },
       { policy: { max_input_tokens: Number.NaN }, field: "max_input_tokens" },
       { policy: { max_output_tokens: Number.POSITIVE_INFINITY }, field: "max_output_tokens" },
       { policy: { max_cost_usd: -1 }, field: "max_cost_usd" },
@@ -216,6 +353,7 @@ describe("reasoner providers", () => {
 
   it("maps an OpenAI-compatible response without exposing the credential", async () => {
     const requests: unknown[] = [];
+    const controller = new AbortController();
     const provider = new OpenAICompatibleProvider(
       "openai-compatible",
       "model-1",
@@ -232,10 +370,13 @@ describe("reasoner providers", () => {
         };
       },
     );
-    expect(await provider.generate({ prompt: "p", max_tokens: 9, timeout_ms: 20, temperature: 0 })).toEqual({
+    expect(await provider.generate({
+      prompt: "p", max_tokens: 9, timeout_ms: 20, temperature: 0, signal: controller.signal,
+    })).toEqual({
       content: "result", input_tokens: 4, output_tokens: 2, cost_usd: 0,
     });
     expect(JSON.stringify(requests)).toContain("Bearer secret-token");
+    expect((requests[0] as { signal?: AbortSignal }).signal).toBe(controller.signal);
     expect(JSON.parse((requests[0] as { body: string }).body)).not.toHaveProperty("seed");
   });
 
@@ -250,6 +391,11 @@ describe("reasoner providers", () => {
     await expect(statusProvider(429).generate({ prompt: "p", max_tokens: 1, timeout_ms: 1, temperature: 0 })).rejects.toMatchObject({ kind: "rate-limit" });
     await expect(statusProvider(500).generate({ prompt: "p", max_tokens: 1, timeout_ms: 1, temperature: 0 })).rejects.toMatchObject({ kind: "provider" });
     await expect(new OpenAICompatibleProvider("p", "m", "x", () => "", transport).generate({ prompt: "p", max_tokens: 1, timeout_ms: 1, temperature: 0 })).rejects.toMatchObject({ kind: "quota" });
+    const cancelled = new AbortController();
+    cancelled.abort();
+    await expect(provider.generate({
+      prompt: "p", max_tokens: 1, timeout_ms: 1, temperature: 0, signal: cancelled.signal,
+    })).rejects.toMatchObject({ kind: "cancelled" });
 
     for (const body of [
       { usage: { prompt_tokens: 1, completion_tokens: 1 } },

@@ -2,7 +2,14 @@ import { createHash } from "node:crypto";
 
 import { redactProviderArtifactPath, redactProviderDiagnostic } from "./redaction.js";
 
-export type ProviderFailureKind = "timeout" | "rate-limit" | "quota" | "budget" | "invalid-response" | "provider";
+export type ProviderFailureKind =
+  | "timeout"
+  | "cancelled"
+  | "rate-limit"
+  | "quota"
+  | "budget"
+  | "invalid-response"
+  | "provider";
 
 export interface ProviderRequest {
   prompt: string;
@@ -10,6 +17,7 @@ export interface ProviderRequest {
   timeout_ms: number;
   temperature: number;
   seed?: number;
+  signal?: AbortSignal;
 }
 
 export interface ProviderResponse {
@@ -57,6 +65,7 @@ export interface HttpRequest {
   headers: Record<string, string>;
   body: string;
   timeout_ms: number;
+  signal?: AbortSignal;
 }
 
 export interface HttpResponse {
@@ -76,6 +85,7 @@ export class OpenAICompatibleProvider implements ReasonerProvider {
   ) {}
 
   async generate(request: ProviderRequest): Promise<ProviderResponse> {
+    if (request.signal?.aborted) throw new ProviderFailure("cancelled", "provider request cancelled");
     const token = this.credential();
     if (!token) throw new ProviderFailure("quota", "provider credential is unavailable");
     const result = await this.transport({
@@ -89,6 +99,7 @@ export class OpenAICompatibleProvider implements ReasonerProvider {
         ...(request.seed === undefined ? {} : { seed: request.seed }),
       }),
       timeout_ms: request.timeout_ms,
+      ...(request.signal === undefined ? {} : { signal: request.signal }),
     });
     if (result.status === 429) throw new ProviderFailure("rate-limit", "provider rate limit");
     if (result.status < 200 || result.status >= 300) {
@@ -135,6 +146,7 @@ export interface RunManifest {
   attempts: number;
   tokens: { input: number; output: number };
   cost_usd: number;
+  /** Integration metadata only; this preparatory runner never writes response content. */
   raw_response_path: string;
   status: "success" | "failed";
   failures: Array<{ attempt: number; kind: ProviderFailureKind; message: string }>;
@@ -149,14 +161,23 @@ export interface ProviderRunResult {
 export interface RunEnvironment {
   run_id: string;
   prompt_version: string;
+  /** Integration metadata only; this preparatory runner never writes response content. */
   raw_response_path: string;
   now: () => string;
   wait: (milliseconds: number) => Promise<void>;
 }
 
+export interface ProviderRunOptions {
+  temperature?: number;
+  seed?: number;
+  signal?: AbortSignal;
+}
+
 function isPositiveSafeInteger(value: number): boolean {
   return Number.isSafeInteger(value) && value > 0;
 }
+
+const maximumTimerDelayMilliseconds = 2_147_483_647;
 
 function isNonNegativeFinite(value: number): boolean {
   return Number.isFinite(value) && value >= 0;
@@ -164,12 +185,13 @@ function isNonNegativeFinite(value: number): boolean {
 
 function reliabilityPolicyIssue(
   policy: ProviderReliabilityPolicy,
-  options: { temperature?: number; seed?: number },
+  options: ProviderRunOptions,
 ): string | undefined {
   const temperature = options.temperature ?? 0;
   const checks: readonly [boolean, string][] = [
     [isPositiveSafeInteger(policy.max_attempts), "max_attempts must be a positive safe integer"],
-    [isPositiveSafeInteger(policy.timeout_ms), "timeout_ms must be a positive safe integer"],
+    [isPositiveSafeInteger(policy.timeout_ms) && policy.timeout_ms <= maximumTimerDelayMilliseconds,
+      "timeout_ms must be a positive safe integer within the platform timer range"],
     [isPositiveSafeInteger(policy.max_input_tokens), "max_input_tokens must be a positive safe integer"],
     [isPositiveSafeInteger(policy.max_output_tokens), "max_output_tokens must be a positive safe integer"],
     [isNonNegativeFinite(policy.max_cost_usd), "max_cost_usd must be a non-negative finite number"],
@@ -190,6 +212,65 @@ function providerResponseIssue(response: ProviderResponse): string | undefined {
     [isNonNegativeFinite(response.cost_usd), "provider cost must be a non-negative finite number"],
   ];
   return checks.find(([valid]) => !valid)?.[1];
+}
+
+function cancellationFailure(): ProviderFailure {
+  return new ProviderFailure("cancelled", "provider run cancelled");
+}
+
+function timeoutFailure(): ProviderFailure {
+  return new ProviderFailure("timeout", "provider attempt exceeded its configured timeout");
+}
+
+async function generateWithCancellation(
+  provider: ReasonerProvider,
+  request: ProviderRequest,
+  externalSignal: AbortSignal | undefined,
+): Promise<ProviderResponse> {
+  const controller = new AbortController();
+  let rejectControl!: (reason: ProviderFailure) => void;
+  const control = new Promise<never>((_resolve, reject) => {
+    rejectControl = reject;
+  });
+  const stop = (error: ProviderFailure): void => {
+    rejectControl(error);
+    controller.abort(error);
+  };
+  const timeout = setTimeout(() => { stop(timeoutFailure()); }, request.timeout_ms);
+  const cancel = (): void => { stop(cancellationFailure()); };
+  externalSignal?.addEventListener("abort", cancel, { once: true });
+  try {
+    return await Promise.race([
+      provider.generate({ ...request, signal: controller.signal }),
+      control,
+    ]);
+  } finally {
+    clearTimeout(timeout);
+    externalSignal?.removeEventListener("abort", cancel);
+  }
+}
+
+async function waitWithCancellation(
+  environment: RunEnvironment,
+  milliseconds: number,
+  signal: AbortSignal | undefined,
+): Promise<void> {
+  if (signal === undefined) {
+    await environment.wait(milliseconds);
+    return;
+  }
+  if (signal.aborted) throw cancellationFailure();
+  let rejectCancellation!: (reason: ProviderFailure) => void;
+  const cancellation = new Promise<never>((_resolve, reject) => {
+    rejectCancellation = reject;
+  });
+  const cancel = (): void => { rejectCancellation(cancellationFailure()); };
+  signal.addEventListener("abort", cancel, { once: true });
+  try {
+    await Promise.race([environment.wait(milliseconds), cancellation]);
+  } finally {
+    signal.removeEventListener("abort", cancel);
+  }
 }
 
 function failure(error: unknown): ProviderFailure {
@@ -244,7 +325,7 @@ export async function executeReasonerRun(
   prompt: string,
   policy: ProviderReliabilityPolicy,
   environment: RunEnvironment,
-  options: { temperature?: number; seed?: number } = {},
+  options: ProviderRunOptions = {},
 ): Promise<ProviderRunResult> {
   const startedAt = environment.now();
   const failures: RunManifest["failures"] = [];
@@ -275,9 +356,14 @@ export async function executeReasonerRun(
     });
     return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
   }
+  if (options.signal?.aborted) {
+    const item = cancellationFailure();
+    failures.push({ attempt: 0, kind: item.kind, message: item.message });
+    return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
+  }
   const runAttempt = async (attempt: number): Promise<ProviderRunResult> => {
     try {
-      const response = await provider.generate(request);
+      const response = await generateWithCancellation(provider, request, options.signal);
       const responseIssue = providerResponseIssue(response);
       if (responseIssue !== undefined) {
         failures.push({ attempt, kind: "invalid-response", message: responseIssue });
@@ -306,7 +392,13 @@ export async function executeReasonerRun(
       if (!retryable || attempt === effectivePolicy.max_attempts) {
         return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
       }
-      await environment.wait(effectivePolicy.backoff_ms * attempt);
+      try {
+        await waitWithCancellation(environment, effectivePolicy.backoff_ms * attempt, options.signal);
+      } catch (backoffError) {
+        const backoffFailure = failure(backoffError);
+        failures.push({ attempt, kind: backoffFailure.kind, message: backoffFailure.message });
+        return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
+      }
       return runAttempt(attempt + 1);
     }
   };

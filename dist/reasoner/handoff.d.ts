@@ -1,4 +1,4 @@
-import type { RepairCandidate, RepairRisk } from "./contracts.js";
+import { type RepairCandidate, type RepairRisk } from "./contracts.js";
 export interface ReviewHandoff {
     schema_version: 1;
     handoff_id: string;
