@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "5f583793ee4722f593472dc48c35bf6c6007f74126cf12a92337d9c8c519c81b",
+    "implementation_source_sha256": "d79cf1ca9db1fb8581538899a47bd1c560a6cd664612f10e251c9a9910786e46",
     "fixture_tree": {
       "files": [
         {
@@ -39,6 +39,38 @@
           "sha256": "16f6cccef877ce9c0ac7f79082cad184edf4656f8eaa2608461de83cb5193213"
         },
         {
+          "file": "test/fixtures/iac/kubernetes/ambiguous.yaml",
+          "sha256": "9f8381b98ccd10e98a4a571c5a4bfb8e9846921ceb0f960c8f9ef147a730f3f3"
+        },
+        {
+          "file": "test/fixtures/iac/kubernetes/missing-and-negative.yaml",
+          "sha256": "979f480ede5597288876333362e3e875a7178411661dc3ae6dbf2570177a286c"
+        },
+        {
+          "file": "test/fixtures/iac/kubernetes/positive.yaml",
+          "sha256": "8b9236c26f510e43951d5f1932308e3900988961a78199f0cd55782395831d47"
+        },
+        {
+          "file": "test/fixtures/iac/security/hard-negative.json",
+          "sha256": "d5b16ab8ee24d188e15d196deb411757ed7a2b0df5184814ac48795494d432e7"
+        },
+        {
+          "file": "test/fixtures/iac/security/positive.json",
+          "sha256": "535a34d96bd8779de12cc40b91b2845527bcbe30cdd8510a4a13fcf116b501d2"
+        },
+        {
+          "file": "test/fixtures/iac/terraform/dynamic-and-negative.tf",
+          "sha256": "a7835129d3957c2df01a0504a2906e9247eac6373273ce6649b5d3847477b696"
+        },
+        {
+          "file": "test/fixtures/iac/terraform/malformed.tf",
+          "sha256": "dad8697e16e02bce3d80b605df1a47cc45807e71757615d0bf4d8e453a0ec0d9"
+        },
+        {
+          "file": "test/fixtures/iac/terraform/positive.tf",
+          "sha256": "5d92db0b90aed58585b00e01fd944f0199fb8f4cb9002babc534992d4fe65e10"
+        },
+        {
           "file": "test/fixtures/invalid.architecture.yaml",
           "sha256": "d91d9ad4ff7b1fb8a747f58f7cf401cff84f03a424d8f1e1b147c6b1997d6e39"
         },
@@ -59,12 +91,16 @@
           "sha256": "fa7590d132c77f74e99a4b7dbd4e51efeab50ae09e7b7b903c9693ea3f78d6b4"
         }
       ],
-      "sha256": "283afe52d9a9a27cf6351e54619935dfb4f1bf1330622841d600c67f813530c3"
+      "sha256": "3f3ace902261ba956925fa4f68ebdf3c13411e08411272924499bbff4c2b8e6e"
     },
     "verification_source": [
       {
         "file": ".github/workflows/ci.yml",
-        "sha256": "988db4abc8854822795000fb5210ce9692fc8d52cec324ba35eaefded8284bfa"
+        "sha256": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6"
+      },
+      {
+        "file": "docs/OPERATIONS-PRIVACY.md",
+        "sha256": "3be0a2f814264797f9bb08dacf6522d85c23bc4b9179f0f4cce63083b0080a39"
       },
       {
         "file": "scripts/cli-smoke.mjs",
@@ -80,7 +116,15 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "ec32c6ffffc9d9a9a5f8b760c271bd48c67632a6b8d73d78233db59c612db1d1"
+        "sha256": "544885720d0a71d354713766c6044d953f755014e2f44f624eed20a4ac171183"
+      },
+      {
+        "file": "scripts/verify-clean-worktree.mjs",
+        "sha256": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7"
+      },
+      {
+        "file": "scripts/verify-offline.mjs",
+        "sha256": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3"
       },
       {
         "file": "src/analyzer.test.ts",
@@ -111,6 +155,10 @@
         "sha256": "cd8906f42b30e00bf05afdc2e15e05bedb6d6a08c8e497ed31ec8bcd81d49e6f"
       },
       {
+        "file": "src/privacy.test.ts",
+        "sha256": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116"
+      },
+      {
         "file": "src/test-helpers.ts",
         "sha256": "4acbb03530827ddd930f433d2bde48e926e476500fe18702e98697a0f7fa7b31"
       },
@@ -131,15 +179,15 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "96b375356917f4a400097fbbf32ccfa3b1d8014e83bd19dab8d0936ca96283c4",
+    "verification_source_sha256": "3cfea17f75e1b53be18b02dba1a50a0723d6c1b50d3f6c0d1f1aa6e40ee93c77",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "aade8728efc66bde475f394b4c7aed8b2fcef751c3f180d0cd067ed73440a764"
+        "sha256": "e3447b8d8446d34c0fddc8dd6b8eea1bf5dee9c10600cdbc24c672b296b43c87"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de"
+        "sha256": "af8ceaed554f27621a99bd4c38a2671dfd8ffe9faf8a54af1ace5d860bee6f32"
       },
       {
         "file": "pnpm-workspace.yaml",
@@ -150,7 +198,7 @@
         "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
       }
     ],
-    "dependency_source_sha256": "d5b14e248146a0e9922681ebdf52576452ee9e0351a59592ebb51e92d7047353"
+    "dependency_source_sha256": "6fc38ee71bf704a95b6e9ef9efd3d3248280e63505ad86fc593949484bfb8290"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -166,7 +214,8 @@
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-      "src/index.ts": "114824f8cdb374456b73e1a92d50464afa93d782daa876a8138ab0af543b69ab",
+      "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
+      "src/index.ts": "99af7b215d5bbab9c839ed72f85da10ae5a44a57339e3201ab4f8c83f2050f03",
       "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },

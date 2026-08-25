@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-a
+spec:
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-b
+spec:
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workers
+spec:
+  selector:
+    app: worker

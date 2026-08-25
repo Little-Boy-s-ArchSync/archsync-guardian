@@ -28,7 +28,7 @@ for (const path of await files(sourceRoot)) {
 const manifest = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 assert.deepEqual(
   Object.keys(manifest.dependencies).sort(),
-  ["@archsync/core", "typescript"],
+  ["@archsync/core", "typescript", "yaml"],
   "production dependency allowlist changed; review outbound/offline behavior explicitly",
 );
 assert.deepEqual(violations, [], `runtime network modules are forbidden by default:\n${violations.join("\n")}`);

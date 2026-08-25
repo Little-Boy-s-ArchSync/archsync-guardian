@@ -98,6 +98,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "privacy.ts",
   "index.ts",
   "version.ts",
 ];
@@ -119,6 +120,10 @@ const verificationSource = await hashFiles([
   join(root, "src", "version.test.ts"),
   join(root, "scripts", "package-install-e2e.mjs"),
   join(root, "scripts", "package-provenance.mjs"),
+  join(root, "scripts", "verify-clean-worktree.mjs"),
+  join(root, "scripts", "verify-offline.mjs"),
+  join(root, "src", "privacy.test.ts"),
+  join(root, "docs", "OPERATIONS-PRIVACY.md"),
   join(root, ".github", "workflows", "ci.yml"),
   join(root, "src", "test-helpers.ts"),
   join(root, "tsconfig.json"),

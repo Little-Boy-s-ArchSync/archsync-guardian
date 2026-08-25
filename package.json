@@ -50,14 +50,18 @@
     "privacy:verify": "node scripts/verify-offline.mjs",
     "phase4:assets": "node scripts/verify-phase4-assets.mjs",
     "phase4:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm phase4:assets",
-    "verify": "pnpm phase3:verify && pnpm phase4:assets",
-    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify",
+    "phase5:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase5-evidence.mjs --write",
+    "phase5:evidence:verify": "node scripts/phase5-evidence.mjs",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
-    "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
+    "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify",
+    "phase5:verify": "pnpm phase3:verify && pnpm phase4:assets && pnpm phase5:evidence:verify",
+    "verify": "pnpm phase5:verify",
+    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify"
   },
   "dependencies": {
     "@archsync/core": "file:vendor/archsync-core-0.1.1.tgz",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "yaml": "2.9.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

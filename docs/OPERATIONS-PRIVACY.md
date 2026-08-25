@@ -19,6 +19,6 @@ ArchSync's deterministic model, scan, check, Git-diff, doctor, version, and demo
 
 ## Mechanical gates
 
-`pnpm privacy:verify` rejects new runtime network imports or unreviewed production dependencies. Tests exercise token, PII, URL credential, local-path, source-snippet, and error redaction. `pnpm repo:verify-clean` runs the complete verification suite and proves that it leaves the worktree unchanged.
+`pnpm privacy:verify` rejects new runtime network imports or unreviewed production dependencies. The allowlist contains Core, TypeScript and the local-only YAML parser used for architecture and Kubernetes documents; none is an outbound transport. Tests exercise token, PII, URL credential, local-path, source-snippet, and error redaction. `pnpm repo:verify-clean` runs the complete verification suite and proves that it leaves the worktree unchanged.
 
 Any change that introduces outbound access, telemetry, a new persistent cache, or less redaction is a breaking operational-policy change and requires a security review.

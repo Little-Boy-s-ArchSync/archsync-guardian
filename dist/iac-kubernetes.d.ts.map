@@ -1,0 +1,1 @@
+{"version":3,"file":"iac-kubernetes.d.ts","sourceRoot":"","sources":["../src/iac-kubernetes.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAMV,yBAAyB,EAI1B,MAAM,oBAAoB,CAAC;AAyN5B,wBAAgB,eAAe,CAAC,MAAM,EAAE,MAAM,EAAE,IAAI,SAAmB,GAAG,yBAAyB,CAyKlG;AAED,wBAAgB,oBAAoB,CAClC,KAAK,EAAE,QAAQ,CAAC,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC,GACtC,yBAAyB,CAiB3B"}

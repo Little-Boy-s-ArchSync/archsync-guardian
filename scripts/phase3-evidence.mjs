@@ -221,6 +221,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "privacy.ts",
   "version.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
@@ -245,6 +246,10 @@ const dependencyHashes = {
   "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
   "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
   "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
+  "scripts/verify-clean-worktree.mjs": sha256(await readFile(join(root, "scripts", "verify-clean-worktree.mjs"))),
+  "scripts/verify-offline.mjs": sha256(await readFile(join(root, "scripts", "verify-offline.mjs"))),
+  "src/privacy.test.ts": sha256(await readFile(join(root, "src", "privacy.test.ts"))),
+  "docs/OPERATIONS-PRIVACY.md": sha256(await readFile(join(root, "docs", "OPERATIONS-PRIVACY.md"))),
 };
 const staticEvidence = {
   phase: 3,

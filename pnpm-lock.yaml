@@ -17,6 +17,9 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+      yaml:
+        specifier: 2.9.0
+        version: 2.9.0(patch_hash=dcce5a8e470b5791d0399a021018918ec71433da95960e4fc84fc6b62159ad1b)
     devDependencies:
       '@types/node':
         specifier: ^24.0.0

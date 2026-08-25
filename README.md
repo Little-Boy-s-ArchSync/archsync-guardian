@@ -1,12 +1,18 @@
 # ArchSync Guardian
 
-`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
+`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with a preparatory static Infrastructure-as-Evidence foundation for Phase 5.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
 Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
 **Phase 4 preparatory status:** versioned Explanation/Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, root-cause taxonomy, and human-review handoff are implemented behind a proposed ADR. Real-provider execution remains prohibited until EXP-101, Lead review, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+
+**Phase 5 status:** technical preparation only. Terraform/Kubernetes parsing,
+cross-source identity, normalized graph, evidence claims, conflict classification
+and security fixtures are implemented behind the library API. ADR-0005 remains
+Proposed; Phase 5 Lead and Security approval are both pending. This repository
+does not claim P4-120 or any Phase 4/5 benchmark freeze.
 
 ## Repository boundary
 
@@ -26,6 +32,14 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 - Emit GitHub annotations and a Markdown report with `PASS`, `BLOCK` or `REVIEW`.
 - Expose every Core, Guardian and Git-gate capability through one cross-platform `archsync` command.
 - Run a real PASS/BLOCK/REVIEW demonstration without Bash, PowerShell-specific syntax or mocked results.
+- Parse a deliberately narrow Terraform literal subset and Kubernetes
+  multi-document Deployment/Service/Ingress/ConfigMap subset without executing
+  infrastructure tools or hiding unsupported expressions.
+- Join spec, code and IaC observations through explicit aliases and namespaces,
+  retaining unknown/ambiguous identity, confidence and ranged evidence.
+- Build a stable normalized infrastructure graph, spec-code-IaC evidence claims,
+  deterministic conflict classifications and four preparatory security finding
+  families with positive/hard-negative fixtures.
 
 ## Setup
 
@@ -35,7 +49,7 @@ The CLI requires Node.js 22 or later and Git. It is tested on Windows, macOS and
 pnpm install --frozen-lockfile
 pnpm build
 pnpm doctor
-pnpm phase3:verify
+pnpm repo:verify-clean
 ```
 
 The published/package binary is `archsync`. During source development, use the equivalent `pnpm cli <command>`. The former `archsync-guardian` binary remains as a compatibility alias.
@@ -164,6 +178,10 @@ The expected end-to-end result is 20/20 deterministic cases with `1.000` full-gr
 src/analyzer.ts       TypeScript source/component -> Observed Graph
 src/guardian.ts       Core conformance orchestration + evidence enrichment
 src/phase3.ts         Git diff, baseline cache, incremental merge and PR reports
+src/iac-terraform.ts  narrow, non-executing Terraform resource parser
+src/iac-kubernetes.ts multi-document Kubernetes parser and reference resolver
+src/iac-normalize.ts  identity map, graph normalization, claims and conflicts
+src/iac-security.ts   preparatory deterministic infrastructure security rules
 src/contracts.ts      Observed Graph and Finding v0.1 contracts
 src/benchmark.ts      Phase 2 benchmark evaluator and metrics
 src/model-cli.ts      unified Architecture Model command adapter
@@ -173,4 +191,9 @@ evidence/             deterministic Phase 2 and Phase 3 evidence manifests
 docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 ```
 
-See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. Phase 4 reasoning remains a preparatory, evidence-only foundation; automatic repair execution, MCP transport, IaC and runtime evidence remain outside this integration branch.
+See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction,
+[`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate and
+[`docs/phase-5.md`](docs/phase-5.md) for the preparatory IaC contract and its
+explicit non-claims. Phase 4 reasoning is a preparatory evidence-only foundation;
+automatic repair execution, MCP transport, rendered/dynamic IaC, cloud-state
+discovery and runtime evidence remain outside this integration branch.
