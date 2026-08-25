@@ -1,6 +1,6 @@
 # ArchSync Guardian
 
-`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with preparatory Phase 4 reasoning/repair-verification and Phase 5 Infrastructure-as-Evidence foundations.
+`@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with preparatory Phase 4 reasoning/repair-verification, Phase 5 Infrastructure-as-Evidence and Phase 6 runtime-awareness foundations.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
@@ -15,6 +15,8 @@ cross-source identity, normalized graph, evidence claims, conflict classificatio
 and security fixtures are implemented behind the library API. ADR-0005 remains
 Proposed; Phase 5 Lead and Security approval are both pending. This repository
 does not claim P4-120 or any Phase 4/5 benchmark freeze.
+
+**Phase 6 status:** the proposed runtime-awareness foundation adds privacy-minimized OTLP fixture ingestion, deterministic observed-runtime graphs, evidence-grounded per-goal scorecards and a fail-closed human approval record. It is not approved or experimentally validated; see [`docs/adr/0005-runtime-evidence-proposed.md`](docs/adr/0005-runtime-evidence-proposed.md).
 
 ## Repository boundary
 
@@ -43,6 +45,8 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
   deterministic conflict classifications and four preparatory security finding
   families with positive/hard-negative fixtures.
 - Validate and apply a narrowly declared textual repair diff in a disposable workspace, run project tests without network access, inject an ArchSync recheck, and return a deterministic reviewability decision.
+- Ingest the supported privacy-minimized OTLP/JSON fixture subset and build a deterministic observed-runtime graph with explicit missing or ambiguous evidence.
+- Evaluate each proposed quality goal independently in a before/after scorecard and reject accepted high-risk decisions without an exact human approval record.
 
 ## Setup
 
@@ -186,6 +190,8 @@ src/iac-kubernetes.ts multi-document Kubernetes parser and reference resolver
 src/iac-normalize.ts  identity map, graph normalization, claims and conflicts
 src/iac-security.ts   preparatory deterministic infrastructure security rules
 src/repair-verification.ts  preparatory repair sandbox, patch/test/recheck gates
+src/runtime/          privacy-minimized runtime evidence and observed graph
+src/evolution/        per-goal scorecards and fail-closed approval records
 src/contracts.ts      Observed Graph and Finding v0.1 contracts
 src/benchmark.ts      Phase 2 benchmark evaluator and metrics
 src/model-cli.ts      unified Architecture Model command adapter
@@ -198,8 +204,9 @@ docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction,
 [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate,
 [`docs/phase-4-repair-verification.md`](docs/phase-4-repair-verification.md) for the
-draft deterministic verification boundary, and [`docs/phase-5.md`](docs/phase-5.md)
-for the preparatory IaC contract and its explicit non-claims. Phase 4 reasoning is
-an evidence-only foundation; repair generation, automatic approval/merge, MCP
-transport, rendered/dynamic IaC, cloud-state discovery and runtime evidence remain
+draft deterministic verification boundary, [`docs/phase-5.md`](docs/phase-5.md)
+for the preparatory IaC contract, and [`docs/RUNTIME-FOUNDATION.md`](docs/RUNTIME-FOUNDATION.md)
+for the proposed runtime boundary. Phase 4 reasoning is an evidence-only foundation;
+repair generation, automatic approval/merge, MCP transport, rendered/dynamic IaC,
+cloud-state discovery, production telemetry and experimental validation remain
 outside this integration branch.

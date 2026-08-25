@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "b1e7c6abc6c9fd97ddf109a34afa92d5ee31c52da5be3d03c98a227360bfcb1b",
+    "implementation_source_sha256": "c74aa34ade0812e30f206f294b35108838ef4d9f89edb6b94f09af64f49e2e32",
     "fixture_tree": {
       "files": [
         {
@@ -180,7 +180,7 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "f1800b83fc009dfb5d8bd1df858a8d998aa8932c322a3d429b784330dfea7624"
+        "sha256": "2af00930226d03af5b3b4145d1527bee19c3309d758a2f39f0708422ac3873e2"
       },
       {
         "file": "scripts/verify-clean-worktree.mjs",
@@ -243,26 +243,26 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "afc5ed71a3909af875a051a51b073077feb29228c7c3c74c1c706df9f2eaf633",
+    "verification_source_sha256": "21519e5f19f178dfebd10fc603eaef07949b55571f51145aefc086ec7ee21db8",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "e3447b8d8446d34c0fddc8dd6b8eea1bf5dee9c10600cdbc24c672b296b43c87"
+        "sha256": "67b65a89ea2cef483d6d92b9b8e5e1bb39708fb8d0f3b180587abd645b4af1d9"
       },
       {
         "file": "pnpm-lock.yaml",
-        "sha256": "af8ceaed554f27621a99bd4c38a2671dfd8ffe9faf8a54af1ace5d860bee6f32"
+        "sha256": "f6b7e4e54be967c4c66180110bd3cf689b5dd454a5b626c6db7b6fd63500e95c"
       },
       {
         "file": "pnpm-workspace.yaml",
         "sha256": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16"
       },
       {
-        "file": "vendor/archsync-core-0.1.1.tgz",
-        "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
+        "file": "vendor/archsync-core-0.1.1-p6-783716d.tgz",
+        "sha256": "943b6e0da88a227835b49c4b505c55af58ca1f4d4edb2c515e9e51972d1e4199"
       }
     ],
-    "dependency_source_sha256": "6fc38ee71bf704a95b6e9ef9efd3d3248280e63505ad86fc593949484bfb8290"
+    "dependency_source_sha256": "9329d651837ea3b5d112a9adf4e4451c99616a35b55dcc3a4c06ee467cd4b44a"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -279,15 +279,15 @@
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
       "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
-      "src/index.ts": "a6a5c9bad7d150f01bb55928817ed2ba379ba519df20aa630b855786e2d13d4f",
+      "src/index.ts": "427d7e7321c48eb9ff6da68d5c99fa64014d8198d73bf53c936d6fe3f9896b6c",
       "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },
   "core_dependency": {
-    "repository_commit": "f7812c471887029951b5e5ad4105a72f0b29d0ed",
-    "vendored_package": "vendor/archsync-core-0.1.1.tgz",
-    "vendored_package_sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1"
+    "repository_commit": "783716d7961690b1e8c1cda4acb956777977a853",
+    "vendored_package": "vendor/archsync-core-0.1.1-p6-783716d.tgz",
+    "vendored_package_sha256": "943b6e0da88a227835b49c4b505c55af58ca1f4d4edb2c515e9e51972d1e4199",
+    "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1 plus proposed quality-goal v0.2 contract"
   },
   "analyzer": {
     "id": "archsync-typescript",

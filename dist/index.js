@@ -16,4 +16,10 @@ export * from "./phase3.js";
 export * from "./privacy.js";
 export * from "./reasoner/index.js";
 export * from "./repair-verification.js";
+export * from "./runtime/canonical.js";
+export * from "./runtime/collector.js";
+export * from "./runtime/contracts.js";
+export * from "./runtime/graph.js";
+export * from "./evolution/approval.js";
+export * from "./evolution/scorecard.js";
 //# sourceMappingURL=index.js.map

@@ -59,7 +59,7 @@
     "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify"
   },
   "dependencies": {
-    "@archsync/core": "file:vendor/archsync-core-0.1.1.tgz",
+    "@archsync/core": "file:vendor/archsync-core-0.1.1-p6-783716d.tgz",
     "typescript": "^5.9.2",
     "yaml": "2.9.0"
   },

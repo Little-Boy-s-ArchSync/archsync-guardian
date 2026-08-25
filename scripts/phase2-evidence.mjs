@@ -135,7 +135,7 @@ const dependencySource = await hashFiles([
   join(root, "pnpm-workspace.yaml"),
   join(root, "package.json"),
   join(root, "pnpm-lock.yaml"),
-  join(root, "vendor", "archsync-core-0.1.1.tgz"),
+  join(root, "vendor", "archsync-core-0.1.1-p6-783716d.tgz"),
 ]);
 
 const evidence = {
@@ -156,10 +156,10 @@ const evidence = {
     source_sha256: sourceHashes,
   },
   core_dependency: {
-    repository_commit: "f7812c471887029951b5e5ad4105a72f0b29d0ed",
-    vendored_package: "vendor/archsync-core-0.1.1.tgz",
-    vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz"))),
-    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1",
+    repository_commit: "783716d7961690b1e8c1cda4acb956777977a853",
+    vendored_package: "vendor/archsync-core-0.1.1-p6-783716d.tgz",
+    vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.1-p6-783716d.tgz"))),
+    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1 plus proposed quality-goal v0.2 contract",
   },
   analyzer: {
     id: baseline.analyzer.id,
