@@ -28,6 +28,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm phase3:verify
+      - run: pnpm phase4:assets
       - name: Ensure committed build and evidence are current
         run: git diff --exit-code -- dist evidence
       - name: Upload Guardian evidence

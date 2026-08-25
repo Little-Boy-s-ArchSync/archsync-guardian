@@ -4,6 +4,8 @@
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
 
+**Phase 4 preparatory status:** versioned Explanation/Repair Candidate contracts, evidence-only prompting, outbound redaction, provider provenance/reliability, citation validation, root-cause taxonomy, and human-review handoff are implemented behind a proposed ADR. Real-provider execution remains prohibited until EXP-101, Lead review, and the provider security checklist are complete. Run `pnpm phase4:verify` for the technical gate.
+
 ## Repository boundary
 
 Guardian depends on `@archsync/core`. It does not own the Architecture Model schema and does not treat draw.io or runtime observations as a source of truth.
