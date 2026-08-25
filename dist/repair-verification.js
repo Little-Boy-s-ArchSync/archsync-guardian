@@ -535,9 +535,10 @@ export async function applyRepairCandidate(sandbox, candidate, runner = executeP
             timeout_ms: 30_000,
             max_output_bytes: defaultMaximumLogBytes,
         };
+        const deterministicGitConfig = ["-c", "core.autocrlf=false", "-c", "core.safecrlf=false"];
         const checked = await runner({
             ...common,
-            args: ["apply", "--check", "--recount", "--whitespace=error-all", patchFile],
+            args: [...deterministicGitConfig, "apply", "--check", "--recount", "--whitespace=error-all", patchFile],
         });
         if (checked.timed_out || checked.infrastructure_error) {
             return {
@@ -557,7 +558,7 @@ export async function applyRepairCandidate(sandbox, candidate, runner = executeP
         }
         const applied = await runner({
             ...common,
-            args: ["apply", "--recount", "--whitespace=error-all", patchFile],
+            args: [...deterministicGitConfig, "apply", "--recount", "--whitespace=error-all", patchFile],
         });
         if (applied.timed_out || applied.infrastructure_error) {
             return {
