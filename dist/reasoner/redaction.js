@@ -1,9 +1,13 @@
 const replacements = [
     [/(?:github_pat_|gh[opusr]_|glpat-)[A-Za-z0-9_-]{8,}/giu, "[REDACTED_TOKEN]", "credential"],
-    [/(\b(?:api[_-]?key|token|password|secret)\s*[:=]\s*["']?)[^\s,"']+/giu, "$1[REDACTED]", "credential"],
+    [/\b(?:sk|rk|pk)-(?:live|test|proj)?-?[A-Za-z0-9_-]{8,}\b/giu, "[REDACTED_TOKEN]", "credential"],
+    [/(\b(?:api[_-]?key|access[_-]?token|auth[_-]?token|token|password|passwd|secret)\s*[:=]\s*["']?)[^\s,"']+/giu, "$1[REDACTED]", "credential"],
     [/(\bBearer\s+)[A-Za-z0-9._~+\/-]+=*/giu, "$1[REDACTED]", "credential"],
+    [/([a-z][a-z0-9+.-]*:\/\/[^\s:/@]+:)[^\s@/]+@/giu, "$1[REDACTED]@", "credential"],
     [/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu, "[REDACTED_EMAIL]", "email"],
-    [/(?:[A-Za-z]:\\|\/(?:Users|home)\/)[^\s"']+/gu, "[REDACTED_PATH]", "absolute-path"],
+    [/(^|[\s("'=:\[{])\/(?!\/)[^\s"',;)}\]]+/gmu, "$1[REDACTED_PATH]", "absolute-path"],
+    [/(^|[\s("'=:\[{])[A-Za-z]:[\\/][^\s"',;)}\]]+/gmu, "$1[REDACTED_PATH]", "absolute-path"],
+    [/(^|[\s("'=:\[{])\\\\[^\s"',;)}\]]+/gmu, "$1[REDACTED_PATH]", "absolute-path"],
 ];
 function redactValue(input) {
     const reasons = [];
@@ -30,19 +34,48 @@ function redactField(input, evidenceId, field, events) {
 }
 export function redactOutboundEvidence(input) {
     const events = [];
-    const evidence = input.map((item) => {
-        const text = redactField(item.text, item.id, "text", events);
-        const file = item.file === undefined ? undefined : redactField(item.file, item.id, "file", events);
-        return { ...item, text, ...(file === undefined ? {} : { file }) };
+    const reservedIds = new Set(input.map(({ id }) => id));
+    const emittedIds = new Set();
+    const evidence = input.map((item, index) => {
+        const redactedId = redactValue(item.id);
+        let id = redactedId.value;
+        if (redactedId.reasons.length > 0) {
+            let suffix = index + 1;
+            do {
+                id = `[REDACTED_EVIDENCE_ID_${suffix}]`;
+                suffix += 1;
+            } while (reservedIds.has(id) || emittedIds.has(id));
+        }
+        emittedIds.add(id);
+        events.push(...redactedId.reasons.map((reason) => ({ evidence_id: id, field: "id", reason })));
+        const text = redactField(item.text, id, "text", events);
+        const file = item.file === undefined ? undefined : redactField(item.file, id, "file", events);
+        const ruleId = item.rule_id === undefined ? undefined : redactField(item.rule_id, id, "rule_id", events);
+        return {
+            ...item,
+            id,
+            text,
+            ...(file === undefined ? {} : { file }),
+            ...(ruleId === undefined ? {} : { rule_id: ruleId }),
+        };
     });
     return { evidence, events };
 }
 export function redactOutboundContext(finding, input) {
     const redacted = redactOutboundEvidence(input);
+    const redactedFindingId = redactValue(finding.id);
+    const id = redactedFindingId.reasons.length === 0 ? redactedFindingId.value : "[REDACTED_FINDING_ID]";
+    redacted.events.push(...redactedFindingId.reasons.map((reason) => ({
+        evidence_id: id,
+        field: "id",
+        reason,
+    })));
     return {
         finding: {
             ...finding,
-            message: redactField(finding.message, `finding:${finding.id}`, "message", redacted.events),
+            id,
+            kind: redactField(finding.kind, `finding:${id}`, "kind", redacted.events),
+            message: redactField(finding.message, `finding:${id}`, "message", redacted.events),
         },
         evidence: redacted.evidence,
         events: redacted.events,

@@ -8,7 +8,7 @@ ArchSync's deterministic model, scan, check, Git-diff, doctor, version, and demo
 - Evidence paths are repository-relative. Machine-specific workspace and home roots in diagnostics are rendered as `$WORKSPACE` and `$HOME`.
 - Common API tokens, bearer values, URL passwords, secrets, and email addresses are replaced before evidence snippets or unexpected errors reach terminal output.
 - Evidence snippets remain part of JSON output because they are necessary to audit a finding. The snippet is capped at 180 characters and credential-redacted. Treat requested JSON/report files as project data.
-- Preparatory provider prompts redact finding messages, evidence text and evidence file paths as one outbound context. Provider errors and raw-artifact paths are redacted before entering a persisted run manifest; raw response content never enters that manifest.
+- Preparatory provider prompts redact every untrusted string field in the finding/evidence envelope, including IDs, kinds, rule IDs, messages, evidence text and file paths. Arbitrary POSIX, Windows-drive and UNC absolute paths are removed from free text as well as path fields. Provider errors, identifiers, timestamps and raw-artifact paths are redacted before entering a persisted run manifest; raw response content never enters that manifest.
 - `--verbose` is opt-in and adds deterministic finding detail only; it does not enable network access or telemetry.
 
 ## Temporary data and cache

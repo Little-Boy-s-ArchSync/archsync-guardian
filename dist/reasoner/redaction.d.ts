@@ -1,7 +1,7 @@
 import type { ReasonerEvidence } from "./contracts.js";
 export interface RedactionEvent {
     evidence_id: string;
-    field: "text" | "file" | "message";
+    field: "id" | "kind" | "text" | "file" | "rule_id" | "message";
     reason: "credential" | "email" | "absolute-path";
 }
 export interface RedactedEvidence {

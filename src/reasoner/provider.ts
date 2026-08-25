@@ -154,6 +154,44 @@ export interface RunEnvironment {
   wait: (milliseconds: number) => Promise<void>;
 }
 
+function isPositiveSafeInteger(value: number): boolean {
+  return Number.isSafeInteger(value) && value > 0;
+}
+
+function isNonNegativeFinite(value: number): boolean {
+  return Number.isFinite(value) && value >= 0;
+}
+
+function reliabilityPolicyIssue(
+  policy: ProviderReliabilityPolicy,
+  options: { temperature?: number; seed?: number },
+): string | undefined {
+  const temperature = options.temperature ?? 0;
+  const checks: readonly [boolean, string][] = [
+    [isPositiveSafeInteger(policy.max_attempts), "max_attempts must be a positive safe integer"],
+    [isPositiveSafeInteger(policy.timeout_ms), "timeout_ms must be a positive safe integer"],
+    [isPositiveSafeInteger(policy.max_input_tokens), "max_input_tokens must be a positive safe integer"],
+    [isPositiveSafeInteger(policy.max_output_tokens), "max_output_tokens must be a positive safe integer"],
+    [isNonNegativeFinite(policy.max_cost_usd), "max_cost_usd must be a non-negative finite number"],
+    [isNonNegativeFinite(policy.backoff_ms), "backoff_ms must be a non-negative finite number"],
+    [isNonNegativeFinite(temperature), "temperature must be a non-negative finite number"],
+    [options.seed === undefined || Number.isSafeInteger(options.seed), "seed must be a safe integer when provided"],
+  ];
+  return checks.find(([valid]) => !valid)?.[1];
+}
+
+function providerResponseIssue(response: ProviderResponse): string | undefined {
+  const checks: readonly [boolean, string][] = [
+    [typeof response.content === "string", "provider response content must be a string"],
+    [Number.isSafeInteger(response.input_tokens) && response.input_tokens >= 0,
+      "provider input token usage must be a non-negative safe integer"],
+    [Number.isSafeInteger(response.output_tokens) && response.output_tokens >= 0,
+      "provider output token usage must be a non-negative safe integer"],
+    [isNonNegativeFinite(response.cost_usd), "provider cost must be a non-negative finite number"],
+  ];
+  return checks.find(([valid]) => !valid)?.[1];
+}
+
 function failure(error: unknown): ProviderFailure {
   if (error instanceof ProviderFailure) {
     return new ProviderFailure(error.kind, redactProviderDiagnostic(error.message));
@@ -183,13 +221,13 @@ function manifest(
 ): RunManifest {
   return {
     schema_version: 1,
-    run_id: environment.run_id,
+    run_id: redactProviderDiagnostic(environment.run_id),
     provider: redactProviderDiagnostic(provider.id),
     model: redactProviderDiagnostic(provider.model),
-    prompt_version: environment.prompt_version,
+    prompt_version: redactProviderDiagnostic(environment.prompt_version),
     request_hash: createHash("sha256").update(request.prompt).digest("hex"),
-    started_at: startedAt,
-    finished_at: environment.now(),
+    started_at: redactProviderDiagnostic(startedAt),
+    finished_at: redactProviderDiagnostic(environment.now()),
     temperature: request.temperature,
     ...(request.seed === undefined ? {} : { seed: request.seed }),
     attempts,
@@ -208,16 +246,28 @@ export async function executeReasonerRun(
   environment: RunEnvironment,
   options: { temperature?: number; seed?: number } = {},
 ): Promise<ProviderRunResult> {
+  const startedAt = environment.now();
+  const failures: RunManifest["failures"] = [];
+  const effectivePolicy: ProviderReliabilityPolicy = { ...policy };
+  const policyIssue = reliabilityPolicyIssue(effectivePolicy, options);
+  if (policyIssue !== undefined) {
+    const safeRequest: ProviderRequest = {
+      prompt,
+      max_tokens: 0,
+      timeout_ms: 0,
+      temperature: 0,
+    };
+    failures.push({ attempt: 0, kind: "budget", message: `invalid provider reliability policy: ${policyIssue}` });
+    return { ok: false, manifest: manifest(provider, safeRequest, environment, startedAt, 0, failures) };
+  }
   const request: ProviderRequest = {
     prompt,
-    max_tokens: policy.max_output_tokens,
-    timeout_ms: policy.timeout_ms,
+    max_tokens: effectivePolicy.max_output_tokens,
+    timeout_ms: effectivePolicy.timeout_ms,
     temperature: options.temperature ?? 0,
     ...(options.seed === undefined ? {} : { seed: options.seed }),
   };
-  const startedAt = environment.now();
-  const failures: RunManifest["failures"] = [];
-  if (conservativeInputTokenUpperBound(prompt) > policy.max_input_tokens) {
+  if (conservativeInputTokenUpperBound(prompt) > effectivePolicy.max_input_tokens) {
     failures.push({
       attempt: 0,
       kind: "budget",
@@ -225,10 +275,15 @@ export async function executeReasonerRun(
     });
     return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
   }
-  for (let attempt = 1; attempt <= policy.max_attempts; attempt += 1) {
+  const runAttempt = async (attempt: number): Promise<ProviderRunResult> => {
     try {
       const response = await provider.generate(request);
-      if (response.input_tokens > policy.max_input_tokens || response.output_tokens > policy.max_output_tokens || response.cost_usd > policy.max_cost_usd) {
+      const responseIssue = providerResponseIssue(response);
+      if (responseIssue !== undefined) {
+        failures.push({ attempt, kind: "invalid-response", message: responseIssue });
+        return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
+      }
+      if (response.input_tokens > effectivePolicy.max_input_tokens || response.output_tokens > effectivePolicy.max_output_tokens || response.cost_usd > effectivePolicy.max_cost_usd) {
         failures.push({
           attempt,
           kind: "budget",
@@ -248,11 +303,12 @@ export async function executeReasonerRun(
       const item = failure(error);
       failures.push({ attempt, kind: item.kind, message: item.message });
       const retryable = ["timeout", "rate-limit", "provider"].includes(item.kind);
-      if (!retryable || attempt === policy.max_attempts) {
+      if (!retryable || attempt === effectivePolicy.max_attempts) {
         return { ok: false, manifest: manifest(provider, request, environment, startedAt, attempt, failures) };
       }
-      await environment.wait(policy.backoff_ms * attempt);
+      await environment.wait(effectivePolicy.backoff_ms * attempt);
+      return runAttempt(attempt + 1);
     }
-  }
-  throw new Error("unreachable provider retry state");
+  };
+  return runAttempt(1);
 }

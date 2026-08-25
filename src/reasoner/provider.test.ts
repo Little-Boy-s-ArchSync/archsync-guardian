@@ -115,25 +115,100 @@ describe("reasoner providers", () => {
   });
 
   it("redacts provider diagnostics and raw artifact paths in failed manifests", async () => {
-    const provider = new FakeReasonerProvider("fake", "fixture", [
-      new ProviderFailure("provider", "Bearer private.token /Users/member/private/error.txt"),
+    const provider = new FakeReasonerProvider("api_key=provider-private", "secret=model-private", [
+      new ProviderFailure("provider", "Bearer private.token /var/member/private/error.txt"),
     ]);
-    const env = { ...environment(), raw_response_path: "/home/member/private/raw.json" };
+    const env = {
+      ...environment(),
+      run_id: "token=run-private",
+      prompt_version: "password=prompt-private",
+      raw_response_path: "/opt/member/private/raw.json",
+      now: () => "api_key=time-private /tmp/private/clock.txt",
+    };
     const result = await executeReasonerRun(provider, "prompt", { ...policy, max_attempts: 1 }, env);
     const serialized = JSON.stringify(result.manifest);
-    expect(serialized).not.toContain("private.token");
-    expect(serialized).not.toContain("/Users/member");
-    expect(serialized).not.toContain("/home/member");
+    for (const leaked of [
+      "private.token",
+      "provider-private",
+      "model-private",
+      "run-private",
+      "prompt-private",
+      "time-private",
+      "/var/member",
+      "/opt/member",
+      "/tmp/private",
+    ]) {
+      expect(serialized).not.toContain(leaked);
+    }
     expect(result.manifest.raw_response_path).toBe("[REDACTED_PATH]");
   });
 
-  it("rejects invalid retry configuration and an empty fake queue", async () => {
-    await expect(executeReasonerRun(
-      new FakeReasonerProvider("fake", "fixture", []),
-      "prompt",
-      { ...policy, max_attempts: 0 },
-      environment(),
-    )).rejects.toThrow("unreachable provider retry state");
+  it("rejects non-finite, negative, and structurally invalid limits before a provider call", async () => {
+    const cases: Array<{
+      policy?: Partial<ProviderReliabilityPolicy>;
+      options?: { temperature?: number; seed?: number };
+      field: string;
+    }> = [
+      { policy: { max_attempts: 0 }, field: "max_attempts" },
+      { policy: { max_attempts: -1 }, field: "max_attempts" },
+      { policy: { timeout_ms: -1 }, field: "timeout_ms" },
+      { policy: { max_input_tokens: Number.NaN }, field: "max_input_tokens" },
+      { policy: { max_output_tokens: Number.POSITIVE_INFINITY }, field: "max_output_tokens" },
+      { policy: { max_cost_usd: -1 }, field: "max_cost_usd" },
+      { policy: { max_cost_usd: Number.POSITIVE_INFINITY }, field: "max_cost_usd" },
+      { policy: { backoff_ms: Number.NaN }, field: "backoff_ms" },
+      { options: { temperature: -1 }, field: "temperature" },
+      { options: { temperature: Number.POSITIVE_INFINITY }, field: "temperature" },
+      { options: { seed: Number.NaN }, field: "seed" },
+    ];
+    for (const item of cases) {
+      const provider = new FakeReasonerProvider("fake", "fixture", [response]);
+      const result = await executeReasonerRun(
+        provider,
+        "oversized".repeat(20),
+        { ...policy, ...item.policy },
+        environment(),
+        item.options,
+      );
+      expect(result.ok).toBe(false);
+      expect(provider.calls).toHaveLength(0);
+      expect(result.manifest.attempts).toBe(0);
+      expect(result.manifest.failures).toHaveLength(1);
+      expect(result.manifest.failures[0]).toMatchObject({ attempt: 0, kind: "budget" });
+      expect(result.manifest.failures[0]?.message).toContain(item.field);
+    }
+  });
+
+  it("rejects non-finite, negative, and malformed provider usage without persisting it", async () => {
+    const cases: Array<[ProviderResponse, string]> = [
+      [{ ...response, content: 17 as unknown as string }, "content"],
+      [{ ...response, input_tokens: -1 }, "input token"],
+      [{ ...response, input_tokens: Number.NaN }, "input token"],
+      [{ ...response, input_tokens: Number.POSITIVE_INFINITY }, "input token"],
+      [{ ...response, output_tokens: -1 }, "output token"],
+      [{ ...response, output_tokens: Number.NaN }, "output token"],
+      [{ ...response, output_tokens: Number.POSITIVE_INFINITY }, "output token"],
+      [{ ...response, cost_usd: -1 }, "cost"],
+      [{ ...response, cost_usd: Number.NaN }, "cost"],
+      [{ ...response, cost_usd: Number.POSITIVE_INFINITY }, "cost"],
+    ];
+    for (const [invalidResponse, message] of cases) {
+      const provider = new FakeReasonerProvider("fake", "fixture", [invalidResponse]);
+      const result = await executeReasonerRun(provider, "prompt", policy, environment());
+      expect(result.ok).toBe(false);
+      expect(provider.calls).toHaveLength(1);
+      expect(result.manifest).toMatchObject({
+        status: "failed",
+        attempts: 1,
+        tokens: { input: 0, output: 0 },
+        cost_usd: 0,
+        failures: [{ attempt: 1, kind: "invalid-response" }],
+      });
+      expect(result.manifest.failures[0]?.message).toContain(message);
+    }
+  });
+
+  it("rejects an empty fake queue", async () => {
     await expect(new FakeReasonerProvider("fake", "fixture", []).generate({
       prompt: "x", max_tokens: 1, timeout_ms: 1, temperature: 0,
     })).rejects.toThrow("no queued response");
