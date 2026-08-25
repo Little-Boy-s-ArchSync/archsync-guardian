@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { redactProviderDiagnostic } from "./redaction.js";
+import { redactProviderArtifactPath, redactProviderDiagnostic } from "./redaction.js";
 export class ProviderFailure extends Error {
     kind;
     constructor(kind, message) {
@@ -103,7 +103,7 @@ function manifest(provider, request, environment, startedAt, attempts, failures,
         attempts,
         tokens: { input: response?.input_tokens ?? 0, output: response?.output_tokens ?? 0 },
         cost_usd: response?.cost_usd ?? 0,
-        raw_response_path: redactProviderDiagnostic(environment.raw_response_path),
+        raw_response_path: redactProviderArtifactPath(environment.raw_response_path),
         status,
         failures,
     };

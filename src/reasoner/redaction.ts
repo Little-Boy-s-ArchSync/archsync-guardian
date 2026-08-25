@@ -41,12 +41,20 @@ function redactValue(input: string): { value: string; reasons: RedactionEvent["r
   return { value, reasons };
 }
 
+function isPortableAbsolutePath(value: string): boolean {
+  return value.startsWith("/") || value.startsWith("\\\\") || /^[A-Za-z]:[\\/]/u.test(value);
+}
+
 function redactField(
   input: string,
   evidenceId: string,
   field: RedactionEvent["field"],
   events: RedactionEvent[],
 ): string {
+  if (field === "file" && isPortableAbsolutePath(input)) {
+    events.push({ evidence_id: evidenceId, field, reason: "absolute-path" });
+    return "[REDACTED_PATH]";
+  }
   const redacted = redactValue(input);
   events.push(...redacted.reasons.map((reason) => ({ evidence_id: evidenceId, field, reason })));
   return redacted.value;
@@ -80,4 +88,8 @@ export function redactOutboundContext(
 /** Redact untrusted provider diagnostics before they enter a persisted run manifest. */
 export function redactProviderDiagnostic(input: string): string {
   return redactValue(input).value;
+}
+
+export function redactProviderArtifactPath(input: string): string {
+  return isPortableAbsolutePath(input) ? "[REDACTED_PATH]" : redactProviderDiagnostic(input);
 }

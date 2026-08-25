@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import { redactProviderDiagnostic } from "./redaction.js";
+import { redactProviderArtifactPath, redactProviderDiagnostic } from "./redaction.js";
 
 export type ProviderFailureKind = "timeout" | "rate-limit" | "quota" | "budget" | "invalid-response" | "provider";
 
@@ -195,7 +195,7 @@ function manifest(
     attempts,
     tokens: { input: response?.input_tokens ?? 0, output: response?.output_tokens ?? 0 },
     cost_usd: response?.cost_usd ?? 0,
-    raw_response_path: redactProviderDiagnostic(environment.raw_response_path),
+    raw_response_path: redactProviderArtifactPath(environment.raw_response_path),
     status,
     failures,
   };

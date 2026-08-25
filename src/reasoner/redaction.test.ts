@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { redactOutboundContext, redactOutboundEvidence, redactProviderDiagnostic } from "./redaction.js";
+import {
+  redactOutboundContext,
+  redactOutboundEvidence,
+  redactProviderArtifactPath,
+  redactProviderDiagnostic,
+} from "./redaction.js";
 
 describe("provider outbound redaction", () => {
   it("removes credentials, PII, and machine paths before a provider call", () => {
@@ -13,6 +18,8 @@ describe("provider outbound redaction", () => {
         file: "/home/member/private/source.ts",
       },
       { id: "c", kind: "model", text: "safe structured evidence" },
+      { id: "d", kind: "source", text: "network path", file: "\\\\server\\share\\private.ts" },
+      { id: "e", kind: "source", text: "Windows path", file: "C:\\private\\source.ts" },
     ]);
     const serialized = JSON.stringify(result.evidence);
     for (const secret of ["abc.def", "github_pat_abcdefghijkl", "secret-value", "member@example.com", "/Users/member", "C:\\Users\\member"]) {
@@ -25,6 +32,8 @@ describe("provider outbound redaction", () => {
       { evidence_id: "b", field: "text", reason: "email" },
       { evidence_id: "b", field: "text", reason: "absolute-path" },
       { evidence_id: "b", field: "file", reason: "absolute-path" },
+      { evidence_id: "d", field: "file", reason: "absolute-path" },
+      { evidence_id: "e", field: "file", reason: "absolute-path" },
     ]);
     expect(result.evidence[2]?.text).toBe("safe structured evidence");
   });
@@ -48,5 +57,7 @@ describe("provider outbound redaction", () => {
     ]);
     expect(redactProviderDiagnostic("api_key=private-value /home/member/raw.json"))
       .toBe("api_key=[REDACTED] [REDACTED_PATH]");
+    expect(redactProviderArtifactPath("/opt/service/private/raw.json")).toBe("[REDACTED_PATH]");
+    expect(redactProviderArtifactPath("raw/run.json")).toBe("raw/run.json");
   });
 });

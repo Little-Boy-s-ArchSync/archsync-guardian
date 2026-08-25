@@ -16,7 +16,14 @@ function redactValue(input) {
     }
     return { value, reasons };
 }
+function isPortableAbsolutePath(value) {
+    return value.startsWith("/") || value.startsWith("\\\\") || /^[A-Za-z]:[\\/]/u.test(value);
+}
 function redactField(input, evidenceId, field, events) {
+    if (field === "file" && isPortableAbsolutePath(input)) {
+        events.push({ evidence_id: evidenceId, field, reason: "absolute-path" });
+        return "[REDACTED_PATH]";
+    }
     const redacted = redactValue(input);
     events.push(...redacted.reasons.map((reason) => ({ evidence_id: evidenceId, field, reason })));
     return redacted.value;
@@ -44,5 +51,8 @@ export function redactOutboundContext(finding, input) {
 /** Redact untrusted provider diagnostics before they enter a persisted run manifest. */
 export function redactProviderDiagnostic(input) {
     return redactValue(input).value;
+}
+export function redactProviderArtifactPath(input) {
+    return isPortableAbsolutePath(input) ? "[REDACTED_PATH]" : redactProviderDiagnostic(input);
 }
 //# sourceMappingURL=redaction.js.map

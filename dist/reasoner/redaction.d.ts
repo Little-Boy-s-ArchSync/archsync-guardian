@@ -21,4 +21,5 @@ export declare function redactOutboundEvidence(input: readonly ReasonerEvidence[
 export declare function redactOutboundContext(finding: OutboundFindingContext, input: readonly ReasonerEvidence[]): RedactedOutboundContext;
 /** Redact untrusted provider diagnostics before they enter a persisted run manifest. */
 export declare function redactProviderDiagnostic(input: string): string;
+export declare function redactProviderArtifactPath(input: string): string;
 //# sourceMappingURL=redaction.d.ts.map
