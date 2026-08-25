@@ -7,7 +7,7 @@ import { FakeReasonerProvider, ProviderFailure, type ProviderReliabilityPolicy, 
 const policy: ProviderReliabilityPolicy = {
   max_attempts: 1,
   timeout_ms: 10,
-  max_input_tokens: 100,
+  max_input_tokens: 4_096,
   max_output_tokens: 100,
   max_cost_usd: 1,
   backoff_ms: 0,
@@ -44,7 +44,7 @@ describe("grounded explanation vertical slice", () => {
   it("redacts outbound evidence, validates citations, and binds real provenance", async () => {
     const result = await explainFinding(provider(JSON.stringify(explanation())), finding, evidence, policy, environment);
     expect(result.ok).toBe(true);
-    expect(result.redactions).toEqual([{ evidence_id: "e-1", reason: "credential" }]);
+    expect(result.redactions).toEqual([{ evidence_id: "e-1", field: "text", reason: "credential" }]);
     expect(result.citation_validation?.valid).toBe(true);
     expect(result.explanation?.model_provenance).toMatchObject({
       provider: "fake", model: "fixture", prompt_version: "explanation-evidence-only-v0.1",

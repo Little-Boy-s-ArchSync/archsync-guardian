@@ -27,7 +27,7 @@ The reasoner must never:
 - send credentials, personal addresses, or machine-specific paths;
 - retry without a fixed attempt/timeout/token/cost budget.
 
-Only structured finding fields and redacted evidence records may cross the provider boundary. Provider terms, retention, location, and deletion behavior must be accepted before any real call. Raw responses are retained under a run ID even when failed; credentials never enter a prompt, raw response, log, or manifest.
+Only structured finding fields and redacted evidence records may cross the provider boundary. Redaction covers the finding message, evidence text, evidence file paths, provider diagnostics, and manifest artifact paths. A conservative prompt-byte upper bound is checked against the input-token budget before provider execution. If provider-reported input/output usage or cost still exceeds a configured limit, the run fails closed while retaining the measured usage—not raw content—in its manifest. Provider terms, retention, location, and deletion behavior must be accepted before any real call. Raw responses are retained under a run ID even when failed; credentials never enter a prompt, log, or manifest.
 
 Repair application and verification run in a separate offline sandbox. A candidate can become `VERIFIED_FOR_REVIEW`, never accepted. An approval record requires an explicit human reviewer and immutable decision ID. High-risk work has no automatic acceptance path.
 

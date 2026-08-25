@@ -2,12 +2,24 @@ import type { ReasonerEvidence } from "./contracts.js";
 
 export interface RedactionEvent {
   evidence_id: string;
+  field: "text" | "file" | "message";
   reason: "credential" | "email" | "absolute-path";
 }
 
 export interface RedactedEvidence {
   evidence: ReasonerEvidence[];
   events: RedactionEvent[];
+}
+
+export interface OutboundFindingContext {
+  id: string;
+  kind: string;
+  decision: "PASS" | "BLOCK" | "REVIEW";
+  message: string;
+}
+
+export interface RedactedOutboundContext extends RedactedEvidence {
+  finding: OutboundFindingContext;
 }
 
 const replacements: readonly [RegExp, string, RedactionEvent["reason"]][] = [
@@ -18,16 +30,54 @@ const replacements: readonly [RegExp, string, RedactionEvent["reason"]][] = [
   [/(?:[A-Za-z]:\\|\/(?:Users|home)\/)[^\s"']+/gu, "[REDACTED_PATH]", "absolute-path"],
 ];
 
+function redactValue(input: string): { value: string; reasons: RedactionEvent["reason"][] } {
+  const reasons: RedactionEvent["reason"][] = [];
+  let value = input;
+  for (const [pattern, replacement, reason] of replacements) {
+    const next = value.replace(pattern, replacement);
+    if (next !== value) reasons.push(reason);
+    value = next;
+  }
+  return { value, reasons };
+}
+
+function redactField(
+  input: string,
+  evidenceId: string,
+  field: RedactionEvent["field"],
+  events: RedactionEvent[],
+): string {
+  const redacted = redactValue(input);
+  events.push(...redacted.reasons.map((reason) => ({ evidence_id: evidenceId, field, reason })));
+  return redacted.value;
+}
+
 export function redactOutboundEvidence(input: readonly ReasonerEvidence[]): RedactedEvidence {
   const events: RedactionEvent[] = [];
   const evidence = input.map((item) => {
-    let text = item.text;
-    for (const [pattern, replacement, reason] of replacements) {
-      const next = text.replace(pattern, replacement);
-      if (next !== text) events.push({ evidence_id: item.id, reason });
-      text = next;
-    }
-    return { ...item, text };
+    const text = redactField(item.text, item.id, "text", events);
+    const file = item.file === undefined ? undefined : redactField(item.file, item.id, "file", events);
+    return { ...item, text, ...(file === undefined ? {} : { file }) };
   });
   return { evidence, events };
+}
+
+export function redactOutboundContext(
+  finding: OutboundFindingContext,
+  input: readonly ReasonerEvidence[],
+): RedactedOutboundContext {
+  const redacted = redactOutboundEvidence(input);
+  return {
+    finding: {
+      ...finding,
+      message: redactField(finding.message, `finding:${finding.id}`, "message", redacted.events),
+    },
+    evidence: redacted.evidence,
+    events: redacted.events,
+  };
+}
+
+/** Redact untrusted provider diagnostics before they enter a persisted run manifest. */
+export function redactProviderDiagnostic(input: string): string {
+  return redactValue(input).value;
 }

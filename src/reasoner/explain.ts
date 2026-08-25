@@ -13,7 +13,7 @@ import {
   type ReasonerProvider,
   type RunEnvironment,
 } from "./provider.js";
-import { redactOutboundEvidence, type RedactionEvent } from "./redaction.js";
+import { redactOutboundContext, type RedactionEvent } from "./redaction.js";
 
 export interface ExplanationRun {
   ok: boolean;
@@ -31,12 +31,12 @@ export async function explainFinding(
   policy: ProviderReliabilityPolicy,
   environment: RunEnvironment,
 ): Promise<ExplanationRun> {
-  const redacted = redactOutboundEvidence(evidence);
+  const redacted = redactOutboundContext(finding, evidence);
   const prompt = buildEvidenceOnlyPrompt({
-    finding_id: finding.id,
-    kind: finding.kind,
-    decision: finding.decision,
-    message: finding.message,
+    finding_id: redacted.finding.id,
+    kind: redacted.finding.kind,
+    decision: redacted.finding.decision,
+    message: redacted.finding.message,
     evidence: redacted.evidence,
   });
   const run = await executeReasonerRun(provider, prompt.text, policy, {

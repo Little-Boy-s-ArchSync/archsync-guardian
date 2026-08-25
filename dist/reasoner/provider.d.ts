@@ -94,6 +94,12 @@ export interface RunEnvironment {
     now: () => string;
     wait: (milliseconds: number) => Promise<void>;
 }
+/**
+ * A byte is a conservative upper bound for a tokenizer token. This deliberately
+ * rejects some prompts early rather than sending data before a provider reports
+ * its tokenizer-specific usage.
+ */
+export declare function conservativeInputTokenUpperBound(prompt: string): number;
 export declare function executeReasonerRun(provider: ReasonerProvider, prompt: string, policy: ProviderReliabilityPolicy, environment: RunEnvironment, options?: {
     temperature?: number;
     seed?: number;

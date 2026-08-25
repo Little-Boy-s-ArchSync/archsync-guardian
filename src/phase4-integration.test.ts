@@ -117,7 +117,7 @@ describe("combined Phase 4 deterministic boundary", () => {
       }]),
       { id: finding.id, kind: finding.kind, decision: violation.decision, message: finding.message },
       evidence,
-      { max_attempts: 1, timeout_ms: 1_000, max_input_tokens: 100, max_output_tokens: 100, max_cost_usd: 0, backoff_ms: 0 },
+      { max_attempts: 1, timeout_ms: 1_000, max_input_tokens: 4_096, max_output_tokens: 100, max_cost_usd: 0, backoff_ms: 0 },
       {
         run_id: "case-06-fake",
         prompt_version: "ignored-by-boundary",
@@ -212,13 +212,13 @@ describe("combined Phase 4 deterministic boundary", () => {
       const explanation = await explainFinding(
         new FakeReasonerProvider("fake", "safety-fixture", [{
           content: explanationResponse(fakeCitation),
-          input_tokens: overBudget ? 101 : 10,
+          input_tokens: overBudget ? 4_097 : 10,
           output_tokens: 10,
           cost_usd: 0,
         }]),
         finding,
         evidence,
-        { max_attempts: 1, timeout_ms: 1_000, max_input_tokens: 100, max_output_tokens: 100, max_cost_usd: 0, backoff_ms: 0 },
+        { max_attempts: 1, timeout_ms: 1_000, max_input_tokens: 4_096, max_output_tokens: 100, max_cost_usd: 0, backoff_ms: 0 },
         {
           run_id: safetyCase.id,
           prompt_version: "ignored-by-boundary",

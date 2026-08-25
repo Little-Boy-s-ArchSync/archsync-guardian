@@ -4,6 +4,8 @@ Status: **NOT APPROVED — real-provider runs prohibited**
 
 All boxes require named human review before P4-115:
 
+The preparatory suite now mechanically exercises full outbound-context and provider-diagnostic redaction, pre-provider input-budget rejection, post-response output/token/cost rejection, and failed-manifest usage retention. Passing those tests supplies review evidence but does not check or approve any box below.
+
 - [ ] Provider, model, endpoint, region, terms, training use, retention period, and deletion route recorded.
 - [ ] Credential comes from an approved secret store; no key appears in code, prompt, logs, manifest, evidence, or CI artifact.
 - [ ] Network egress is restricted to the approved endpoint and has a tested stop switch.

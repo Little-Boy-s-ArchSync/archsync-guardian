@@ -95,8 +95,36 @@ describe("reasoner providers", () => {
       const result = await executeReasonerRun(provider, "prompt", policy, environment());
       expect(result.ok).toBe(false);
       expect(result.manifest.failures[0]?.kind).toBe("budget");
+      expect(result.manifest.tokens).toEqual({ input: over.input_tokens, output: over.output_tokens });
+      expect(result.manifest.cost_usd).toBe(over.cost_usd);
       expect(provider.calls).toHaveLength(1);
     }
+  });
+
+  it("rejects an oversized prompt before provider execution", async () => {
+    const provider = new FakeReasonerProvider("fake", "fixture", [response]);
+    const result = await executeReasonerRun(provider, "x".repeat(101), policy, environment());
+    expect(result.ok).toBe(false);
+    expect(provider.calls).toHaveLength(0);
+    expect(result.manifest.attempts).toBe(0);
+    expect(result.manifest.failures).toEqual([{
+      attempt: 0,
+      kind: "budget",
+      message: "prompt exceeds the configured input token budget before provider execution",
+    }]);
+  });
+
+  it("redacts provider diagnostics and raw artifact paths in failed manifests", async () => {
+    const provider = new FakeReasonerProvider("fake", "fixture", [
+      new ProviderFailure("provider", "Bearer private.token /Users/member/private/error.txt"),
+    ]);
+    const env = { ...environment(), raw_response_path: "/home/member/private/raw.json" };
+    const result = await executeReasonerRun(provider, "prompt", { ...policy, max_attempts: 1 }, env);
+    const serialized = JSON.stringify(result.manifest);
+    expect(serialized).not.toContain("private.token");
+    expect(serialized).not.toContain("/Users/member");
+    expect(serialized).not.toContain("/home/member");
+    expect(result.manifest.raw_response_path).toBe("[REDACTED_PATH]");
   });
 
   it("rejects invalid retry configuration and an empty fake queue", async () => {

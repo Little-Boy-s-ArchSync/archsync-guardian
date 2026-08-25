@@ -2,14 +2,14 @@ import { validateExplanationCitations } from "./citations.js";
 import { validateExplanationShape, } from "./contracts.js";
 import { buildEvidenceOnlyPrompt } from "./prompt.js";
 import { executeReasonerRun, } from "./provider.js";
-import { redactOutboundEvidence } from "./redaction.js";
+import { redactOutboundContext } from "./redaction.js";
 export async function explainFinding(provider, finding, evidence, policy, environment) {
-    const redacted = redactOutboundEvidence(evidence);
+    const redacted = redactOutboundContext(finding, evidence);
     const prompt = buildEvidenceOnlyPrompt({
-        finding_id: finding.id,
-        kind: finding.kind,
-        decision: finding.decision,
-        message: finding.message,
+        finding_id: redacted.finding.id,
+        kind: redacted.finding.kind,
+        decision: redacted.finding.decision,
+        message: redacted.finding.message,
         evidence: redacted.evidence,
     });
     const run = await executeReasonerRun(provider, prompt.text, policy, {

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { redactProviderDiagnostic } from "./redaction.js";
 export class ProviderFailure extends Error {
     kind;
     constructor(kind, message) {
@@ -73,17 +74,26 @@ export class OpenAICompatibleProvider {
     }
 }
 function failure(error) {
-    if (error instanceof ProviderFailure)
-        return error;
-    const message = error instanceof Error ? error.message : String(error);
+    if (error instanceof ProviderFailure) {
+        return new ProviderFailure(error.kind, redactProviderDiagnostic(error.message));
+    }
+    const message = redactProviderDiagnostic(error instanceof Error ? error.message : String(error));
     return new ProviderFailure(/timeout/iu.test(message) ? "timeout" : "provider", message);
 }
-function manifest(provider, request, environment, startedAt, attempts, failures, response) {
+/**
+ * A byte is a conservative upper bound for a tokenizer token. This deliberately
+ * rejects some prompts early rather than sending data before a provider reports
+ * its tokenizer-specific usage.
+ */
+export function conservativeInputTokenUpperBound(prompt) {
+    return Buffer.byteLength(prompt, "utf8");
+}
+function manifest(provider, request, environment, startedAt, attempts, failures, response, status = response ? "success" : "failed") {
     return {
         schema_version: 1,
         run_id: environment.run_id,
-        provider: provider.id,
-        model: provider.model,
+        provider: redactProviderDiagnostic(provider.id),
+        model: redactProviderDiagnostic(provider.model),
         prompt_version: environment.prompt_version,
         request_hash: createHash("sha256").update(request.prompt).digest("hex"),
         started_at: startedAt,
@@ -93,8 +103,8 @@ function manifest(provider, request, environment, startedAt, attempts, failures,
         attempts,
         tokens: { input: response?.input_tokens ?? 0, output: response?.output_tokens ?? 0 },
         cost_usd: response?.cost_usd ?? 0,
-        raw_response_path: environment.raw_response_path,
-        status: response ? "success" : "failed",
+        raw_response_path: redactProviderDiagnostic(environment.raw_response_path),
+        status,
         failures,
     };
 }
@@ -108,11 +118,27 @@ export async function executeReasonerRun(provider, prompt, policy, environment, 
     };
     const startedAt = environment.now();
     const failures = [];
+    if (conservativeInputTokenUpperBound(prompt) > policy.max_input_tokens) {
+        failures.push({
+            attempt: 0,
+            kind: "budget",
+            message: "prompt exceeds the configured input token budget before provider execution",
+        });
+        return { ok: false, manifest: manifest(provider, request, environment, startedAt, 0, failures) };
+    }
     for (let attempt = 1; attempt <= policy.max_attempts; attempt += 1) {
         try {
             const response = await provider.generate(request);
             if (response.input_tokens > policy.max_input_tokens || response.output_tokens > policy.max_output_tokens || response.cost_usd > policy.max_cost_usd) {
-                throw new ProviderFailure("budget", "provider response exceeded the configured token or cost budget");
+                failures.push({
+                    attempt,
+                    kind: "budget",
+                    message: "provider response exceeded the configured token or cost budget",
+                });
+                return {
+                    ok: false,
+                    manifest: manifest(provider, request, environment, startedAt, attempt, failures, response, "failed"),
+                };
             }
             return {
                 ok: true,
