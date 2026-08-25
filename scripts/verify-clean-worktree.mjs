@@ -24,11 +24,12 @@ const result = spawnSync(command[0], command.slice(1), {
   cwd: root,
   encoding: "utf8",
   env: { ...process.env, ARCHSYNC_OFFLINE: "1" },
-  shell: false,
+  // Package-manager launchers are .cmd shims on Windows and require cmd.exe.
+  shell: process.platform === "win32",
   stdio: "inherit",
   windowsHide: true,
 });
-assert.equal(result.status, 0, `${command.join(" ")} failed with status ${result.status}`);
+assert.equal(result.status, 0, result.error?.message ?? `${command.join(" ")} failed with status ${result.status}`);
 const after = gitStatus();
 assert.equal(after, before, "verification/demo changed the worktree; generated output must stay in temp or ignored paths");
 console.log("PASS CLEAN WORKTREE CONTRACT");
