@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archsync.dev/schemas/infrastructure-graph-v0.1.schema.json",
+  "title": "ArchSync Normalized Infrastructure Graph v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "identity_contract_version",
+    "nodes",
+    "edges",
+    "diagnostics"
+  ],
+  "properties": {
+    "version": { "const": "0.1" },
+    "identity_contract_version": { "const": "0.1" },
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/diagnostic" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "enum": ["spec", "code", "terraform", "kubernetes"]
+    },
+    "sourceClass": {
+      "enum": ["spec", "code", "iac"]
+    },
+    "kind": {
+      "enum": [
+        "workload",
+        "service",
+        "ingress",
+        "database",
+        "cache",
+        "broker",
+        "configuration",
+        "unknown"
+      ]
+    },
+    "exposure": {
+      "enum": ["public", "private", "internal", "unknown"]
+    },
+    "referenceType": {
+      "enum": ["selects", "routes-to", "configures", "connects-to", "depends-on"]
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line", "column", "offset"],
+      "properties": {
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 },
+        "offset": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "$ref": "#/$defs/position" },
+        "end": { "$ref": "#/$defs/position" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "file",
+        "range",
+        "snippet",
+        "detector",
+        "confidence"
+      ],
+      "properties": {
+        "source": { "$ref": "#/$defs/source" },
+        "file": { "type": "string", "minLength": 1 },
+        "range": { "$ref": "#/$defs/range" },
+        "snippet": { "type": "string" },
+        "detector": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "attribute": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      ]
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "source_class",
+        "native_id",
+        "name",
+        "namespace",
+        "aliases",
+        "kind",
+        "exposure",
+        "approved",
+        "trust_boundary",
+        "attributes",
+        "evidence"
+      ],
+      "properties": {
+        "source": { "$ref": "#/$defs/source" },
+        "source_class": { "$ref": "#/$defs/sourceClass" },
+        "native_id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "namespace": { "type": "string" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "kind": { "$ref": "#/$defs/kind" },
+        "exposure": { "$ref": "#/$defs/exposure" },
+        "approved": { "type": "boolean" },
+        "trust_boundary": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/attribute" }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "namespace",
+        "aliases",
+        "exposure",
+        "approved",
+        "trust_boundary",
+        "sources",
+        "observations",
+        "evidence"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "$ref": "#/$defs/kind" },
+        "namespace": { "type": "string" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "exposure": { "$ref": "#/$defs/exposure" },
+        "approved": { "type": "boolean" },
+        "trust_boundary": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceClass" },
+          "uniqueItems": true
+        },
+        "observations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/observation" }
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "from",
+        "to",
+        "type",
+        "resolved",
+        "approved_trust_transition",
+        "sources",
+        "evidence"
+      ],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "type": { "$ref": "#/$defs/referenceType" },
+        "resolved": { "type": "boolean" },
+        "approved_trust_transition": { "type": "boolean" },
+        "sources": {
+          "type": "array",
+          "items": { "enum": ["terraform", "kubernetes"] },
+          "uniqueItems": true
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message", "evidence"],
+      "properties": {
+        "code": {
+          "enum": [
+            "malformed-document",
+            "unsupported-block",
+            "unsupported-dynamic-expression",
+            "unsupported-resource",
+            "missing-identity",
+            "missing-reference",
+            "ambiguous-reference"
+          ]
+        },
+        "severity": { "enum": ["warning", "error"] },
+        "message": { "type": "string", "minLength": 1 },
+        "evidence": { "$ref": "#/$defs/evidence" }
+      }
+    }
+  }
+}

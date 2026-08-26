@@ -54,6 +54,7 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
+      complete: true,
       percent: value.pct,
       all_items_covered: true,
     };
@@ -226,6 +227,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "privacy.ts",
   "version.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
@@ -242,18 +244,22 @@ const inputHashes = {
 const dependencyHashes = {
   ".github/workflows/ci.yml": sha256(await readFile(join(root, ".github", "workflows", "ci.yml"))),
   "pnpm-workspace.yaml": sha256(await readFile(join(root, "pnpm-workspace.yaml"))),
-  "vendor/archsync-core-0.1.1.tgz": sha256(
-    await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz")),
+  [coreDependencyProvenance.vendored_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.vendored_artifact)),
   ),
   "package.json": sha256(await readFile(join(root, "package.json"))),
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
   "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
   "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
-  "scripts/core-compatibility.mjs": sha256(await readFile(join(root, "scripts", "core-compatibility.mjs"))),
-  "vendor/archsync-core-0.1.1.provenance.json": sha256(
-    await readFile(join(root, "vendor", "archsync-core-0.1.1.provenance.json")),
-  ),
   "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
+  "scripts/verify-clean-worktree.mjs": sha256(await readFile(join(root, "scripts", "verify-clean-worktree.mjs"))),
+  "scripts/verify-offline.mjs": sha256(await readFile(join(root, "scripts", "verify-offline.mjs"))),
+  "src/privacy.test.ts": sha256(await readFile(join(root, "src", "privacy.test.ts"))),
+  "docs/OPERATIONS-PRIVACY.md": sha256(await readFile(join(root, "docs", "OPERATIONS-PRIVACY.md"))),
+  "scripts/core-compatibility.mjs": sha256(await readFile(join(root, "scripts", "core-compatibility.mjs"))),
+  [coreDependencyProvenance.provenance_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.provenance_artifact)),
+  ),
 };
 const staticEvidence = {
   phase: 3,
@@ -264,10 +270,11 @@ const staticEvidence = {
   core_dependency: {
     repository: coreDependencyProvenance.repository,
     repository_commit: coreDependencyProvenance.source_commit,
-    source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
+    source_pull_request: coreDependencyProvenance.source_pull_request,
+    included_source_commits: coreDependencyProvenance.included_source_commits,
     vendored_package: coreDependencyProvenance.vendored_artifact,
     vendored_package_sha256: coreDependencyProvenance.vendored_sha256,
-    dependency_status: "upstream-main-merged",
+    dependency_status: coreDependencyProvenance.dependency_status,
   },
   source_sha256: sourceHashes,
   input_sha256: inputHashes,

@@ -27,14 +27,15 @@ function sha256(value) {
 }
 
 const provenance = JSON.parse(await readFile(
-  join(root, "vendor", "archsync-core-0.1.1.provenance.json"),
+  join(root, coreDependencyProvenance.provenance_artifact),
   "utf8",
 ));
 assert.deepEqual(provenance, {
   schema_version: 1,
   repository: coreDependencyProvenance.repository,
   source_commit: coreDependencyProvenance.source_commit,
-  source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
+  source_pull_request: coreDependencyProvenance.source_pull_request,
+  included_source_commits: coreDependencyProvenance.included_source_commits,
   package_name: coreDependencyProvenance.package,
   package_version: coreDependencyProvenance.package_version,
   artifact: coreDependencyProvenance.vendored_artifact,
@@ -42,14 +43,14 @@ assert.deepEqual(provenance, {
   build_command: "pnpm pack",
   verification_command: "pnpm phase1:verify",
   build_environment: {
-    node: "22.16.0",
+    node: "26.0.0",
     pnpm: "11.16.0",
   },
   reproducibility: {
     independent_pack_runs: 2,
     byte_identical: true,
   },
-  dependency_status: "upstream-main-merged",
+  dependency_status: coreDependencyProvenance.dependency_status,
 });
 
 const artifact = await readFile(join(root, coreDependencyProvenance.vendored_artifact));

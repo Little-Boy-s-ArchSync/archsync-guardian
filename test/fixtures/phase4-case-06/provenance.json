@@ -1,0 +1,12 @@
+{
+  "source_repository": "Little-Boy-s-ArchSync/archsync-benchmark",
+  "source_commit": "24d63ebf2fc3075a1d64f1eaff38cdc0b7f586fb",
+  "ground_truth_sha256": "5d3ce2976dfcce59796dd58cee60dce51233e0f44fde8c41bd89b013e7f23e92",
+  "architecture_sha256": "4987b08851c2cbc55eaa1ba2c4d9ec3bd70480f19cec7aed747aeaeaac3cf4a5",
+  "base_app_sha256": "8ae720fdf185e3630d647af2a49c1a7beed93ccef25592c77d6dd68ced7ffbca",
+  "case_06_patch_sha256": "be6126580a0084b8a52dd0458d70d9c53ae8e84a14e5f61b5f5d4a21dfed2abb",
+  "case_06_repair_patch_sha256": "ca6b408f51282e2c0a9d950b5105266f0427c12d4edca4d74e88b57b91d92af3",
+  "status": "locked-deterministic-fixture",
+  "research_claim": null,
+  "human_approval": null
+}

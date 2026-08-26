@@ -1,0 +1,157 @@
+{
+  "phase": 5,
+  "objective": "Preparatory deterministic Infrastructure-as-Evidence technical foundation",
+  "contract_version": "0.1",
+  "governance": {
+    "adr_0005": "Proposed",
+    "phase_5_lead_approval": "Pending",
+    "security_approval": "Pending",
+    "p4_120_approval_claimed": false,
+    "phase_4_benchmark_freeze_claimed": false,
+    "phase_5_benchmark_freeze_claimed": false
+  },
+  "source_sha256": {
+    "src/iac.ts": "c4dc64941014770ed7d4f26bc992df8c90c12fd27da6fae414d2ed07e360f34f",
+    "src/iac-contracts.ts": "2ce13c6c575baa76b302633896d810c664c9741beb405e1bb5e1b5824126def0",
+    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
+    "src/iac-governance.test.ts": "95386eada7572ce88793bf017c62e297a4f9094a88b90c91c2c27cdc91584f34",
+    "src/iac-kubernetes.ts": "25e1ceb8e4addfede55e91f46b1afe5f695423615e23564b934f355ecf49c4ed",
+    "src/iac-normalize.ts": "1a5c0f0067bc1f5eb9a021a4bf487996eeb6adca4f5917b2c88f372f98cbfdb2",
+    "src/iac-security.ts": "f7968f5e9e7b0a1538cba3ce0e01300c3956dce5dbb5964986c453b1b719e2dd",
+    "src/iac-terraform.ts": "e14ea97c73df108bc50b9ce2c84c83298f430609cfe0d1211b94bbf9e5d7ff2e",
+    "src/iac.test.ts": "b7db8a870084c5f267b46cf8f683b20b4b08b6c1d1ed85db59aac435283f2bd7",
+    "src/iac-kubernetes.test.ts": "399d274fb29b3caf39e472d580a95e67b7192425a9eafdd38c70d4da6631c830",
+    "src/iac-normalize.test.ts": "47a44a553fbb3f15ba7533a52d822c8189e8ca99ef3bd0de17cdd8a185119756",
+    "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
+    "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
+  },
+  "generated_dist_sha256": "86be4575016b80e3be1bb8f75e58fcd97293d9f140b4a2bd472e39d4f2537504",
+  "input_sha256": {
+    "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
+  },
+  "governance_sha256": {
+    "README.md": "216c84c08bb8063686887f4453e4be84b1eb993032d1751438d6c7caec0a89ce",
+    "docs/BOUNDARY.md": "aed32740fbfa42629837e3393046c35dfb9ca6660d084df731c3553887425e3f",
+    "docs/OPERATIONS-PRIVACY.md": "9f8604365d1198810d5becb82e3c0f34f01fe4fb8a65a72827d9771a149e3299",
+    "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",
+    "docs/schemas/infrastructure-graph-v0.1.schema.json": "a97e352a8873c28d33bae4a9854c5bf36c552ca5c6460a8764230c13c21ffbbd",
+    "docs/adr/0005-phase-5-infrastructure-evidence-boundary.md": "577aa0a17919d88c0e66655d58d974caad2f8695543cd905b73bf63aca45d306",
+    "evidence/README.md": "25098f563311dd356a593cfb35c354c3ffc27512e69585d0b50c7afae6e7a8ee"
+  },
+  "dependency_sha256": {
+    ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
+    "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
+    "pnpm-lock.yaml": "ac5081c6adbbd20a935d1afa3d13420eca4a19d1a5f2d41d1b28945e05236652",
+    "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
+    "tsconfig.json": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c",
+    "tsconfig.test.json": "04910a31dc7be48c03671a814ed81ebc5095f21d4150cf08f613f0c8f1b8ce13",
+    "vitest.config.ts": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289",
+    "scripts/phase5-evidence.mjs": "b3739ebcb5f27eea23ea019fdf7eb96a27b69c16ca5b4d0fce2eeeb5bf32c6b3",
+    "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
+    "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3"
+  },
+  "measured_coverage": {
+    "statements": {
+      "percent": 100,
+      "all_items_covered": true
+    },
+    "branches": {
+      "percent": 100,
+      "all_items_covered": true
+    },
+    "functions": {
+      "percent": 100,
+      "all_items_covered": true
+    },
+    "lines": {
+      "percent": 100,
+      "all_items_covered": true
+    }
+  },
+  "coverage_count_policy": "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors and instrumentation contexts",
+  "controlled_scenario": {
+    "deterministic_sha256": "15c7c2452f438c4d8058d9c1b97a64da043399bbf775f41cf07a601a9e3c2d32",
+    "terraform_resources": 5,
+    "terraform_diagnostics": [
+      "unsupported-block",
+      "unsupported-block",
+      "unsupported-dynamic-expression",
+      "unsupported-dynamic-expression",
+      "unsupported-resource",
+      "unsupported-dynamic-expression"
+    ],
+    "kubernetes_resources": 4,
+    "kubernetes_references": 3,
+    "kubernetes_diagnostics": [
+      "unsupported-dynamic-expression",
+      "missing-reference",
+      "missing-reference",
+      "missing-reference",
+      "unsupported-resource"
+    ],
+    "normalized_nodes": 7,
+    "normalized_edges": 3,
+    "identity_methods": {
+      "ambiguous": 0,
+      "explicit-alias": 11,
+      "name-only": 0,
+      "namespace-and-name": 0,
+      "unknown": 2
+    },
+    "claim_classifications": {
+      "aligned": 5,
+      "contradiction": 3,
+      "identity-uncertain": 8,
+      "missing-source": 12
+    },
+    "controlled_security_rules": [
+      "IAC-PUBLIC-DATABASE",
+      "IAC-TRUST-BOUNDARY",
+      "IAC-UNAPPROVED-DATA-SERVICE",
+      "IAC-UNEXPECTED-INGRESS"
+    ]
+  },
+  "security_fixtures": {
+    "positive_findings": [
+      {
+        "rule_id": "IAC-PUBLIC-DATABASE",
+        "subject": "data/orders-db",
+        "edge": ""
+      },
+      {
+        "rule_id": "IAC-TRUST-BOUNDARY",
+        "subject": "public/orders-ingress",
+        "edge": "public/orders-ingress|routes-to|application/orders-api"
+      },
+      {
+        "rule_id": "IAC-UNAPPROVED-DATA-SERVICE",
+        "subject": "data/orders-cache",
+        "edge": ""
+      },
+      {
+        "rule_id": "IAC-UNAPPROVED-DATA-SERVICE",
+        "subject": "integration/orders-events",
+        "edge": ""
+      },
+      {
+        "rule_id": "IAC-UNEXPECTED-INGRESS",
+        "subject": "public/orders-ingress",
+        "edge": ""
+      }
+    ],
+    "hard_negative_findings": 0,
+    "required_rules": [
+      "IAC-PUBLIC-DATABASE",
+      "IAC-TRUST-BOUNDARY",
+      "IAC-UNAPPROVED-DATA-SERVICE",
+      "IAC-UNEXPECTED-INGRESS"
+    ]
+  },
+  "exclusions": [
+    "ADR-0005 acceptance and Phase 5 Lead/Security approval",
+    "P4-120 or Phase 4/Phase 5 benchmark freeze",
+    "Terraform execution, modules, data sources, providers, state and dynamic expressions",
+    "Helm, Kustomize, Jsonnet, CRDs, admission mutation and live-cluster state",
+    "Cloud credentials, deployment mutation, automatic repair and approval"
+  ]
+}

@@ -66,6 +66,7 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
+      complete: true,
       percent: value.pct,
       all_items_covered: true,
     };
@@ -178,6 +179,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "privacy.ts",
   "index.ts",
   "version.ts",
 ];
@@ -201,6 +203,10 @@ const verificationSource = await hashFiles([
   join(root, "src", "version.test.ts"),
   join(root, "scripts", "package-install-e2e.mjs"),
   join(root, "scripts", "package-provenance.mjs"),
+  join(root, "scripts", "verify-clean-worktree.mjs"),
+  join(root, "scripts", "verify-offline.mjs"),
+  join(root, "src", "privacy.test.ts"),
+  join(root, "docs", "OPERATIONS-PRIVACY.md"),
   join(root, "docs", "contract-compatibility.md"),
   join(root, "docs", "support-matrix.md"),
   join(root, "docs", "migrations", "core-0.1.0-to-0.1.1.md"),
@@ -214,6 +220,8 @@ const dependencySource = await hashFiles([
   join(root, "pnpm-workspace.yaml"),
   join(root, "package.json"),
   join(root, "pnpm-lock.yaml"),
+  join(root, coreDependencyProvenance.vendored_artifact),
+  join(root, coreDependencyProvenance.provenance_artifact),
   join(root, "vendor", "archsync-core-0.1.1.tgz"),
   join(root, "vendor", "archsync-core-0.1.1.provenance.json"),
   join(root, "vendor", "README.md"),
@@ -240,11 +248,12 @@ const evidence = {
   core_dependency: {
     repository: coreDependencyProvenance.repository,
     repository_commit: coreDependencyProvenance.source_commit,
-    source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
+    source_pull_request: coreDependencyProvenance.source_pull_request,
+    included_source_commits: coreDependencyProvenance.included_source_commits,
     vendored_package: coreDependencyProvenance.vendored_artifact,
-    vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz"))),
-    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1",
-    dependency_status: "upstream-main-merged",
+    vendored_package_sha256: sha256(await readFile(join(root, coreDependencyProvenance.vendored_artifact))),
+    consumption_contract: "bundled runtime dependency @archsync/core 0.1.1 with compatibility contracts and proposed quality-goal v0.2 contract",
+    dependency_status: coreDependencyProvenance.dependency_status,
     reproducibility: {
       independent_pack_runs: 2,
       byte_identical: true,

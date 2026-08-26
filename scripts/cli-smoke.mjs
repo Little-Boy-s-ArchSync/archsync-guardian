@@ -85,11 +85,11 @@ try {
   assert.equal(versionResult.dependencies.core.package_version, "0.1.1");
   assert.equal(
     versionResult.dependencies.core.source_commit,
-    "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
+    "503b5fe97aa39a78d5e5de80b794a94508e106cc",
   );
   assert.equal(
     versionResult.dependencies.core.vendored_sha256,
-    "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
+    "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
   );
   assert.match(versionResult.provenance.package_content_sha256, /^[0-9a-f]{64}$/);
   assert.match(versionResult.provenance.source_commit, /^[0-9a-f]{40}$/);

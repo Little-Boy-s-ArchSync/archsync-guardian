@@ -49,9 +49,16 @@ describe("CLI version provenance", () => {
       package: "@archsync/core",
       package_version: "0.1.1",
       repository: "https://github.com/Little-Boy-s-ArchSync/archsync-core",
-      source_commit: "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
-      vendored_artifact: "vendor/archsync-core-0.1.1.tgz",
-      vendored_sha256: "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
+      source_commit: "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+      source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3",
+      included_source_commits: {
+        contract_compatibility: "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+        quality_goals: "783716d7961690b1e8c1cda4acb956777977a853",
+      },
+      vendored_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
+      vendored_sha256: "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+      provenance_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json",
+      dependency_status: "upstream-integration-pr-merged",
     });
   });
 

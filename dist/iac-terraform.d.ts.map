@@ -1,0 +1,1 @@
+{"version":3,"file":"iac-terraform.d.ts","sourceRoot":"","sources":["../src/iac-terraform.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAMV,yBAAyB,EAG1B,MAAM,oBAAoB,CAAC;AAoX5B,wBAAgB,cAAc,CAAC,MAAM,EAAE,MAAM,EAAE,IAAI,SAAY,GAAG,yBAAyB,CAyC1F;AAED,wBAAgB,mBAAmB,CACjC,KAAK,EAAE,QAAQ,CAAC,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC,GACtC,yBAAyB,CAa3B"}

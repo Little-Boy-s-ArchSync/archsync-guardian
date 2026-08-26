@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    { "id": "data/orders-db", "kind": "database", "exposure": "private", "approved": true, "trust_boundary": "data" },
+    { "id": "public/orders-ingress", "kind": "ingress", "exposure": "public", "approved": true, "trust_boundary": "public" },
+    { "id": "integration/orders-events", "kind": "broker", "exposure": "private", "approved": true, "trust_boundary": "integration" },
+    { "id": "data/orders-cache", "kind": "cache", "exposure": "private", "approved": true, "trust_boundary": "data" },
+    { "id": "application/orders-api", "kind": "service", "exposure": "internal", "approved": true, "trust_boundary": "application" },
+    { "id": "application/orders-worker", "kind": "workload", "exposure": "internal", "approved": true, "trust_boundary": "application" },
+    { "id": "unknown/legacy", "kind": "service", "exposure": "internal", "approved": true, "trust_boundary": "unknown" }
+  ],
+  "edges": [
+    { "from": "public/orders-ingress", "to": "application/orders-api", "type": "routes-to", "approved_trust_transition": true },
+    { "from": "application/orders-api", "to": "unmapped:missing", "type": "connects-to", "approved_trust_transition": false },
+    { "from": "data/orders-db", "to": "data/orders-cache", "type": "depends-on", "approved_trust_transition": false },
+    { "from": "application/orders-worker", "to": "application/orders-api", "type": "routes-to", "approved_trust_transition": false },
+    { "from": "public/orders-ingress", "to": "unknown/legacy", "type": "routes-to", "approved_trust_transition": false },
+    { "from": "application/orders-api", "to": "application/orders-worker", "type": "selects", "approved_trust_transition": false },
+    { "from": "public/orders-ingress", "to": "application/orders-api", "type": "connects-to", "approved_trust_transition": false, "resolved": false }
+  ]
+}

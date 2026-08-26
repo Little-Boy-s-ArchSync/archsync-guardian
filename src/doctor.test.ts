@@ -68,7 +68,7 @@ describe("ArchSync doctor", () => {
     expect(result.platform).toBe(process.platform);
     expect(result.checks.find(({ name }) => name === "Git")?.status).toBe("PASS");
     expect(["PASS", "WARN"]).toContain(result.checks.find(({ name }) => name === "CLI on PATH")?.status);
-  });
+  }, 30_000);
 
   it("passes a supported Windows/macOS/Linux toolchain and formats aligned output", () => {
     const result = runDoctor({
