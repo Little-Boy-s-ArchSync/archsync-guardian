@@ -66,9 +66,8 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
-      covered: value.covered,
-      total: value.total,
       percent: value.pct,
+      all_items_covered: true,
     };
   }
   return measured;
@@ -245,7 +244,7 @@ const evidence = {
     vendored_package: coreDependencyProvenance.vendored_artifact,
     vendored_package_sha256: sha256(await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz"))),
     consumption_contract: "bundled runtime dependency @archsync/core 0.1.1",
-    dependency_status: "upstream-pr-open-unmerged",
+    dependency_status: "upstream-main-merged",
     reproducibility: {
       independent_pack_runs: 2,
       byte_identical: true,
@@ -307,6 +306,7 @@ const evidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
+    coverage_count_policy: "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     cli_smoke_checks: 23,
     clean_package_install: "required on Windows, macOS and Linux",
     canonical_benchmark: {

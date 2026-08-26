@@ -131,11 +131,11 @@ try {
   assert.equal(version.contracts.guardian_result, "0.1");
   assert.equal(
     version.dependencies.core.source_commit,
-    "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+    "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
   );
   assert.equal(
     version.dependencies.core.vendored_sha256,
-    "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+    "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
   );
   assert.equal(version.provenance.mode, "package");
   assert.equal(version.provenance.integrity, "verified");

@@ -27,7 +27,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm phase3:verify
+      - run: pnpm repo:verify-clean
       - name: Ensure committed build and evidence are current
         run: git diff --exit-code -- dist evidence
       - name: Upload Guardian evidence

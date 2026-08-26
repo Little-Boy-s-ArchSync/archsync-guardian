@@ -18,6 +18,7 @@ import type {
   SourceEvidence,
 } from "./contracts.js";
 import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
+import { redactSensitiveText } from "./privacy.js";
 
 interface EndpointTarget {
   id: string;
@@ -313,7 +314,7 @@ function lineEvidence(
     file,
     line: position.line + 1,
     column: position.character + 1,
-    snippet: firstLine.slice(0, 180),
+    snippet: redactSensitiveText(firstLine.slice(0, 180)),
     detector,
     confidence,
   };

@@ -4,13 +4,13 @@ This document records the downstream Guardian side of CORE-101. Package versions
 
 ## Exact dependency status
 
-This branch consumes the exact head commit of open Core pull request [#1](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1):
+Guardian consumes the exact Core `main` commit produced by merged pull request [#1](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1):
 
 ```text
-a1f0143aa8eb917aa0d93e28101b1893347453e2
+1e8bbdd8342d833aad50e8fbcefde15d65a807e6
 ```
 
-The vendored `@archsync/core` package has SHA-256 `60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80`. Its [machine-readable provenance](../vendor/archsync-core-0.1.1.provenance.json) records two byte-identical clean pack runs. The Guardian dependency pull request must remain a draft while Core #1 is unmerged. This is test evidence for an exact source commit, not a claim that the Core change is released or available from a registry.
+The vendored `@archsync/core` package has SHA-256 `550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13`. Its [machine-readable provenance](../vendor/archsync-core-0.1.1.provenance.json) records two byte-identical clean pack runs. This is test evidence for an exact merged source commit, not a claim that the package is released or available from a registry.
 
 ## Contract map
 

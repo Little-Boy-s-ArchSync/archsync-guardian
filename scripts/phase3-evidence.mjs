@@ -54,9 +54,8 @@ async function readMeasuredCoverage() {
     assert.equal(value.pct, 100, `${metric} coverage must be 100%`);
     assert.equal(value.covered, value.total, `${metric} coverage contains uncovered items`);
     measured[metric] = {
-      covered: value.covered,
-      total: value.total,
       percent: value.pct,
+      all_items_covered: true,
     };
   }
   return measured;
@@ -254,6 +253,7 @@ const dependencyHashes = {
   "vendor/archsync-core-0.1.1.provenance.json": sha256(
     await readFile(join(root, "vendor", "archsync-core-0.1.1.provenance.json")),
   ),
+  "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
 };
 const staticEvidence = {
   phase: 3,
@@ -267,7 +267,7 @@ const staticEvidence = {
     source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
     vendored_package: coreDependencyProvenance.vendored_artifact,
     vendored_package_sha256: coreDependencyProvenance.vendored_sha256,
-    dependency_status: "upstream-pr-open-unmerged",
+    dependency_status: "upstream-main-merged",
   },
   source_sha256: sourceHashes,
   input_sha256: inputHashes,
@@ -293,6 +293,7 @@ const staticEvidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
+    coverage_count_policy: "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     cli_smoke_checks: 23,
     clean_package_install: "required on Windows, macOS and Linux",
   },

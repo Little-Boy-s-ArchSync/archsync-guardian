@@ -42,14 +42,14 @@ assert.deepEqual(provenance, {
   build_command: "pnpm pack",
   verification_command: "pnpm phase1:verify",
   build_environment: {
-    node: "26.0.0",
+    node: "22.16.0",
     pnpm: "11.16.0",
   },
   reproducibility: {
     independent_pack_runs: 2,
     byte_identical: true,
   },
-  dependency_status: "upstream-pr-open-unmerged",
+  dependency_status: "upstream-main-merged",
 });
 
 const artifact = await readFile(join(root, coreDependencyProvenance.vendored_artifact));

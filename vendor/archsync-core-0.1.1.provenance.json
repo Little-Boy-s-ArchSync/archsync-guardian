@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
-  "source_commit": "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+  "source_commit": "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
   "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
   "package_name": "@archsync/core",
   "package_version": "0.1.1",
   "artifact": "vendor/archsync-core-0.1.1.tgz",
-  "sha256": "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+  "sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
   "build_command": "pnpm pack",
   "verification_command": "pnpm phase1:verify",
   "build_environment": {
-    "node": "26.0.0",
+    "node": "22.16.0",
     "pnpm": "11.16.0"
   },
   "reproducibility": {
     "independent_pack_runs": 2,
     "byte_identical": true
   },
-  "dependency_status": "upstream-pr-open-unmerged"
+  "dependency_status": "upstream-main-merged"
 }

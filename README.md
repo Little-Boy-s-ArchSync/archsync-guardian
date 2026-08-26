@@ -2,7 +2,9 @@
 
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
 
-**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract. The current compatibility branch additionally verifies the exact, still-unmerged Core pull request #1 commit `a1f0143aa8eb917aa0d93e28101b1893347453e2`; that dependency is not represented as released until its upstream and draft Guardian PRs are accepted.
+**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract. The compatibility gate verifies the exact Core `main` commit `1e8bbdd8342d833aad50e8fbcefde15d65a807e6` produced by merged Core pull request #1; the dependency remains a vendored, checksum-pinned package rather than a registry release.
+
+Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
 ## Repository boundary
 

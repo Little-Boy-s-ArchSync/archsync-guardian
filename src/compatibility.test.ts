@@ -27,9 +27,9 @@ describe("Core and Guardian contract compatibility", () => {
       package: "@archsync/core",
       package_version: "0.1.1",
       repository: "https://github.com/Little-Boy-s-ArchSync/archsync-core",
-      source_commit: "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+      source_commit: "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
       vendored_artifact: "vendor/archsync-core-0.1.1.tgz",
-      vendored_sha256: "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80",
+      vendored_sha256: "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
     });
     expect(coreGuardianContractMatrix).toEqual({
       schema_version: 1,

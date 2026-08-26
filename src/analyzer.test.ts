@@ -176,6 +176,24 @@ export async function read(): Promise<void> { await redis.get("key"); }
     expect(observed.components.utility?.component.type).toBe("service");
   });
 
+  it("redacts credentials and PII from persisted source evidence", async () => {
+    await writeSources(repository, {
+      "service/src/remote.ts": `export async function call(): Promise<void> {
+  await fetch("https://member:super-secret@remote-service:443/path?token=github_pat_abcdefghijkl"); // member@example.com
+}
+`,
+    });
+
+    const observed = await analyzeTypeScriptRepository(repository, testArchitecture());
+    const serialized = JSON.stringify(observed);
+
+    expect(observed.relationships[0]).toMatchObject({ from: "service", to: "remote-service" });
+    expect(serialized).not.toContain("super-secret");
+    expect(serialized).not.toContain("github_pat_abcdefghijkl");
+    expect(serialized).not.toContain("member@example.com");
+    expect(serialized).toContain("[REDACTED]");
+  });
+
   it("tracks aliased and namespace client bindings", async () => {
     await writeSources(repository, {
       "service/src/postgres.ts": `import { Pool as PgPool } from "pg";
