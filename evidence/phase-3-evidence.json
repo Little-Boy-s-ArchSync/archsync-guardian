@@ -3,33 +3,76 @@
   "release": "v0.3",
   "objective": "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
   "contract_version": "0.1",
+  "contracts": {
+    "schema_version": 1,
+    "core": {
+      "architecture_model": {
+        "current": "0.1.1",
+        "previous": "0.1.0",
+        "legacy": "0.1",
+        "accepted": [
+          "0.1.1",
+          "0.1.0",
+          "0.1"
+        ]
+      },
+      "graph": "1.0.0",
+      "finding": "1.0.0",
+      "evidence": "1.0.0",
+      "conformance": "1.0.0",
+      "cli_json": "1.0.0"
+    },
+    "guardian": {
+      "analyzer": "0.2",
+      "observed_graph": "0.1",
+      "finding": "0.1",
+      "source_evidence": "0.1",
+      "source_evidence_version_carrier": "observed-or-finding-envelope",
+      "result": "0.1"
+    },
+    "ownership": {
+      "architecture_model_graph_and_decisions": "core",
+      "source_detection_observed_graph_and_enrichment": "guardian"
+    }
+  },
+  "core_dependency": {
+    "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+    "repository_commit": "1e8bbdd8342d833aad50e8fbcefde15d65a807e6",
+    "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
+    "vendored_package": "vendor/archsync-core-0.1.1.tgz",
+    "vendored_package_sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
+    "dependency_status": "upstream-main-merged"
+  },
   "source_sha256": {
-    "src/analyzer.ts": "d5c19c27fc66b87f6ebee8151b517a1c44d53e8a6a91cc05ca0af97d9f3c65eb",
+    "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
     "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
-    "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
+    "src/compatibility.ts": "aeb1d3e19178ecdb60bb766ce7d663a0a2ee0e2a4ece90da17774c65d74e47ea",
+    "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
-    "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
-    "src/index.ts": "39dfc9ce0391b29f438afeb663d35078edf5b582814c499b8aba180fe2eab047",
-    "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+    "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
+    "src/index.ts": "67461197678396c9d02fa19643633c14772d86653ff590fedf0a0a0ae5562251",
+    "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-    "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
+    "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
   },
   "input_sha256": {
-    "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
+    "test/fixtures/architecture.yaml": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c",
     "test/fixtures/baseline": "295859d70647b405b378341a4f1b9137168b25b21a3826698439e8742baed54e",
     "test/fixtures/violation/frontend/src/database.ts": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "988db4abc8854822795000fb5210ce9692fc8d52cec324ba35eaefded8284bfa",
     "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
-    "vendor/archsync-core-0.1.1.tgz": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "package.json": "d73b62a25ccfc4cdfd08666bc4673192f61784a3dbccb1066cffd8d2241c1724",
-    "pnpm-lock.yaml": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de",
-    "scripts/package-install-e2e.mjs": "29326ac0a237662367bdab457b9e5741a367e062eb9d9dfd466af875e7ec9cbe",
+    "vendor/archsync-core-0.1.1.tgz": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13",
+    "package.json": "b21d1a11352f89d3aa6b5f9fda02bd14bf41e47e65c6c4e2830ce07cc1dd5153",
+    "pnpm-lock.yaml": "638ef27fdcce0bbfe6a9a8db536d846cc4073fe34def7e4c1c95ff711e9f8fba",
+    "scripts/package-install-e2e.mjs": "58c421cf445b54912c2733458450b1a63522be045b12af2ae7472a6859897366",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
-    "scripts/phase3-evidence.mjs": "6e0bc5a8be5314e84cb9234ddd1144398aa57617c34bf6ad57827de84d28f3ae"
+    "scripts/core-compatibility.mjs": "d76faf54236930d463b72eecdbfe2b2f5d8ea31c0546618822dc156e20436b0a",
+    "vendor/archsync-core-0.1.1.provenance.json": "dbd1a61f4fdca011ebe0dbd2aade0cb6919e10aea9dd612d9bab09a9fa868c72",
+    "scripts/phase3-evidence.mjs": "9cdeea89e4121d24a55a6dfcd32dc76e467ed516fcb529436e9ec324992a0851"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -254,93 +297,93 @@
     "LLM authority over deterministic rules"
   ],
   "environment": {
-    "platform": "darwin",
-    "os_release": "25.5.0",
-    "node": "v26.0.0",
-    "cpu": "Apple M1 Pro",
-    "logical_cpus": 10
+    "platform": "win32",
+    "os_release": "10.0.26200",
+    "node": "v22.16.0",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "logical_cpus": 20
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 132.23,
+      "cold_total_ms": 407.24,
       "warm_total_ms": [
-        68.13,
-        71.9,
-        70.19,
-        72.66,
-        73.31
+        248.02,
+        258.72,
+        259.78,
+        266.85,
+        265.81
       ],
       "warm_baseline_load_ms": [
-        6.57,
-        8.54,
-        6.75,
-        6.77,
-        8.18
+        27.28,
+        28.75,
+        28.23,
+        29.38,
+        26.33
       ],
       "warm_incremental_scan_ms": [
-        1.43,
-        1.57,
-        1.38,
-        1.37,
-        1.43
+        2.15,
+        2.71,
+        2.58,
+        2.69,
+        2.74
       ],
-      "warm_median_total_ms": 71.9,
-      "warm_median_baseline_load_ms": 6.77,
-      "warm_median_incremental_scan_ms": 1.43
+      "warm_median_total_ms": 259.78,
+      "warm_median_baseline_load_ms": 28.23,
+      "warm_median_incremental_scan_ms": 2.69
     },
     "violation": {
-      "cold_total_ms": 113.19,
+      "cold_total_ms": 368.24,
       "warm_total_ms": [
-        71.94,
-        72.73,
-        73.5,
-        73.77,
-        68.13
+        253.29,
+        253.5,
+        249.91,
+        242.02,
+        245.45
       ],
       "warm_baseline_load_ms": [
-        7.25,
-        6.79,
-        7.5,
-        6.8,
-        6.82
+        26.05,
+        27.97,
+        27.24,
+        25.51,
+        27.39
       ],
       "warm_incremental_scan_ms": [
-        1.37,
-        1.18,
-        1.25,
-        1.28,
-        1.32
+        2.72,
+        1.92,
+        2.02,
+        1.84,
+        1.6
       ],
-      "warm_median_total_ms": 72.73,
-      "warm_median_baseline_load_ms": 6.82,
-      "warm_median_incremental_scan_ms": 1.28
+      "warm_median_total_ms": 249.91,
+      "warm_median_baseline_load_ms": 27.24,
+      "warm_median_incremental_scan_ms": 1.92
     },
     "evolution": {
-      "cold_total_ms": 106.95,
+      "cold_total_ms": 365.41,
       "warm_total_ms": [
-        69.75,
-        66.37,
-        63.46,
-        63.83,
-        68.2
+        250.79,
+        245.81,
+        255.56,
+        254.98,
+        256.69
       ],
       "warm_baseline_load_ms": [
-        6.56,
-        7.35,
-        6.2,
-        6.1,
-        6.48
+        26.43,
+        25.73,
+        29,
+        27.27,
+        27.16
       ],
       "warm_incremental_scan_ms": [
-        1.09,
-        1.41,
-        1.13,
-        1.38,
-        1.19
+        2.22,
+        2.67,
+        1.93,
+        1.9,
+        2.48
       ],
-      "warm_median_total_ms": 66.37,
-      "warm_median_baseline_load_ms": 6.48,
-      "warm_median_incremental_scan_ms": 1.19
+      "warm_median_total_ms": 254.98,
+      "warm_median_baseline_load_ms": 27.16,
+      "warm_median_incremental_scan_ms": 2.22
     }
   }
 }

@@ -8,7 +8,11 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import { loadArchitecture } from "@archsync/core";
-import { checkRepositoryDiff } from "../dist/index.js";
+import {
+  checkRepositoryDiff,
+  coreDependencyProvenance,
+  coreGuardianContractMatrix,
+} from "../dist/index.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fixture = (...parts) => join(root, "test", "fixtures", ...parts);
@@ -213,6 +217,7 @@ const measuredCoverage = await readMeasuredCoverage();
 const sourceFiles = [
   "analyzer.ts",
   "bin.ts",
+  "compatibility.ts",
   "contracts.ts",
   "demo.ts",
   "doctor.ts",
@@ -244,13 +249,26 @@ const dependencyHashes = {
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
   "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
   "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
+  "scripts/core-compatibility.mjs": sha256(await readFile(join(root, "scripts", "core-compatibility.mjs"))),
+  "vendor/archsync-core-0.1.1.provenance.json": sha256(
+    await readFile(join(root, "vendor", "archsync-core-0.1.1.provenance.json")),
+  ),
   "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
 };
 const staticEvidence = {
   phase: 3,
   release: "v0.3",
   objective: "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
-  contract_version: "0.1",
+  contract_version: coreGuardianContractMatrix.guardian.result,
+  contracts: coreGuardianContractMatrix,
+  core_dependency: {
+    repository: coreDependencyProvenance.repository,
+    repository_commit: coreDependencyProvenance.source_commit,
+    source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1",
+    vendored_package: coreDependencyProvenance.vendored_artifact,
+    vendored_package_sha256: coreDependencyProvenance.vendored_sha256,
+    dependency_status: "upstream-main-merged",
+  },
   source_sha256: sourceHashes,
   input_sha256: inputHashes,
   dependency_sha256: dependencyHashes,

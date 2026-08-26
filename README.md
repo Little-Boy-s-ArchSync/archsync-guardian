@@ -2,7 +2,7 @@
 
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3.
 
-**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract.
+**Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract. The compatibility gate verifies the exact Core `main` commit `1e8bbdd8342d833aad50e8fbcefde15d65a807e6` produced by merged Core pull request #1; the dependency remains a vendored, checksum-pinned package rather than a registry release.
 
 Operational guarantees are documented in [the offline/privacy contract](docs/OPERATIONS-PRIVACY.md) and [clean-worktree policy](docs/WORKTREE-POLICY.md). `pnpm privacy:verify` mechanically rejects runtime network clients, while `pnpm repo:verify-clean` proves the full verification/demo path leaves no repository artifacts behind.
 
@@ -23,6 +23,7 @@ Guardian depends on `@archsync/core`. It does not own the Architecture Model sch
 - Distinguish findings introduced, preserved or resolved by a pull request.
 - Emit GitHub annotations and a Markdown report with `PASS`, `BLOCK` or `REVIEW`.
 - Expose every Core, Guardian and Git-gate capability through one cross-platform `archsync` command.
+- Preserve Core CLI JSON `1.0.0` envelopes for namespaced model commands while keeping Guardian source-result contracts explicitly separate.
 - Run a real PASS/BLOCK/REVIEW demonstration without Bash, PowerShell-specific syntax or mocked results.
 
 ## Setup
@@ -161,6 +162,7 @@ The expected end-to-end result is 20/20 deterministic cases with `1.000` full-gr
 ```text
 src/analyzer.ts       TypeScript source/component -> Observed Graph
 src/guardian.ts       Core conformance orchestration + evidence enrichment
+src/compatibility.ts  exact Core dependency and Core-to-Guardian contract map
 src/phase3.ts         Git diff, baseline cache, incremental merge and PR reports
 src/contracts.ts      Observed Graph and Finding v0.1 contracts
 src/benchmark.ts      Phase 2 benchmark evaluator and metrics
@@ -171,4 +173,4 @@ evidence/             deterministic Phase 2 and Phase 3 evidence manifests
 docs/                 boundaries, ADRs, exit gates and GitHub Actions example
 ```
 
-See [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. LLM reasoning, automatic repair, MCP, IaC and runtime evidence remain out of scope.
+See the [`Core–Guardian compatibility map`](docs/contract-compatibility.md), [`support matrix and detector limitations`](docs/support-matrix.md), [`0.1.0 → 0.1.1 migration guide`](docs/migrations/core-0.1.0-to-0.1.1.md), [`docs/phase-2.md`](docs/phase-2.md) for source reconstruction, and [`docs/phase-3.md`](docs/phase-3.md) for the Git/PR gate. LLM reasoning, automatic repair, MCP, IaC and runtime evidence remain out of scope.

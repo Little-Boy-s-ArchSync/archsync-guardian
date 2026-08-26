@@ -5,7 +5,7 @@ import type { ArchitectureDocument } from "@archsync/core";
 
 export function testArchitecture(): ArchitectureDocument {
   return {
-    version: "0.1",
+    version: "0.1.1",
     metadata: { name: "guardian-test" },
     components: {
       frontend: { name: "Frontend", type: "frontend", layer: "experience" },

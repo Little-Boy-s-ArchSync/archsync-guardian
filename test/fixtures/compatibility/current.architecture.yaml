@@ -1,0 +1,39 @@
+version: "0.1.1"
+metadata:
+  name: guardian-core-compatibility
+components:
+  frontend:
+    type: frontend
+    layer: experience
+  gateway:
+    type: gateway
+    layer: edge
+  service:
+    type: service
+    layer: domain
+  postgres:
+    type: database
+    layer: data
+relationships:
+  - from: frontend
+    to: gateway
+    type: http
+  - from: gateway
+    to: service
+    type: http
+  - from: service
+    to: postgres
+    type: data
+rules:
+  - id: ARCH-001
+    type: deny
+    from: frontend
+    to: postgres
+    relationship_type: data
+    severity: critical
+  - id: ARCH-002
+    type: require
+    from: gateway
+    to: service
+    relationship_type: http
+    severity: error

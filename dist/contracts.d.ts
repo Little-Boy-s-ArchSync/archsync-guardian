@@ -1,6 +1,9 @@
 import type { ArchitectureComponent, ArchitectureDocument, ArchitectureRelationship, ConformanceClassification, ConformanceEvidence, ConformanceFinding, ConformanceSummary, Severity } from "@archsync/core";
 export declare const observedGraphVersion: "0.1";
 export declare const findingContractVersion: "0.1";
+export declare const sourceEvidenceContractVersion: "0.1";
+export declare const guardianResultContractVersion: "0.1";
+export declare const guardianAnalyzerVersion: "0.2";
 export type DetectorId = "component-root" | "typescript-fetch" | "typescript-pg" | "typescript-redis" | "typescript-amqp-publish" | "typescript-amqp-consume";
 export interface SourceEvidence {
     kind: "source-location";
@@ -22,7 +25,7 @@ export interface ObservedArchitecture {
     version: typeof observedGraphVersion;
     analyzer: {
         id: "archsync-typescript";
-        version: "0.2";
+        version: typeof guardianAnalyzerVersion;
         stack: "typescript-node";
     };
     metadata: {
@@ -51,7 +54,7 @@ export interface GuardianFinding {
     model_evidence: ConformanceEvidence;
 }
 export interface GuardianResult {
-    contract_version: "0.1";
+    contract_version: typeof guardianResultContractVersion;
     classification: ConformanceClassification;
     decision: "PASS" | "BLOCK" | "REVIEW";
     summary: ConformanceSummary;
