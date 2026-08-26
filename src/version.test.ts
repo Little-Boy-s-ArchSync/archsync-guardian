@@ -58,7 +58,7 @@ describe("CLI version provenance", () => {
       vendored_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
       vendored_sha256: "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
       provenance_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json",
-      dependency_status: "upstream-integration-pr-open-unmerged",
+      dependency_status: "upstream-integration-pr-merged",
     });
   });
 

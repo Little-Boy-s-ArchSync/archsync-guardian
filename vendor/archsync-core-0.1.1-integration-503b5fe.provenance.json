@@ -21,5 +21,5 @@
     "independent_pack_runs": 2,
     "byte_identical": true
   },
-  "dependency_status": "upstream-integration-pr-open-unmerged"
+  "dependency_status": "upstream-integration-pr-merged"
 }

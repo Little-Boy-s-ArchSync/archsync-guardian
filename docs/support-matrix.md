@@ -10,7 +10,7 @@ This is the operational contract for Guardian v0.3.3 on the exact Core dependenc
 | Node.js | `>=22`; CI uses Node 22 | Older Node versions are unsupported. `archsync doctor` checks the active runtime. |
 | pnpm | project pin `11.16.0` | CI and reproduction commands use the pinned version and frozen lockfile. |
 | Git | available on `PATH` | Required by diff mode, package provenance, demo cases, and doctor checks. Full-repository Phase 2 scans do not otherwise need Git. |
-| Core package | `@archsync/core` `0.1.1` from integration commit `503b5fe97aa39a78d5e5de80b794a94508e106cc` | The package checksum is pinned; open Core integration PR #3 is not treated as released. |
+| Core package | `@archsync/core` `0.1.1` from merged integration commit `503b5fe97aa39a78d5e5de80b794a94508e106cc` | The package checksum is pinned; merged Core PR #3 is not treated as a registry release. |
 | Architecture Model | current `0.1.1`, previous `0.1.0`, deprecated alias `0.1` | Current and previous replay identically. Unknown versions are rejected. |
 | Core graph/finding/evidence/conformance/CLI JSON | `1.0.0` | Core-owned records remain Core-owned; Guardian source records use the Guardian versions below. |
 | Guardian analyzer / observed / finding / source evidence / result | `0.2` / `0.1` / `0.1` / `0.1` / `0.1` | Source evidence is versioned by the containing observed or finding envelope. |

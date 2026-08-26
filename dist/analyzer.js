@@ -1,8 +1,8 @@
 import { readFile, readdir } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 import ts from "typescript";
-import { redactSensitiveText } from "./privacy.js";
 import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
+import { redactSensitiveText } from "./privacy.js";
 const redisOperations = new Set([
     "get",
     "set",

@@ -12,7 +12,7 @@ SHA-256:
 7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9
 ```
 
-The source commit is the head of Core integration pull request [#3](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3). It combines CORE-101 pull request #1 commit `a1f0143aa8eb917aa0d93e28101b1893347453e2` and proposed Phase 6 quality-goal commit `783716d7961690b1e8c1cda4acb956777977a853`; this is not a claim that any pull request is merged or released. The active machine-readable attestation is [`archsync-core-0.1.1-integration-503b5fe.provenance.json`](archsync-core-0.1.1-integration-503b5fe.provenance.json). Two independent clean `pnpm pack` runs under Node 26.0.0 and pnpm 11.16.0 produced byte-identical artifacts with the SHA-256 above.
+The source commit is the head of merged Core integration pull request [#3](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3). It combines CORE-101 pull request #1 commit `a1f0143aa8eb917aa0d93e28101b1893347453e2` and proposed Phase 6 quality-goal commit `783716d7961690b1e8c1cda4acb956777977a853`; merge status is not a claim that the package is released. The active machine-readable attestation is [`archsync-core-0.1.1-integration-503b5fe.provenance.json`](archsync-core-0.1.1-integration-503b5fe.provenance.json). Two independent clean `pnpm pack` runs under Node 26.0.0 and pnpm 11.16.0 produced byte-identical artifacts with the SHA-256 above.
 
 `archsync-core-0.1.1.tgz` and its matching provenance file retain the exact CORE-101 PR #1 package as a compatibility reference. Guardian installs the integration artifact above so the same tested dependency also exposes the proposed quality-goal contract required by the Phase 6 foundation.
 

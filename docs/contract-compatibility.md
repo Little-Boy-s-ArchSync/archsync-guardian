@@ -4,13 +4,13 @@ This document records the downstream Guardian side of CORE-101. Package versions
 
 ## Exact dependency status
 
-This integration branch consumes the exact head commit of open Core integration pull request [#3](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3):
+This integration consumes the exact head commit of merged Core integration pull request [#3](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3):
 
 ```text
 503b5fe97aa39a78d5e5de80b794a94508e106cc
 ```
 
-The integration commit combines CORE-101 pull request [#1](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1) commit `a1f0143aa8eb917aa0d93e28101b1893347453e2` and the proposed Phase 6 quality-goal commit `783716d7961690b1e8c1cda4acb956777977a853`. The active vendored `@archsync/core` package has SHA-256 `7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9`. Its [machine-readable provenance](../vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json) records two byte-identical clean pack runs. The Guardian integration pull request must remain a draft while Core #3 is unmerged. This is test evidence for an exact source commit, not a claim that any open change is released or available from a registry.
+The integration commit combines CORE-101 pull request [#1](https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/1) commit `a1f0143aa8eb917aa0d93e28101b1893347453e2` and the proposed Phase 6 quality-goal commit `783716d7961690b1e8c1cda4acb956777977a853`. The active vendored `@archsync/core` package has SHA-256 `7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9`. Its [machine-readable provenance](../vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json) records two byte-identical clean pack runs. This is test evidence for an exact merged source commit, not a claim that the package is released or available from a registry.
 
 ## Contract map
 

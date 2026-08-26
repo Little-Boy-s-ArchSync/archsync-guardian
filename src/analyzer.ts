@@ -17,8 +17,8 @@ import type {
   ObservedRelationship,
   SourceEvidence,
 } from "./contracts.js";
-import { redactSensitiveText } from "./privacy.js";
 import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
+import { redactSensitiveText } from "./privacy.js";
 
 interface EndpointTarget {
   id: string;

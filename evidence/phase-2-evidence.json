@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "f2ba6968f6740549f125f010eb2ed072e52346e6ff8c9a926b1226b974a15573",
+    "implementation_source_sha256": "6d84229f2ea59c6787e12089653452b40f66e2f51ecaf4ffada2439352c8e434",
     "fixture_tree": {
       "files": [
         {
@@ -208,7 +208,7 @@
       },
       {
         "file": "docs/contract-compatibility.md",
-        "sha256": "ed582f8c9ac954bc721e71ba40c17d7274d49d3066e190bb67bac289413080b6"
+        "sha256": "9c098b2a129b0e52b5f10f6cd7de928a89846a6c6103c34f68f48d074294bba9"
       },
       {
         "file": "docs/migrations/core-0.1.0-to-0.1.1.md",
@@ -216,7 +216,7 @@
       },
       {
         "file": "docs/support-matrix.md",
-        "sha256": "8d517f09bd815dba4c7830481c5fe26d5e1d7bcfb658133b7dbd2042b4768e79"
+        "sha256": "6b7caa853e0d6d77692689db25ec7e8d51264638d287232779d876d494f96d58"
       },
       {
         "file": "scripts/cli-smoke.mjs",
@@ -256,7 +256,7 @@
       },
       {
         "file": "src/compatibility.test.ts",
-        "sha256": "0e32800f69ea31b058559b388e39c65de8064bb02df073552d06e447c3340141"
+        "sha256": "315d838752ed520a4a0e5c13c325393d957e9fec57e8c1d31a6233212c04c54a"
       },
       {
         "file": "src/doctor.test.ts",
@@ -288,7 +288,7 @@
       },
       {
         "file": "src/version.test.ts",
-        "sha256": "7bf60c81a4cdc02c87aa9e22eb5eb6904220584175d02fb6b74939d5cc41a738"
+        "sha256": "f8a55b33c088fb22722bb86f3b522c33ea46916083ae282c5c98b8a83467610a"
       },
       {
         "file": "tsconfig.json",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "2d105fa2be61a663af521ac2279dc094988710dbd263950dd14c6979bf233d9f",
+    "verification_source_sha256": "4d424689c7b2045beb30e2c71e3c668102ee36e0306947e2ab6a37ae4869d0fb",
     "dependency_source": [
       {
         "file": "package.json",
@@ -319,11 +319,11 @@
       },
       {
         "file": "vendor/README.md",
-        "sha256": "519809fff23aabf2e18edd3a4311b6d4800bb7c87a8b8b74a11e1f8493b97092"
+        "sha256": "074c2321a5ff23a12b45aac5c6c28fb249fd7354448632fdf6060cb7c8ae71b3"
       },
       {
         "file": "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json",
-        "sha256": "411a196d189743bbbb0c310d9fde405176074ab61ce80122e8e7ef4054968b4f"
+        "sha256": "6b53de40a277692383b6407b428ee40f237fad2dc916229bac8060f8ce904507"
       },
       {
         "file": "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
@@ -331,14 +331,14 @@
       },
       {
         "file": "vendor/archsync-core-0.1.1.provenance.json",
-        "sha256": "07952b3e3a6d4d38e8d4e888885738061777f7b67d719bcc53c66cb15220bea7"
+        "sha256": "dbd1a61f4fdca011ebe0dbd2aade0cb6919e10aea9dd612d9bab09a9fa868c72"
       },
       {
         "file": "vendor/archsync-core-0.1.1.tgz",
-        "sha256": "60a00d267fc217922659b5c527067a7d7792cdf40d3e6f81219c5f7328bd6f80"
+        "sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13"
       }
     ],
-    "dependency_source_sha256": "2081c0909cc265c118d0769eaa8701fa06e713216faf75b8f04fda64688761c4"
+    "dependency_source_sha256": "4d733696cde4921aa31a49fe580811ccbfae7b44b551bb21399bac4eccf09435"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -377,8 +377,8 @@
     },
     "source_sha256": {
       "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
-      "src/compatibility.ts": "e4c34ce16fa0eca7a94cced52f21626723a50ad4106bacde61dbc71e591b63fd",
-      "src/analyzer.ts": "9c12a4ff49cb0e39b1de43205409776b3610e5af315c7a4b7bb66d0640ae81c5",
+      "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
+      "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
       "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
@@ -403,7 +403,7 @@
     "vendored_package": "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
     "vendored_package_sha256": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
     "consumption_contract": "bundled runtime dependency @archsync/core 0.1.1 with compatibility contracts and proposed quality-goal v0.2 contract",
-    "dependency_status": "upstream-integration-pr-open-unmerged",
+    "dependency_status": "upstream-integration-pr-merged",
     "reproducibility": {
       "independent_pack_runs": 2,
       "byte_identical": true
