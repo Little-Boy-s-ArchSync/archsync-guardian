@@ -1,6 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 import ts from "typescript";
+import { redactSensitiveText } from "./privacy.js";
 const redisOperations = new Set([
     "get",
     "set",
@@ -240,7 +241,7 @@ function lineEvidence(sourceFile, node, file, detector, confidence) {
         file,
         line: position.line + 1,
         column: position.character + 1,
-        snippet: firstLine.slice(0, 180),
+        snippet: redactSensitiveText(firstLine.slice(0, 180)),
         detector,
         confidence,
     };

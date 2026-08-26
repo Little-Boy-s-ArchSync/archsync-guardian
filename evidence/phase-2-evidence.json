@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "df18c6085b2289a0721776e798ae2188c903bea7ec465a274803766209e8dcb0",
+    "implementation_source_sha256": "2e3c0c68aad0039494c9de493748c169063ab1f6856a6f72d0f908662a7519bb",
     "fixture_tree": {
       "files": [
         {
@@ -64,7 +64,7 @@
     "verification_source": [
       {
         "file": ".github/workflows/ci.yml",
-        "sha256": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41"
+        "sha256": "988db4abc8854822795000fb5210ce9692fc8d52cec324ba35eaefded8284bfa"
       },
       {
         "file": "scripts/cli-smoke.mjs",
@@ -80,11 +80,11 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "8a3c924cfeca0376a84037455a17cba10df70c711b6acbd76972a5c26f613d36"
+        "sha256": "ec32c6ffffc9d9a9a5f8b760c271bd48c67632a6b8d73d78233db59c612db1d1"
       },
       {
         "file": "src/analyzer.test.ts",
-        "sha256": "6741123975be918ee4f4544a6c20e7f6e2bfe48116b173397a6eb7d96883a23d"
+        "sha256": "05487e352f18b862410deff73c24adbd1d9417f28cc1da265c705f61d7f4b08f"
       },
       {
         "file": "src/benchmark.test.ts",
@@ -131,11 +131,11 @@
         "sha256": "8b7418de6300225dc0ec5c12358973f78222f4ec2343a828816b1897f9495b09"
       }
     ],
-    "verification_source_sha256": "085b9f4fed102dd83e2846b4759ad07dda05bf3b8501194cea7014c4c7e392b9",
+    "verification_source_sha256": "f7b87d93f3ff6ff1b0034a7e1c45138a2e3bf1d1f95ca394ff36e74a33cafdaf",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e"
+        "sha256": "d73b62a25ccfc4cdfd08666bc4673192f61784a3dbccb1066cffd8d2241c1724"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -150,23 +150,23 @@
         "sha256": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42"
       }
     ],
-    "dependency_source_sha256": "21035b0222d8f62acd1ab70699c3bf8f3f1189a1f7727e175fb1fe296dc1d9f6"
+    "dependency_source_sha256": "80ff969932a242caf8e1c2f914bb2810947ba6173251a8c65a0f743b1a0a4f2a"
   },
   "contracts": {
     "observed_graph_version": "0.1",
     "finding_contract_version": "0.1",
     "source_sha256": {
       "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
-      "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
+      "src/analyzer.ts": "d5c19c27fc66b87f6ebee8151b517a1c44d53e8a6a91cc05ca0af97d9f3c65eb",
       "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
-      "src/bin.ts": "d9aef906501d7a300270129136985cfa0eb999fe8a092c4394153932d0ae3dd9",
+      "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
       "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
       "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-      "src/index.ts": "0d75fd8f4a6ca0ea8a9903e217f8bc2d4e723daa6159dee4a04b710c3be5814a",
+      "src/index.ts": "39dfc9ce0391b29f438afeb663d35078edf5b582814c499b8aba180fe2eab047",
       "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
     }
   },
@@ -226,26 +226,23 @@
     },
     "measured_engine_coverage": {
       "statements": {
-        "covered": 1926,
-        "total": 1926,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "branches": {
-        "covered": 803,
-        "total": 803,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "functions": {
-        "covered": 94,
-        "total": 94,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "lines": {
-        "covered": 1926,
-        "total": 1926,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       }
     },
+    "coverage_count_policy": "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     "cli_smoke_checks": 23,
     "clean_package_install": "required on Windows, macOS and Linux",
     "canonical_benchmark": {

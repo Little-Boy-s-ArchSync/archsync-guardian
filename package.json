@@ -46,8 +46,10 @@
     "evidence:verify": "node scripts/phase2-evidence.mjs",
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
+    "privacy:verify": "node scripts/verify-offline.mjs",
+    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm phase3:verify",
     "phase2:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm evidence:verify",
-    "phase3:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
+    "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify"
   },
   "dependencies": {
     "@archsync/core": "file:vendor/archsync-core-0.1.1.tgz",
