@@ -1,0 +1,8 @@
+version: "9.0.0"
+metadata:
+  name: guardian-core-unsupported
+components:
+  service:
+    type: service
+    layer: domain
+relationships: []

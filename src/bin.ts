@@ -12,6 +12,7 @@ import { formatDoctorResult, runDoctor } from "./doctor.js";
 import { checkRepository, formatGuardianResult } from "./guardian.js";
 import { runModelCommand } from "./model-cli.js";
 import { formatVersionResult, loadVersionResult } from "./version.js";
+import { redactDiagnosticPath, redactSensitiveText } from "./privacy.js";
 import {
   appendGitHubStepSummary,
   checkRepositoryDiff,
@@ -63,14 +64,14 @@ async function writeJson(output: string, value: unknown): Promise<void> {
   const outputPath = resolve(output);
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-  console.log(`WROTE ${outputPath}`);
+  console.log(`WROTE ${redactDiagnosticPath(outputPath)}`);
 }
 
 async function writeText(output: string, value: string): Promise<void> {
   const outputPath = resolve(output);
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, value.endsWith("\n") ? value : `${value}\n`, "utf8");
-  console.error(`WROTE ${outputPath}`);
+  console.error(`WROTE ${redactDiagnosticPath(outputPath)}`);
 }
 
 function optionValue(args: string[], name: string): string | undefined {
@@ -240,6 +241,6 @@ async function main(): Promise<void> {
 try {
   await main();
 } catch (error) {
-  console.error(`ARCHSYNC ERROR: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(`ARCHSYNC ERROR: ${redactSensitiveText(error instanceof Error ? error.message : String(error))}`);
   process.exitCode = 2;
 }

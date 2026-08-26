@@ -1,0 +1,41 @@
+version: "0.1.1"
+metadata:
+  name: guardian-detector-fixture
+components:
+  frontend:
+    type: frontend
+    layer: experience
+  service:
+    type: service
+    layer: domain
+  worker:
+    type: worker
+    layer: domain
+  utility:
+    type: library
+    layer: application
+  postgres:
+    type: database
+    layer: data
+  redis:
+    type: cache
+    layer: data
+  amqp:
+    type: queue
+    layer: integration
+relationships:
+  - from: frontend
+    to: service
+    type: http
+  - from: service
+    to: postgres
+    type: data
+  - from: service
+    to: redis
+    type: data
+  - from: service
+    to: amqp
+    type: async
+  - from: amqp
+    to: worker
+    type: async

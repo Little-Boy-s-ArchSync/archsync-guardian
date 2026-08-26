@@ -137,6 +137,8 @@ relationships: []
     const invalid = await fixture("invalid.yaml", "version: invalid\n");
 
     expect(await runModelCommand("diff", [expected, evolution])).toBe(0);
+    expect(stdout.join("\n")).toContain('"schema_version": "1.0.0"');
+    expect(stdout.join("\n")).toContain('"kind": "archsync.graph-diff"');
     expect(stdout.join("\n")).toContain('"changedNodes"');
     expect(stdout.join("\n")).toContain('"removedNodes"');
     expect(stdout.join("\n")).toContain('"addedNodes"');
@@ -157,6 +159,8 @@ relationships: []
     expect(stdout.join("\n")).toContain("DECISION: PASS");
     expect(stdout.join("\n")).toContain("DECISION: BLOCK");
     expect(stdout.join("\n")).toContain('"changedNodes"');
+    expect(stdout.join("\n")).toContain('"kind": "archsync.conformance"');
+    expect(stdout.join("\n")).toContain('"finding": "1.0.0"');
   });
 
   it("writes Mermaid/draw.io model and conformance reports and rejects unsupported report extensions", async () => {
@@ -193,6 +197,8 @@ relationships: []
     expect(await runModelCommand("benchmark", [benchmark])).toBe(0);
     expect(await runModelCommand("benchmark", [invalidBenchmark])).toBe(1);
     expect(stdout.join("\n")).toContain('"edges"');
+    expect(stdout.join("\n")).toContain('"kind": "archsync.graph"');
+    expect(stdout.join("\n")).toContain('"architecture_model": "0.1"');
     expect(stdout.join("\n")).toContain("VALID BENCHMARK");
     expect(stderr.join("\n")).toContain("INVALID BENCHMARK");
   });

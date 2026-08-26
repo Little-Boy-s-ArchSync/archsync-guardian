@@ -14,7 +14,14 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import type { GuardianFinding, GuardianResult } from "./contracts.js";
 import {
+  assessRepairIsolationCapability,
+  createTestOnlyRepairIsolationExecutor,
+  type RepairIsolationAttestation,
+} from "./repair-isolation.js";
+import type { RepairCandidate } from "./reasoner/contracts.js";
+import {
   applyRepairCandidate,
+  bindRepairVerificationResult,
   compareRepairConformance,
   createPlatformNoNetworkExecutor,
   createRepairSandbox,
@@ -38,17 +45,27 @@ import {
   validateRepairCandidate,
   verifyRepairCandidate,
   type NoNetworkCommandExecutor,
+  type FilesystemIsolatedCommandExecutor,
   type ProcessResult,
   type ProcessRunner,
-  type RepairCandidate,
   type RepairConformanceSnapshot,
   type RepairSandbox,
+  type RepairVerificationResult,
 } from "./repair-verification.js";
 
 const originalSource = "export const value = 1;\n";
 const repairedSource = "export const value = 2;\n";
 const targetFinding = "ARCH-001|frontend%7Cdata%7Cpostgres";
 const temporaryRoots: string[] = [];
+const approvedIsolationEvidence = {
+  schema_version: "1.0.0-preparatory" as const,
+  status: "APPROVED" as const,
+  reason: null,
+  capability_id: "approved-capability",
+  isolator_id: "approved-isolator",
+  approval_id: "security-approval",
+  attestation_sha256: "a".repeat(64),
+};
 
 function sha256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
@@ -88,9 +105,15 @@ function candidate(overrides: Partial<RepairCandidate> = {}): RepairCandidate {
   return {
     schema_version: repairCandidateSchemaVersion,
     candidate_id: "repair-001",
+    status: "PROPOSED",
     target_block_finding_fingerprints: [targetFinding],
     files: [{ path: "src/value.ts", base_sha256: sha256(originalSource) }],
     unified_diff: modifyPatch(),
+    rationale: "Replace the fixture value without changing architecture intent.",
+    expected_architecture_impact: "Clear the declared deterministic BLOCK finding.",
+    risk: "low",
+    verification_commands: ["pnpm test"],
+    rollback: "Restore src/value.ts from the bound base hash.",
     ...overrides,
   };
 }
@@ -124,6 +147,23 @@ function executor(result: ProcessResult | (() => Promise<ProcessResult>)): NoNet
     network_isolation: "ENFORCED",
     execute: typeof result === "function" ? result : async () => result,
   };
+}
+
+async function testOnlyExecutor(
+  workspace: string,
+  result: ProcessResult | (() => Promise<ProcessResult>),
+  options: {
+    capability_id?: string;
+    issued_at?: string;
+    expires_at?: string;
+    attestation_overrides?: Partial<RepairIsolationAttestation>;
+  } = {},
+): Promise<FilesystemIsolatedCommandExecutor> {
+  return createTestOnlyRepairIsolationExecutor({
+    workspace,
+    execute: typeof result === "function" ? result : async () => result,
+    ...options,
+  });
 }
 
 function sequenceRunner(results: ProcessResult[]): ProcessRunner {
@@ -175,7 +215,6 @@ describe("repair candidate schema and unified diff validation", () => {
   });
 
   it.each([
-    "",
     `${"a".repeat(513)}`,
     "src/va\0lue.ts",
     "src\\value.ts",
@@ -189,6 +228,12 @@ describe("repair candidate schema and unified diff validation", () => {
     expect(validateRepairCandidate(candidate({
       files: [{ path, base_sha256: sha256(originalSource) }],
     }))).toMatchObject({ ok: false, code: "INVALID_PATH" });
+  });
+
+  it("rejects an empty manifest path at the canonical contract boundary", () => {
+    expect(validateRepairCandidate(candidate({
+      files: [{ path: "", base_sha256: sha256(originalSource) }],
+    }))).toMatchObject({ ok: false, code: "INVALID_CANDIDATE" });
   });
 
   it.each([".git/config", ".archsync/cache", ".env", ".env.local"])(
@@ -361,6 +406,76 @@ describe("temporary sandbox and command containment", () => {
     expect(await deniedDarwin.execute({ command: "npm", args: [], cwd: "/tmp", env: {}, timeout_ms: 1, max_output_bytes: 1 }))
       .toMatchObject({ infrastructure_error: "NETWORK_SANDBOX_UNAVAILABLE" });
   });
+
+  it("runtime-validates every field of the versioned TEST_ONLY isolation attestation", async () => {
+    const source = await projectRoot();
+    const sandbox = await createRepairSandbox(source);
+    const now = Date.parse("2026-08-26T00:05:00.000Z");
+    const issued_at = "2026-08-26T00:00:00.000Z";
+    const expires_at = "2026-08-26T00:10:00.000Z";
+    const invalidCases: Array<Partial<RepairIsolationAttestation>> = [
+      { schema_version: "wrong" as never },
+      { capability_id: " invalid" },
+      { isolator_id: " invalid" },
+      { approval_id: " invalid" },
+      { workspace_sha256: "invalid" },
+      { filesystem_isolation: "CLAIMED" as never },
+      { filesystem_scope: "HOST" as never },
+      { network_isolation: "CLAIMED" as never },
+      { process_execution: "SHELL" as never },
+      { issued_at: "not-a-date" },
+      { expires_at: "2026-08-26T00:10:00Z" },
+      { expires_at: issued_at },
+      { expires_at: "2026-08-26T00:16:00.001Z" },
+    ];
+    for (const attestation_overrides of invalidCases) {
+      const candidateExecutor = await testOnlyExecutor(sandbox.workspace, async () => processResult(), {
+        capability_id: "custom-test-capability",
+        issued_at,
+        expires_at,
+        attestation_overrides,
+      });
+      expect(await assessRepairIsolationCapability(candidateExecutor, sandbox.workspace, now)).toMatchObject({
+        approved: false,
+        evidence: { status: "REJECTED", reason: "FILESYSTEM_ISOLATION_ATTESTATION_INVALID" },
+      });
+    }
+
+    const future = await testOnlyExecutor(sandbox.workspace, async () => processResult(), {
+      issued_at: "2026-08-26T00:06:00.000Z",
+      expires_at: "2026-08-26T00:07:00.000Z",
+    });
+    expect(await assessRepairIsolationCapability(future, sandbox.workspace, now)).toMatchObject({
+      evidence: { reason: "FILESYSTEM_ISOLATION_CAPABILITY_NOT_YET_VALID" },
+    });
+
+    const unavailable = await testOnlyExecutor(sandbox.workspace, async () => processResult(), {
+      issued_at,
+      expires_at,
+    });
+    await sandbox.cleanup();
+    expect(await assessRepairIsolationCapability(unavailable, sandbox.workspace, now)).toMatchObject({
+      evidence: { reason: "FILESYSTEM_ISOLATION_WORKSPACE_UNAVAILABLE" },
+    });
+    expect(await assessRepairIsolationCapability("forged" as never, sandbox.workspace, now)).toMatchObject({
+      evidence: { reason: "FILESYSTEM_ISOLATION_CAPABILITY_REQUIRED" },
+    });
+  });
+
+  it("does not expose the TEST_ONLY issuer outside a Vitest process", async () => {
+    const source = await projectRoot();
+    const previous = process.env.VITEST;
+    delete process.env.VITEST;
+    try {
+      await expect(createTestOnlyRepairIsolationExecutor({
+        workspace: source,
+        execute: async () => processResult(),
+      })).rejects.toThrow("only inside Vitest");
+    } finally {
+      if (previous === undefined) delete process.env.VITEST;
+      else process.env.VITEST = previous;
+    }
+  });
 });
 
 describe("bounded process and project test execution", () => {
@@ -418,24 +533,51 @@ describe("bounded process and project test execution", () => {
     expect(sanitizeVerificationLog("abcdef", "/none", [], 3)).toBe("abc\n<LOG_TRUNCATED>");
   });
 
-  it("rejects disallowed commands, unsafe arguments, missing isolation, and invalid timeouts", async () => {
+  it("fails closed before execution for absent, forged, mismatched, and expired filesystem capabilities", async () => {
     const source = await projectRoot();
     const sandbox = await createRepairSandbox(source);
-    expect(await runSandboxCommand(sandbox, { command: "sh", args: ["-c", "true"] }, { executor: executor(processResult()) }))
+    let executions = 0;
+    const fakeRun = async () => {
+      executions += 1;
+      return processResult();
+    };
+    const validTestAdapter = await testOnlyExecutor(sandbox.workspace, fakeRun);
+    expect(await runSandboxCommand(sandbox, { command: "sh", args: ["-c", "true"] }, { executor: validTestAdapter }))
       .toMatchObject({ status: "INCONCLUSIVE", reason: "COMMAND_NOT_ALLOWED" });
-    expect(await runSandboxCommand(sandbox, { command: "/usr/bin/npm", args: ["test"] }, { executor: executor(processResult()) }))
+    expect(await runSandboxCommand(sandbox, { command: "/usr/bin/npm", args: ["test"] }, { executor: validTestAdapter }))
       .toMatchObject({ status: "INCONCLUSIVE", reason: "COMMAND_NOT_ALLOWED" });
-    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["bad\0arg"] }, { executor: executor(processResult()) }))
+    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["bad\0arg"] }, { executor: validTestAdapter }))
       .toMatchObject({ status: "INCONCLUSIVE", reason: "INVALID_COMMAND_ARGUMENT" });
-    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, { executor: null }))
-      .toMatchObject({ status: "INCONCLUSIVE", reason: "NETWORK_SANDBOX_UNAVAILABLE" });
+    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }))
+      .toMatchObject({ status: "INCONCLUSIVE", reason: "FILESYSTEM_ISOLATION_CAPABILITY_REQUIRED" });
+    const forged = {
+      network_isolation: "ENFORCED",
+      execute: fakeRun,
+    } as unknown as FilesystemIsolatedCommandExecutor;
+    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, { executor: forged }))
+      .toMatchObject({ status: "INCONCLUSIVE", reason: "FILESYSTEM_ISOLATION_CAPABILITY_UNTRUSTED" });
+
+    const otherSandbox = await createRepairSandbox(source);
+    const mismatched = await testOnlyExecutor(otherSandbox.workspace, fakeRun);
+    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, { executor: mismatched }))
+      .toMatchObject({ status: "INCONCLUSIVE", reason: "FILESYSTEM_ISOLATION_WORKSPACE_MISMATCH" });
+    await otherSandbox.cleanup();
+
+    const expired = await testOnlyExecutor(sandbox.workspace, fakeRun, {
+      issued_at: "2020-01-01T00:00:00.000Z",
+      expires_at: "2020-01-01T00:01:00.000Z",
+    });
+    expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, { executor: expired }))
+      .toMatchObject({ status: "INCONCLUSIVE", reason: "FILESYSTEM_ISOLATION_CAPABILITY_EXPIRED" });
+
     for (const timeout_ms of [0, 600_001, 1.5]) {
       expect(await runSandboxCommand(
         sandbox,
         { command: "npm", args: ["test"] },
-        { executor: executor(processResult()), timeout_ms },
+        { executor: validTestAdapter, timeout_ms },
       )).toMatchObject({ status: "INCONCLUSIVE", reason: "INVALID_TIMEOUT" });
     }
+    expect(executions).toBe(0);
     await sandbox.cleanup();
   });
 
@@ -448,23 +590,27 @@ describe("bounded process and project test execution", () => {
       { command: "custom", args: ["test"] },
       {
         allowlist: ["custom"],
-        executor: executor(processResult({ stdout: `${sandbox.root} password=${secret}` })),
+        executor: await testOnlyExecutor(
+          sandbox.workspace,
+          processResult({ stdout: `${sandbox.root} password=${secret}` }),
+        ),
         sensitive_values: [secret],
       },
     );
     expect(pass).toMatchObject({ status: "PASS", exit_code: 0 });
+    expect(pass.filesystem_isolation).toMatchObject({ status: "TEST_ONLY", reason: "FILESYSTEM_ISOLATION_TEST_ONLY" });
     expect(pass.stdout).toBe("<SANDBOX> password=<REDACTED>");
     expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, {
-      executor: executor(processResult({ exit_code: 1 })),
+      executor: await testOnlyExecutor(sandbox.workspace, processResult({ exit_code: 1 })),
     })).toMatchObject({ status: "FAIL", reason: "TEST_EXIT_NONZERO" });
     expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, {
-      executor: executor(processResult({ exit_code: null, timed_out: true })),
+      executor: await testOnlyExecutor(sandbox.workspace, processResult({ exit_code: null, timed_out: true })),
     })).toMatchObject({ status: "TIMEOUT", reason: "TEST_TIMEOUT" });
     expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, {
-      executor: executor(processResult({ infrastructure_error: "NO_BACKEND" })),
+      executor: await testOnlyExecutor(sandbox.workspace, processResult({ infrastructure_error: "NO_BACKEND" })),
     })).toMatchObject({ status: "INCONCLUSIVE", reason: "NO_BACKEND" });
     expect(await runSandboxCommand(sandbox, { command: "npm", args: ["test"] }, {
-      executor: executor(async () => { throw new Error(`${sandbox.root} token=secret-value`); }),
+      executor: await testOnlyExecutor(sandbox.workspace, async () => { throw new Error(`${sandbox.root} token=secret-value`); }),
     })).toMatchObject({
       status: "INCONCLUSIVE",
       reason: "COMMAND_EXECUTOR_FAILED",
@@ -499,9 +645,12 @@ describe("bounded process and project test execution", () => {
   it("runs a detected test command and reports a missing command", async () => {
     const source = await projectRoot();
     const sandbox = await createRepairSandbox(source);
-    expect(await runProjectTests(sandbox, { executor: executor(processResult()) })).toMatchObject({
+    expect(await runProjectTests(sandbox, {
+      executor: await testOnlyExecutor(sandbox.workspace, processResult()),
+    })).toMatchObject({
       status: "PASS",
       command: "pnpm",
+      filesystem_isolation: { status: "TEST_ONLY" },
     });
     const platformDefault = await runSandboxCommand(
       sandbox,
@@ -510,7 +659,9 @@ describe("bounded process and project test execution", () => {
     );
     expect(["FAIL", "TIMEOUT", "INCONCLUSIVE"]).toContain(platformDefault.status);
     await rm(join(sandbox.workspace, "package.json"));
-    expect(await runProjectTests(sandbox, { executor: executor(processResult()) })).toMatchObject({
+    expect(await runProjectTests(sandbox, {
+      executor: await testOnlyExecutor(sandbox.workspace, processResult()),
+    })).toMatchObject({
       status: "INCONCLUSIVE",
       reason: "TEST_COMMAND_NOT_FOUND",
     });
@@ -632,7 +783,7 @@ describe("ArchSync rechecks and deterministic decisions", () => {
       detector: "typescript-pg",
       confidence: 1,
     }],
-    model_evidence: { document: "observed", path: "/relationships/3" },
+    model_evidence: { schema_version: "1.0.0", document: "observed", path: "/relationships/3" },
   };
 
   function guardianResult(decision: "PASS" | "BLOCK" | "REVIEW", findings: GuardianFinding[]): GuardianResult {
@@ -695,18 +846,125 @@ describe("ArchSync rechecks and deterministic decisions", () => {
   it.each([
     [{ patch_status: "REJECTED", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "REJECT_UNSAFE"],
     [{ patch_status: "INCONCLUSIVE", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: false, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 1, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", tests_status: "TIMEOUT", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", tests_status: "INCONCLUSIVE", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
-    [{ patch_status: "APPLIED", tests_status: "FAIL", recheck_complete: true, missing_targets: 0, remaining_targets: 1, new_blocks: 1 }, "REJECT_TEST"],
-    [{ patch_status: "APPLIED", tests_status: "FAIL", recheck_complete: false, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "REJECT_TEST"],
-    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 1, new_blocks: 0 }, "REJECT_CONFORMANCE"],
-    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 1 }, "REJECT_CONFORMANCE"],
-    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "ACCEPTABLE_FOR_REVIEW"],
+    [{ patch_status: "APPLIED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "PASS", recheck_complete: false, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "PASS", recheck_complete: true, missing_targets: 1, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "TIMEOUT", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "INCONCLUSIVE", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "INCONCLUSIVE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "FAIL", recheck_complete: true, missing_targets: 0, remaining_targets: 1, new_blocks: 1 }, "REJECT_TEST"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "FAIL", recheck_complete: false, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "REJECT_TEST"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 1, new_blocks: 0 }, "REJECT_CONFORMANCE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 1 }, "REJECT_CONFORMANCE"],
+    [{ patch_status: "APPLIED", filesystem_isolation_status: "APPROVED", tests_status: "PASS", recheck_complete: true, missing_targets: 0, remaining_targets: 0, new_blocks: 0 }, "ACCEPTABLE_FOR_REVIEW"],
   ] as const)("returns %s deterministically", (input, decision) => {
     expect(decideRepairVerification(input)).toMatchObject({ decision });
+  });
+
+  it("binds only matching offline verifier evidence and promotes only a complete pass", () => {
+    const complete: RepairVerificationResult = {
+      schema_version: repairVerificationSchemaVersion,
+      candidate_id: "repair-001",
+      decision: "ACCEPTABLE_FOR_REVIEW",
+      reason: "complete",
+      patch: {
+        status: "APPLIED",
+        paths: ["src/value.ts"],
+        before_sha256: { "src/value.ts": sha256(originalSource) },
+        after_sha256: { "src/value.ts": sha256(repairedSource) },
+      },
+      tests: {
+        status: "PASS",
+        command: "pnpm",
+        args: ["test"],
+        exit_code: 0,
+        duration_ms: 1,
+        stdout: "",
+        stderr: "",
+        filesystem_isolation: approvedIsolationEvidence,
+      },
+      filesystem_isolation: approvedIsolationEvidence,
+      conformance: {
+        baseline_block_finding_fingerprints: [targetFinding],
+        candidate_block_finding_fingerprints: [],
+        missing_target_finding_fingerprints: [],
+        remaining_target_finding_fingerprints: [],
+        new_block_finding_fingerprints: [],
+      },
+      sandbox_cleanup: "COMPLETED",
+    };
+    expect(bindRepairVerificationResult(candidate(), complete)).toMatchObject({
+      status: "VERIFIED_FOR_REVIEW",
+      verification: {
+        decision: "ACCEPTABLE_FOR_REVIEW",
+        tests: "pass",
+        conformance: "pass",
+        safe_apply: true,
+        filesystem_isolation: "approved",
+        isolation_attestation_sha256: "a".repeat(64),
+      },
+    });
+
+    const failures: RepairVerificationResult[] = [
+      {
+        ...complete,
+        decision: "REJECT_TEST",
+        patch: { status: "REJECTED", code: "PATCH_DOES_NOT_APPLY", message: "bad", paths: ["src/value.ts"] },
+        tests: { ...complete.tests!, status: "FAIL", exit_code: 1 },
+        conformance: {
+          ...complete.conformance!,
+          missing_target_finding_fingerprints: ["missing"],
+          new_block_finding_fingerprints: ["new"],
+        },
+      },
+      {
+        ...complete,
+        decision: "INCONCLUSIVE",
+        patch: { status: "INCONCLUSIVE", code: "NOT_ATTEMPTED", message: "none", paths: [] },
+        tests: null,
+        conformance: null,
+      },
+      {
+        ...complete,
+        decision: "REJECT_CONFORMANCE",
+        tests: { ...complete.tests!, status: "TIMEOUT", exit_code: null },
+        conformance: {
+          ...complete.conformance!,
+          remaining_target_finding_fingerprints: [targetFinding],
+        },
+      },
+      {
+        ...complete,
+        decision: "REJECT_CONFORMANCE",
+        conformance: {
+          ...complete.conformance!,
+          new_block_finding_fingerprints: ["new"],
+        },
+      },
+    ];
+    expect(failures.map((result) => bindRepairVerificationResult(candidate(), result))).toMatchObject([
+      { status: "PROPOSED", verification: { tests: "fail", conformance: "fail", safe_apply: false, new_blocking_findings: 1 } },
+      { status: "PROPOSED", verification: { tests: "not-run", conformance: "not-run", safe_apply: false, new_blocking_findings: 0 } },
+      { status: "PROPOSED", verification: { tests: "not-run", conformance: "fail", safe_apply: true } },
+      { status: "PROPOSED", verification: { tests: "pass", conformance: "fail", safe_apply: true, new_blocking_findings: 1 } },
+    ]);
+    expect(() => bindRepairVerificationResult(
+      candidate({
+        status: "VERIFIED_FOR_REVIEW",
+        verification: {
+          decision: "ACCEPTABLE_FOR_REVIEW",
+          tests: "pass",
+          conformance: "pass",
+          safe_apply: true,
+          new_blocking_findings: 0,
+          filesystem_isolation: "approved",
+          isolation_attestation_sha256: "a".repeat(64),
+        },
+      }),
+      complete,
+    )).toThrow("unverified PROPOSED");
+    expect(() => bindRepairVerificationResult(candidate(), { ...complete, candidate_id: "other" }))
+      .toThrow("candidate ID");
   });
 });
 
@@ -722,7 +980,7 @@ describe("end-to-end repair verification orchestration", () => {
         : candidateSnapshot;
   }
 
-  it("marks a fully verified candidate acceptable for human review and always cleans up", async () => {
+  it("keeps a TEST_ONLY verifier simulation inconclusive and always cleans up", async () => {
     const source = await projectRoot();
     const tempParent = await mkdtemp(join(tmpdir(), "archsync-repair-parent-"));
     temporaryRoots.push(tempParent);
@@ -734,7 +992,10 @@ describe("end-to-end repair verification orchestration", () => {
         sandboxPath = workspace;
         return recheckSequence()(workspace, stage);
       },
-      command_executor: executor(processResult({ stdout: "tests passed" })),
+      command_executor_factory: (sandbox) => testOnlyExecutor(
+        sandbox.workspace,
+        processResult({ stdout: "tests passed" }),
+      ),
       test_command: { command: "npm", args: ["test"] },
       timeout_ms: 1_000,
       sensitive_values: ["secret-value"],
@@ -743,16 +1004,17 @@ describe("end-to-end repair verification orchestration", () => {
 
     expect(result).toMatchObject({
       schema_version: repairVerificationSchemaVersion,
-      decision: "ACCEPTABLE_FOR_REVIEW",
+      decision: "INCONCLUSIVE",
       patch: { status: "APPLIED" },
-      tests: { status: "PASS" },
+      tests: { status: "PASS", filesystem_isolation: { status: "TEST_ONLY" } },
+      filesystem_isolation: { status: "TEST_ONLY", reason: "FILESYSTEM_ISOLATION_TEST_ONLY" },
       conformance: { remaining_target_finding_fingerprints: [], new_block_finding_fingerprints: [] },
       sandbox_cleanup: "COMPLETED",
     });
     expect(await pathExists(sandboxPath)).toBe(false);
   });
 
-  it("rejects failed tests before conformance and rejects remaining or new BLOCK findings", async () => {
+  it("does not promote any simulated test outcome without an approved isolator", async () => {
     const cases: Array<[ProcessResult, RepairConformanceSnapshot, string]> = [
       [processResult({ exit_code: 1 }), { status: "COMPLETE", decision: "BLOCK", block_finding_fingerprints: [targetFinding, "new"] }, "REJECT_TEST"],
       [processResult(), { status: "COMPLETE", decision: "BLOCK", block_finding_fingerprints: [targetFinding] }, "REJECT_CONFORMANCE"],
@@ -763,8 +1025,8 @@ describe("end-to-end repair verification orchestration", () => {
         source_root: await projectRoot(),
         candidate: candidate(),
         recheck: recheckSequence(snapshot),
-        command_executor: executor(testResult),
-      })).decision).toBe(expected);
+        command_executor_factory: (sandbox) => testOnlyExecutor(sandbox.workspace, testResult),
+      })).decision).toBe("INCONCLUSIVE");
     }
   });
 
@@ -814,7 +1076,11 @@ describe("end-to-end repair verification orchestration", () => {
       candidate: candidate(),
       recheck: recheckSequence(),
       command_executor: null,
-    })).toMatchObject({ decision: "INCONCLUSIVE", tests: { reason: "NETWORK_SANDBOX_UNAVAILABLE" } });
+    })).toMatchObject({
+      decision: "INCONCLUSIVE",
+      tests: { reason: "FILESYSTEM_ISOLATION_CAPABILITY_REQUIRED" },
+      filesystem_isolation: { status: "REJECTED" },
+    });
     expect((await verifyRepairCandidate({
       source_root: source,
       candidate: candidate(),
@@ -829,7 +1095,7 @@ describe("end-to-end repair verification orchestration", () => {
       source_root: source,
       candidate: candidate(),
       recheck: recheckSequence({ status: "ERROR", message: "candidate scan failed" }),
-      command_executor: executor(processResult()),
+      command_executor_factory: (sandbox) => testOnlyExecutor(sandbox.workspace, processResult()),
     })).toMatchObject({ decision: "INCONCLUSIVE", conformance: null });
     expect(await verifyRepairCandidate({
       source_root: source,
@@ -851,7 +1117,7 @@ describe("end-to-end repair verification orchestration", () => {
       source_root: source,
       candidate: candidate(),
       recheck: recheckSequence(),
-      command_executor: executor(processResult()),
+      command_executor_factory: (sandbox) => testOnlyExecutor(sandbox.workspace, processResult()),
       sandbox_factory: async (root, options) => {
         const sandbox = await createRepairSandbox(root, options);
         return {

@@ -1,6 +1,7 @@
 import { analyzeConformance, edgeKey, } from "@archsync/core";
 import { analyzeTypeScriptRepository } from "./analyzer.js";
-import { toArchitectureDocument, } from "./contracts.js";
+import { guardianContractsForCoreArchitecture } from "./compatibility.js";
+import { findingContractVersion, guardianResultContractVersion, toArchitectureDocument, } from "./contracts.js";
 function sourceEvidenceKey(value) {
     return `${value.file}\0${value.line}\0${value.column}\0${value.detector}`;
 }
@@ -32,7 +33,7 @@ function findingSourceEvidence(finding, observed) {
 }
 function guardianFinding(finding, observed) {
     return {
-        contract_version: "0.1",
+        contract_version: findingContractVersion,
         id: finding.id,
         kind: finding.kind,
         severity: finding.severity,
@@ -55,10 +56,11 @@ function guardianFinding(finding, observed) {
     };
 }
 export function evaluateObservedArchitecture(expected, observed) {
+    guardianContractsForCoreArchitecture(expected.version);
     const observedDocument = toArchitectureDocument(expected, observed);
     const conformance = analyzeConformance(expected, observedDocument);
     return {
-        contract_version: "0.1",
+        contract_version: guardianResultContractVersion,
         classification: conformance.classification,
         decision: conformance.classification === "no-impact"
             ? "PASS"

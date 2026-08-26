@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "templates": [
+    {
+      "version": "explanation-evidence-only-v0.1",
+      "file": "explanation-evidence-only-v0.1.txt",
+      "sha256": "54897ba6f09aa3381d48f6c23e4405077af2fd5bad7a95f116dc2c1f8a5eacff"
+    }
+  ]
+}

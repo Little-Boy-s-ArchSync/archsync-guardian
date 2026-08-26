@@ -75,6 +75,8 @@ try {
   assert.ok(packedFiles.includes("dist/bin.js"));
   assert.ok(packedFiles.includes("dist/provenance.json"));
   assert.ok(packedFiles.includes("dist/version.js"));
+  assert.ok(packedFiles.includes("specs/explanation.schema.json"));
+  assert.ok(packedFiles.includes("specs/repair-candidate.schema.json"));
   assert.ok(packedFiles.includes("node_modules/@archsync/core/package.json"));
   assert.ok(packedFiles.includes("node_modules/yaml/bin.mjs"));
   const allowedBundleRoots = new Set([
@@ -93,7 +95,7 @@ try {
   assert.deepEqual(bundledRoots, allowedBundleRoots);
   assert.equal(
     packedFiles.every((path) =>
-      path === "package.json" || path === "README.md" || path.startsWith("dist/") ||
+      path === "package.json" || path === "README.md" || path.startsWith("dist/") || path.startsWith("specs/") ||
       path.startsWith("node_modules/"),
     ),
     true,
@@ -108,6 +110,11 @@ try {
     // pnpm may expose shims from PNPM_HOME/bin (not PNPM_HOME itself),
     // particularly in a configured Windows user environment.
     PNPM_HOME: temporary,
+    // pnpm dlx otherwise shares a process-external cache. Concurrent verification
+    // worktrees can race while populating the same entry, so every package test
+    // gets an isolated cache on Unix and Windows.
+    XDG_CACHE_HOME: join(temporary, "cache"),
+    LOCALAPPDATA: join(temporary, "local-app-data"),
     PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ""}`,
   };
   const installation = runPnpm([
@@ -125,6 +132,18 @@ try {
   const version = JSON.parse(runInstalled(["version", "--json"], installEnvironment).stdout);
   assert.equal(version.cli.package, "@archsync/guardian");
   assert.equal(version.cli.version, packResult.version);
+  assert.equal(version.contracts.core_model, "0.1.1");
+  assert.equal(version.contracts.core_model_previous, "0.1.0");
+  assert.equal(version.contracts.core_cli_json, "1.0.0");
+  assert.equal(version.contracts.guardian_result, "0.1");
+  assert.equal(
+    version.dependencies.core.source_commit,
+    "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+  );
+  assert.equal(
+    version.dependencies.core.vendored_sha256,
+    "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+  );
   assert.equal(version.provenance.mode, "package");
   assert.equal(version.provenance.integrity, "verified");
   assert.match(version.provenance.source_commit, /^[0-9a-f]{40}$/);
@@ -138,6 +157,10 @@ try {
   const validation = runInstalled(["model", "validate", "architecture.yaml"], installEnvironment);
   assert.match(validation.stdout, /RESULT: VALID/);
   assert.match(validation.stdout, /SUMMARY: 4 components, 3 relationships/);
+  const graph = JSON.parse(runInstalled(["model", "graph", "architecture.yaml"], installEnvironment).stdout);
+  assert.equal(graph.schema_version, "1.0.0");
+  assert.equal(graph.kind, "archsync.graph");
+  assert.deepEqual(graph.contracts, { architecture_model: "0.1.1", graph: "1.0.0" });
 
   const demo = JSON.parse(runInstalled([
     "demo",
@@ -153,7 +176,8 @@ try {
 
   const fallbackResult = runPnpm([
     "dlx",
-    `--package=${guardianTarball}`,
+    "--package",
+    guardianTarball,
     "archsync",
     "version",
     "--json",
@@ -172,7 +196,7 @@ try {
     assert.ok(manifest, "Installed Guardian package.json was not found");
     return readFile(join(globalDirectory, manifest), "utf8");
   }));
-  assert.deepEqual(installedManifest.files, ["dist", "README.md"]);
+  assert.deepEqual(installedManifest.files, ["dist", "specs", "README.md"]);
 
   if (evidencePath) {
     const pnpmVersion = runPnpm(["--version"]).stdout.trim();
@@ -193,6 +217,8 @@ try {
         "isolated-global-prefix",
         "binary-on-path",
         "version-provenance",
+        "exact-core-dependency-provenance",
+        "core-cli-json-envelope",
         "doctor",
         "external-project-model-validation",
         "installed-pass-block-review-demo",

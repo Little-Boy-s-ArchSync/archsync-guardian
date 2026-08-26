@@ -1,4 +1,4 @@
-name: Phase 3 verification
+name: Phase 5 preparatory verification
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm phase3:verify
+      - run: pnpm repo:verify-clean
       - name: Ensure committed build and evidence are current
         run: git diff --exit-code -- dist evidence
       - name: Upload Guardian evidence
@@ -39,6 +39,7 @@ jobs:
           path: |
             evidence/phase-2-evidence.json
             evidence/phase-3-evidence.json
+            evidence/phase-5-evidence.json
             .artifacts/package-install.json
             coverage/coverage-summary.json
             coverage/index.html

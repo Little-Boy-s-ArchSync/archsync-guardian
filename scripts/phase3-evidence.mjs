@@ -8,7 +8,11 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import { loadArchitecture } from "@archsync/core";
-import { checkRepositoryDiff } from "../dist/index.js";
+import {
+  checkRepositoryDiff,
+  coreDependencyProvenance,
+  coreGuardianContractMatrix,
+} from "../dist/index.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fixture = (...parts) => join(root, "test", "fixtures", ...parts);
@@ -52,6 +56,7 @@ async function readMeasuredCoverage() {
     measured[metric] = {
       complete: true,
       percent: value.pct,
+      all_items_covered: true,
     };
   }
   return measured;
@@ -213,6 +218,7 @@ const measuredCoverage = await readMeasuredCoverage();
 const sourceFiles = [
   "analyzer.ts",
   "bin.ts",
+  "compatibility.ts",
   "contracts.ts",
   "demo.ts",
   "doctor.ts",
@@ -221,6 +227,7 @@ const sourceFiles = [
   "model-cli.ts",
   "phase3-git.ts",
   "phase3.ts",
+  "privacy.ts",
   "version.ts",
 ];
 const sourceHashes = Object.fromEntries(await Promise.all(sourceFiles.map(async (file) => [
@@ -237,19 +244,38 @@ const inputHashes = {
 const dependencyHashes = {
   ".github/workflows/ci.yml": sha256(await readFile(join(root, ".github", "workflows", "ci.yml"))),
   "pnpm-workspace.yaml": sha256(await readFile(join(root, "pnpm-workspace.yaml"))),
-  "vendor/archsync-core-0.1.1.tgz": sha256(
-    await readFile(join(root, "vendor", "archsync-core-0.1.1.tgz")),
+  [coreDependencyProvenance.vendored_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.vendored_artifact)),
   ),
   "package.json": sha256(await readFile(join(root, "package.json"))),
   "pnpm-lock.yaml": sha256(await readFile(join(root, "pnpm-lock.yaml"))),
   "scripts/package-install-e2e.mjs": sha256(await readFile(join(root, "scripts", "package-install-e2e.mjs"))),
   "scripts/package-provenance.mjs": sha256(await readFile(join(root, "scripts", "package-provenance.mjs"))),
+  "scripts/phase3-evidence.mjs": sha256(await readFile(join(root, "scripts", "phase3-evidence.mjs"))),
+  "scripts/verify-clean-worktree.mjs": sha256(await readFile(join(root, "scripts", "verify-clean-worktree.mjs"))),
+  "scripts/verify-offline.mjs": sha256(await readFile(join(root, "scripts", "verify-offline.mjs"))),
+  "src/privacy.test.ts": sha256(await readFile(join(root, "src", "privacy.test.ts"))),
+  "docs/OPERATIONS-PRIVACY.md": sha256(await readFile(join(root, "docs", "OPERATIONS-PRIVACY.md"))),
+  "scripts/core-compatibility.mjs": sha256(await readFile(join(root, "scripts", "core-compatibility.mjs"))),
+  [coreDependencyProvenance.provenance_artifact]: sha256(
+    await readFile(join(root, coreDependencyProvenance.provenance_artifact)),
+  ),
 };
 const staticEvidence = {
   phase: 3,
   release: "v0.3",
   objective: "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
-  contract_version: "0.1",
+  contract_version: coreGuardianContractMatrix.guardian.result,
+  contracts: coreGuardianContractMatrix,
+  core_dependency: {
+    repository: coreDependencyProvenance.repository,
+    repository_commit: coreDependencyProvenance.source_commit,
+    source_pull_request: coreDependencyProvenance.source_pull_request,
+    included_source_commits: coreDependencyProvenance.included_source_commits,
+    vendored_package: coreDependencyProvenance.vendored_artifact,
+    vendored_package_sha256: coreDependencyProvenance.vendored_sha256,
+    dependency_status: coreDependencyProvenance.dependency_status,
+  },
   source_sha256: sourceHashes,
   input_sha256: inputHashes,
   dependency_sha256: dependencyHashes,
@@ -274,6 +300,7 @@ const staticEvidence = {
       lines: 100,
     },
     measured_engine_coverage: measuredCoverage,
+    coverage_count_policy: "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     cli_smoke_checks: 23,
     clean_package_install: "required on Windows, macOS and Linux",
   },

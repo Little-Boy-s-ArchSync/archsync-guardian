@@ -3,32 +3,85 @@
   "release": "v0.3",
   "objective": "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
   "contract_version": "0.1",
+  "contracts": {
+    "schema_version": 1,
+    "core": {
+      "architecture_model": {
+        "current": "0.1.1",
+        "previous": "0.1.0",
+        "legacy": "0.1",
+        "accepted": [
+          "0.1.1",
+          "0.1.0",
+          "0.1"
+        ]
+      },
+      "graph": "1.0.0",
+      "finding": "1.0.0",
+      "evidence": "1.0.0",
+      "conformance": "1.0.0",
+      "cli_json": "1.0.0"
+    },
+    "guardian": {
+      "analyzer": "0.2",
+      "observed_graph": "0.1",
+      "finding": "0.1",
+      "source_evidence": "0.1",
+      "source_evidence_version_carrier": "observed-or-finding-envelope",
+      "result": "0.1"
+    },
+    "ownership": {
+      "architecture_model_graph_and_decisions": "core",
+      "source_detection_observed_graph_and_enrichment": "guardian"
+    }
+  },
+  "core_dependency": {
+    "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+    "repository_commit": "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+    "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3",
+    "included_source_commits": {
+      "contract_compatibility": "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+      "quality_goals": "783716d7961690b1e8c1cda4acb956777977a853"
+    },
+    "vendored_package": "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
+    "vendored_package_sha256": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "dependency_status": "upstream-integration-pr-merged"
+  },
   "source_sha256": {
-    "src/analyzer.ts": "afc59d44a395cf69841672c81e23cd3d6ec120fec47391345bd29f0af39d3021",
-    "src/bin.ts": "d9aef906501d7a300270129136985cfa0eb999fe8a092c4394153932d0ae3dd9",
-    "src/contracts.ts": "e4919391583d11a1f1139b9ec6b5a047a75c2a975c55341ac6268cf426b62d75",
+    "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
+    "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
+    "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
+    "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
-    "src/guardian.ts": "c8bd93fcc6f56895222ac13e45b6ba886d7ee786a3fa5c2ce5cb8928f033da80",
-    "src/index.ts": "3cccb55807d99265be5e6216d0b2cab289b974155abf67dd1f0ab4fd243aed16",
-    "src/model-cli.ts": "a7901fc3a78e2f1deab9b19f2c97d01d689aa21e27f727fa122c403ded52d423",
+    "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
+    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
+    "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
     "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
     "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
-    "src/version.ts": "c9716aa4563e51d9735c6fe71f0ba23a84c01a37a2d98a3b5923a6329011ed18"
+    "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
+    "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
   },
   "input_sha256": {
-    "test/fixtures/architecture.yaml": "bc48d5a68934d6c2b8cd995c79714cd318e3414dc3ec6e869406439ff92f7573",
+    "test/fixtures/architecture.yaml": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c",
     "test/fixtures/baseline": "295859d70647b405b378341a4f1b9137168b25b21a3826698439e8742baed54e",
     "test/fixtures/violation/frontend/src/database.ts": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
   },
   "dependency_sha256": {
-    ".github/workflows/ci.yml": "c5ab0b00ee5c6652604b7ef5aa51307abdf079ff22350cb275c7d29974d93a41",
+    ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
-    "vendor/archsync-core-0.1.1.tgz": "900e5f9347b41eace9568ad5fd930ac67ebccb4cefe27ed6a5bd31ec8dbb0c42",
-    "package.json": "bd1642e10a7087974122d015253be1ecf1f3bb9dbc62934d62fb105508f9184e",
-    "pnpm-lock.yaml": "3ee0c7aaa48f719315dfb9e8df4ed31b7e3113f7720466249034d4e1cebe24de",
-    "scripts/package-install-e2e.mjs": "29326ac0a237662367bdab457b9e5741a367e062eb9d9dfd466af875e7ec9cbe",
-    "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7"
+    "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
+    "pnpm-lock.yaml": "ac5081c6adbbd20a935d1afa3d13420eca4a19d1a5f2d41d1b28945e05236652",
+    "scripts/package-install-e2e.mjs": "afa634778fc210cb7850369a2f88a52b2b754b5d6292c00bd8b8b9f9673ef03a",
+    "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
+    "scripts/phase3-evidence.mjs": "8467de3d042ad8ee3a07a0270c04a04b257af7568392b6f08fb79638359d6717",
+    "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
+    "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3",
+    "src/privacy.test.ts": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116",
+    "docs/OPERATIONS-PRIVACY.md": "9f8604365d1198810d5becb82e3c0f34f01fe4fb8a65a72827d9771a149e3299",
+    "scripts/core-compatibility.mjs": "fb23bd739c5b3943d5ab0d9c0be5c103c03f0bb410e1c602e9751f4026b6ba4a",
+    "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json": "6b53de40a277692383b6407b428ee40f237fad2dc916229bac8060f8ce904507"
   },
   "strategy": {
     "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
@@ -227,21 +280,26 @@
     "measured_engine_coverage": {
       "statements": {
         "complete": true,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "branches": {
         "complete": true,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "functions": {
         "complete": true,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       },
       "lines": {
         "complete": true,
-        "percent": 100
+        "percent": 100,
+        "all_items_covered": true
       }
     },
+    "coverage_count_policy": "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
     "cli_smoke_checks": 23,
     "clean_package_install": "required on Windows, macOS and Linux"
   },
@@ -252,93 +310,93 @@
     "LLM authority over deterministic rules"
   ],
   "environment": {
-    "platform": "darwin",
-    "os_release": "25.5.0",
-    "node": "v26.0.0",
-    "cpu": "Apple M1 Pro",
-    "logical_cpus": 10
+    "platform": "win32",
+    "os_release": "10.0.26200",
+    "node": "v22.16.0",
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "logical_cpus": 20
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 116.75,
+      "cold_total_ms": 400.78,
       "warm_total_ms": [
-        61.63,
-        59.26,
-        59.95,
-        59.65,
-        58.91
+        252.3,
+        278.02,
+        333.42,
+        288.73,
+        264.29
       ],
       "warm_baseline_load_ms": [
-        6.06,
-        5.7,
-        5.93,
-        5.79,
-        6.13
+        29.03,
+        26.34,
+        45.65,
+        27.57,
+        29.65
       ],
       "warm_incremental_scan_ms": [
-        1.35,
-        1.2,
-        1.41,
-        1.28,
-        1.3
+        2.11,
+        2.14,
+        4.51,
+        1.78,
+        2.29
       ],
-      "warm_median_total_ms": 59.65,
-      "warm_median_baseline_load_ms": 5.93,
-      "warm_median_incremental_scan_ms": 1.3
+      "warm_median_total_ms": 278.02,
+      "warm_median_baseline_load_ms": 29.03,
+      "warm_median_incremental_scan_ms": 2.14
     },
     "violation": {
-      "cold_total_ms": 102.54,
+      "cold_total_ms": 406.14,
       "warm_total_ms": [
-        63.44,
-        54.56,
-        54.63,
-        51.74,
-        53.28
+        278.4,
+        277.17,
+        326.23,
+        257.8,
+        243.25
       ],
       "warm_baseline_load_ms": [
-        5.33,
-        5.24,
-        5.9,
-        5.08,
-        5.41
+        37.72,
+        38.41,
+        27.95,
+        26.03,
+        26.65
       ],
       "warm_incremental_scan_ms": [
-        1.11,
-        0.91,
-        1.04,
-        0.99,
-        1.08
+        3.44,
+        3.43,
+        3.67,
+        1.74,
+        2.13
       ],
-      "warm_median_total_ms": 54.56,
-      "warm_median_baseline_load_ms": 5.33,
-      "warm_median_incremental_scan_ms": 1.04
+      "warm_median_total_ms": 277.17,
+      "warm_median_baseline_load_ms": 27.95,
+      "warm_median_incremental_scan_ms": 3.43
     },
     "evolution": {
-      "cold_total_ms": 90.4,
+      "cold_total_ms": 365.38,
       "warm_total_ms": [
-        60.08,
-        56.31,
-        56.01,
-        58.52,
-        61.15
+        270.41,
+        259.6,
+        245.54,
+        248.02,
+        252.37
       ],
       "warm_baseline_load_ms": [
-        5.18,
-        5.16,
-        5.63,
-        5.7,
-        5.34
+        28.12,
+        27.09,
+        25.88,
+        24.23,
+        25.48
       ],
       "warm_incremental_scan_ms": [
-        1.09,
-        0.98,
-        1.14,
-        1.07,
-        6.29
+        3.7,
+        1.79,
+        1.85,
+        1.6,
+        2.23
       ],
-      "warm_median_total_ms": 58.52,
-      "warm_median_baseline_load_ms": 5.34,
-      "warm_median_incremental_scan_ms": 1.09
+      "warm_median_total_ms": 252.37,
+      "warm_median_baseline_load_ms": 25.88,
+      "warm_median_incremental_scan_ms": 1.85
     }
   }
 }

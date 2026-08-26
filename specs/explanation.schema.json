@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://archsync.dev/contracts/explanation/0.1",
+  "title": "ArchSync Explanation Contract 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "summary", "root_cause", "claims", "uncertainty", "recommended_next_action", "model_provenance"],
+  "properties": {
+    "contract_version": { "const": "0.1" },
+    "summary": { "type": "string", "minLength": 1 },
+    "root_cause": { "type": "string", "minLength": 1 },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "citations"],
+        "properties": {
+          "text": { "type": "string", "minLength": 1 },
+          "citations": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "source_location": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "file": { "type": "string", "minLength": 1 },
+              "line": { "type": "integer", "minimum": 1 },
+              "rule_id": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "reason"],
+      "properties": {
+        "level": { "enum": ["low", "medium", "high"] },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "recommended_next_action": { "type": "string", "minLength": 1 },
+    "model_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "prompt_version", "request_hash"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "prompt_version": { "type": "string", "minLength": 1 },
+        "request_hash": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -17,6 +17,8 @@ import type {
   ObservedRelationship,
   SourceEvidence,
 } from "./contracts.js";
+import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
+import { redactSensitiveText } from "./privacy.js";
 
 interface EndpointTarget {
   id: string;
@@ -312,7 +314,7 @@ function lineEvidence(
     file,
     line: position.line + 1,
     column: position.character + 1,
-    snippet: firstLine.slice(0, 180),
+    snippet: redactSensitiveText(firstLine.slice(0, 180)),
     detector,
     confidence,
   };
@@ -549,8 +551,8 @@ export async function analyzeTypeScriptRepository(
   }
 
   return {
-    version: "0.1",
-    analyzer: { id: "archsync-typescript", version: "0.2", stack: "typescript-node" },
+    version: observedGraphVersion,
+    analyzer: { id: "archsync-typescript", version: guardianAnalyzerVersion, stack: "typescript-node" },
     metadata: { name: `${expected.metadata.name}-observed`, scanned_files: files.length },
     components: Object.fromEntries([...components.entries()].sort(([a], [b]) => a.localeCompare(b))),
     relationships: [...relationships.entries()]

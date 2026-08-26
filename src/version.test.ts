@@ -27,6 +27,39 @@ describe("CLI version provenance", () => {
     const result = await loadVersionResult();
     expect(result.provenance.mode).toBe("source-tree");
     expect(result.provenance.source_commit).toMatch(/^[0-9a-f]{40}$/);
+    expect(result.contracts).toMatchObject({
+      core_model: "0.1.1",
+      core_model_previous: "0.1.0",
+      core_model_legacy: "0.1",
+      core_model_accepted: ["0.1.1", "0.1.0", "0.1"],
+      core_graph: "1.0.0",
+      core_finding: "1.0.0",
+      core_evidence: "1.0.0",
+      core_conformance: "1.0.0",
+      core_cli_json: "1.0.0",
+      guardian_analyzer: "0.2",
+      guardian_observed_graph: "0.1",
+      guardian_finding: "0.1",
+      guardian_source_evidence: "0.1",
+      finding: "0.1",
+      source_evidence: "0.1",
+      guardian_result: "0.1",
+    });
+    expect(result.dependencies.core).toEqual({
+      package: "@archsync/core",
+      package_version: "0.1.1",
+      repository: "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+      source_commit: "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+      source_pull_request: "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3",
+      included_source_commits: {
+        contract_compatibility: "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+        quality_goals: "783716d7961690b1e8c1cda4acb956777977a853",
+      },
+      vendored_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
+      vendored_sha256: "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+      provenance_artifact: "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json",
+      dependency_status: "upstream-integration-pr-merged",
+    });
   });
 
   it("computes a deterministic content digest and reports an unpackaged source tree", async () => {

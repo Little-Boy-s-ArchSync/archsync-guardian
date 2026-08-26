@@ -1,6 +1,6 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { dirname, extname, join, resolve } from "node:path";
-import { analyzeConformance, buildGraph, diffGraphs, formatConformanceResult, formatValidationIssues, generateConformanceDrawio, generateConformanceMermaid, generateDrawio, generateMermaid, loadArchitecture, validateBenchmark, } from "@archsync/core";
+import { analyzeConformance, buildGraph, diffGraphs, formatConformanceResult, formatValidationIssues, generateConformanceDrawio, generateConformanceMermaid, generateDrawio, generateMermaid, loadArchitecture, serializeConformanceResult, serializeGraph, serializeGraphDiff, validateBenchmark, } from "@archsync/core";
 export const modelCommands = new Set([
     "validate",
     "validate-dir",
@@ -41,24 +41,6 @@ async function validateFile(filePath) {
         `SUMMARY: ${counted(graph.nodes.size, "component")}, ${counted(graph.edges.length, "relationship")}`,
     ].join("\n"));
     return true;
-}
-function serializeConformance(result) {
-    return {
-        classification: result.classification,
-        summary: result.summary,
-        findings: result.findings,
-        diff: {
-            addedNodes: result.diff.addedNodes.map(({ id }) => id),
-            removedNodes: result.diff.removedNodes.map(({ id }) => id),
-            changedNodes: result.diff.changedNodes.map(({ id, expected, observed }) => ({
-                id,
-                expected: expected.component,
-                observed: observed.component,
-            })),
-            addedEdges: result.diff.addedEdges.map(({ key }) => key),
-            removedEdges: result.diff.removedEdges.map(({ key }) => key),
-        },
-    };
 }
 export async function runModelCommand(command, args) {
     if (!modelCommands.has(command))
@@ -113,17 +95,7 @@ export async function runModelCommand(command, args) {
         }
         if (command === "diff") {
             const diff = diffGraphs(buildGraph(expected.value), buildGraph(observed.value));
-            console.log(JSON.stringify({
-                addedNodes: diff.addedNodes.map(({ id }) => id),
-                removedNodes: diff.removedNodes.map(({ id }) => id),
-                changedNodes: diff.changedNodes.map(({ id, expected: before, observed: after }) => ({
-                    id,
-                    expected: before.component,
-                    observed: after.component,
-                })),
-                addedEdges: diff.addedEdges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-                removedEdges: diff.removedEdges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-            }, null, 2));
+            console.log(JSON.stringify(serializeGraphDiff(expected.value.version, observed.value.version, diff), null, 2));
             return 0;
         }
         const result = analyzeConformance(expected.value, observed.value);
@@ -147,7 +119,7 @@ export async function runModelCommand(command, args) {
             return 0;
         }
         console.log(command === "check-json"
-            ? JSON.stringify(serializeConformance(result), null, 2)
+            ? JSON.stringify(serializeConformanceResult(expected.value.version, observed.value.version, result), null, 2)
             : formatConformanceResult(result));
         return result.classification === "no-impact" ? 0 : result.classification === "violation" ? 1 : 3;
     }
@@ -160,10 +132,7 @@ export async function runModelCommand(command, args) {
         }
         if (command === "graph") {
             const graph = buildGraph(result.value);
-            console.log(JSON.stringify({
-                nodes: [...graph.nodes.keys()],
-                edges: graph.edges.map(({ key, from, to, type }) => ({ key, from, to, type })),
-            }, null, 2));
+            console.log(JSON.stringify(serializeGraph(result.value.version, graph), null, 2));
             return 0;
         }
         const rendered = command === "drawio" ? generateDrawio(result.value) : generateMermaid(result.value);
