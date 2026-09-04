@@ -41,8 +41,8 @@
   "dependency_sha256": {
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
-    "pnpm-lock.yaml": "ac5081c6adbbd20a935d1afa3d13420eca4a19d1a5f2d41d1b28945e05236652",
-    "pnpm-workspace.yaml": "4285bcff5df2b06d7dc218b38400d4af3d929cfea4b272870e2d1b6acc1ecc16",
+    "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
+    "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "tsconfig.json": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c",
     "tsconfig.test.json": "04910a31dc7be48c03671a814ed81ebc5095f21d4150cf08f613f0c8f1b8ce13",
     "vitest.config.ts": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289",

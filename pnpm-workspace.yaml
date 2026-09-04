@@ -6,6 +6,9 @@ allowBuilds:
 
 nodeLinker: hoisted
 
+overrides:
+  fast-uri: 3.1.6
+
 patchedDependencies:
   # yaml 2.9.0 omits its declared CLI entrypoint from `files`. A bundled
   # Guardian tarball must include it so pnpm can create dependency shims
