@@ -228,7 +228,7 @@
       },
       {
         "file": "scripts/package-install-e2e.mjs",
-        "sha256": "afa634778fc210cb7850369a2f88a52b2b754b5d6292c00bd8b8b9f9673ef03a"
+        "sha256": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f"
       },
       {
         "file": "scripts/package-provenance.mjs",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "4d424689c7b2045beb30e2c71e3c668102ee36e0306947e2ab6a37ae4869d0fb",
+    "verification_source_sha256": "f93789979dea61cfde9f27fdd1418b3eacf7052952ce138aeafb1d4de879a1e5",
     "dependency_source": [
       {
         "file": "package.json",

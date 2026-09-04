@@ -175,9 +175,9 @@ try {
   assert.equal(demo.cases.every(({ match }) => match), true);
 
   const fallbackResult = runPnpm([
-    "dlx",
     "--package",
     guardianTarball,
+    "dlx",
     "archsync",
     "version",
     "--json",
