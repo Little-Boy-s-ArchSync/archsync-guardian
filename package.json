@@ -49,7 +49,7 @@
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
     "privacy:verify": "node scripts/verify-offline.mjs",
-    "phase4:assets": "node scripts/verify-phase4-assets.mjs",
+    "phase4:assets": "node scripts/verify-phase4-assets.mjs && pnpm isolation:verify",
     "phase4:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm phase4:assets",
     "phase5:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase5-evidence.mjs --write",
     "phase5:evidence:verify": "node scripts/phase5-evidence.mjs",
@@ -57,7 +57,9 @@
     "phase3:verify": "pnpm privacy:verify && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm core:compatibility:verify && pnpm cli:smoke && pnpm package:verify && pnpm evidence:verify && pnpm phase3:evidence:verify",
     "phase5:verify": "pnpm phase3:verify && pnpm phase4:assets && pnpm phase5:evidence:verify",
     "verify": "pnpm phase5:verify",
-    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify"
+    "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify",
+    "isolation:verify": "node --test scripts/isolation/backend-contracts.mjs",
+    "isolation:probe": "node scripts/probe-repair-isolation.mjs"
   },
   "dependencies": {
     "@archsync/core": "file:vendor/archsync-core-0.1.1-integration-503b5fe.tgz",

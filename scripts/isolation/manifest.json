@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0-unapproved",
+  "status": "UNAPPROVED",
+  "files": {
+    "policy.json": "e18222eae50893fbf0534a63c32c504bec6a45668cdae1c0abf0676515e7d065",
+    "fixture-command.mjs": "8af92a464fad97a28209ec378c831a8544f806eb19d34a2377a51cd1a3124afe",
+    "fixture.mjs": "5512b8facab0eb06ce3c0eed6d9a47087635724db6d59c16d2cc25b62b7603c8"
+  }
+}

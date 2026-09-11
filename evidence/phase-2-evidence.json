@@ -307,7 +307,7 @@
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b"
+        "sha256": "29e27b6a250f064ae46febdf31add995abcb95d1e740afd09c4976d3c006d53c"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -338,7 +338,7 @@
         "sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13"
       }
     ],
-    "dependency_source_sha256": "aa3d6de219b654d20fc8b260c501f1a4431924358c21338d445b35ee6cf9bafc"
+    "dependency_source_sha256": "52d99459b7e385fb67f80ac516762081197a4b1f04563feeb7089ed967deb304"
   },
   "contracts": {
     "observed_graph_version": "0.1",

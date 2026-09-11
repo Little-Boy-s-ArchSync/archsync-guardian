@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0-unapproved",
+  "status": "UNAPPROVED",
+  "image": "docker.io/library/node@sha256:048ed02c5fd52e86fda6fbd2f6a76cf0d4492fd6c6fee9e2c463ed5108da0e34",
+  "node_version": "v22.16.0",
+  "user": "1000:1000",
+  "memory_bytes": 268435456,
+  "nano_cpus": 1000000000,
+  "pids_limit": 64,
+  "tmpfs": "rw,nosuid,nodev,noexec,size=16777216,uid=1000,gid=1000",
+  "maximum_output_bytes": 65536,
+  "control_timeout_ms": 15000,
+  "fixture_timeout_ms": 10000,
+  "termination_timeout_ms": 1000,
+  "post_termination_observation_ms": 1800,
+  "network_scope": "EXTERNAL_EGRESS_DENIED_LOOPBACK_REMAINS",
+  "host_mounts": "NONE",
+  "production_capability": "NOT_ISSUED"
+}
