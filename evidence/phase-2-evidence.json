@@ -204,7 +204,7 @@
       },
       {
         "file": "docs/OPERATIONS-PRIVACY.md",
-        "sha256": "9f8604365d1198810d5becb82e3c0f34f01fe4fb8a65a72827d9771a149e3299"
+        "sha256": "4345ea2f42a0e13517a439a4e2e90a1a7a9b1af0139f64bd81ea15ddf8ee06c3"
       },
       {
         "file": "docs/contract-compatibility.md",
@@ -303,11 +303,11 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "f93789979dea61cfde9f27fdd1418b3eacf7052952ce138aeafb1d4de879a1e5",
+    "verification_source_sha256": "c45844b2cfb5b91971fdb164d1b8896d467d70fc1bb6d7d85e5c93d17b3f81ad",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "921a23986869af351388b9be4e5a4ff1bdbcdfb01c52d5fbe8e31c4570174690"
+        "sha256": "d86a9caf124114928a4eaa236792413ce90760518d143024a84ab4b66a4f02d2"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -338,7 +338,7 @@
         "sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13"
       }
     ],
-    "dependency_source_sha256": "1e1b9e19c33dc39eb31711146e8819e59570ab4a6f5b21d9f634c86343b7f9fc"
+    "dependency_source_sha256": "ff9dcb438a2ed59717ea8ed6c755a7d74adfb72cfb2b9e12916a4a496e5af2a4"
   },
   "contracts": {
     "observed_graph_version": "0.1",
