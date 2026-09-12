@@ -17,7 +17,7 @@ const started = new Date().toISOString(), cases = [];
 const probes = [
   { name: 'repaired-success', body: 'export const add = (a, b) => a - -b;\n', outcome: 'FIXTURE_PASSED' },
   { name: 'repaired-failure', body: 'export const add = () => 0;\n', outcome: 'FIXTURE_FAILED' },
-  { name: 'repaired-timeout', body: 'while (true) {}\n', outcome: 'INCONCLUSIVE' },
+  { name: 'repaired-timeout', body: 'export const add = () => 42; while (true) {}\n', outcome: 'INCONCLUSIVE' },
   { name: 'repaired-cancel', body: 'setInterval(() => {}, 100); export const add = () => 42;\n', outcome: 'INCONCLUSIVE' },
   { name: 'repaired-stdout-overflow', body: 'process.stdout.write("X".repeat(100000)); export const add = () => 42;\n', outcome: 'INCONCLUSIVE' },
   { name: 'repaired-stderr-overflow', body: 'process.stderr.write("X".repeat(100000)); export const add = () => 42;\n', outcome: 'INCONCLUSIVE' },

@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { sanitizeVerificationLog } from '../../dist/index.js';
+import { sanitizeVerificationLog } from '../../dist/repair-verification.js';
 import { checked, classifyExecution, cleanupOwnedContainer, containerEnvironment, createArguments, discoverEndpoint, dockerClient, hash, validateContainer, validateEngine, validateImage, validateOwnership, validatePolicy } from './backend.mjs';
 import { networkProfile, networkProfileSha256 } from './network-policy.mjs';
 import { collectRepairedSnapshot, collectRepairedWorkspaceSnapshot } from './workspace-repaired.mjs';
