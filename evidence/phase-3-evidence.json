@@ -71,7 +71,7 @@
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
-    "package.json": "d86a9caf124114928a4eaa236792413ce90760518d143024a84ab4b66a4f02d2",
+    "package.json": "2a12b7fd36daf1aa01ff10db43976a1a19d56931610968c9c07ab0146d23cb1d",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
@@ -318,85 +318,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 181.97,
+      "cold_total_ms": 114.86,
       "warm_total_ms": [
-        131.83,
-        132.34,
-        87.51,
-        95.15,
-        83.09
+        68.14,
+        69.77,
+        69.33,
+        65.01,
+        69.29
       ],
       "warm_baseline_load_ms": [
-        10.44,
-        10.76,
-        7.51,
-        11.31,
-        7.71
+        6.67,
+        6.32,
+        6,
+        6.01,
+        7.02
       ],
       "warm_incremental_scan_ms": [
-        2.5,
-        2.33,
-        2.61,
-        2.17,
-        1.62
+        1.82,
+        1.86,
+        1.58,
+        1.5,
+        1.63
       ],
-      "warm_median_total_ms": 95.15,
-      "warm_median_baseline_load_ms": 10.44,
-      "warm_median_incremental_scan_ms": 2.33
+      "warm_median_total_ms": 69.29,
+      "warm_median_baseline_load_ms": 6.32,
+      "warm_median_incremental_scan_ms": 1.63
     },
     "violation": {
-      "cold_total_ms": 152.89,
+      "cold_total_ms": 102.96,
       "warm_total_ms": [
-        291.82,
-        89.92,
-        120.95,
-        79.73,
-        81.12
+        72.47,
+        71.25,
+        67.84,
+        69.94,
+        68.73
       ],
       "warm_baseline_load_ms": [
-        8.22,
-        8.14,
-        8.48,
-        10.25,
-        8.85
+        6.67,
+        6.51,
+        6.11,
+        6.92,
+        6.41
       ],
       "warm_incremental_scan_ms": [
-        3.04,
-        1.65,
-        1.76,
-        1.75,
-        1.6
+        2.03,
+        1.98,
+        1.74,
+        1.84,
+        1.63
       ],
-      "warm_median_total_ms": 89.92,
-      "warm_median_baseline_load_ms": 8.48,
-      "warm_median_incremental_scan_ms": 1.75
+      "warm_median_total_ms": 69.94,
+      "warm_median_baseline_load_ms": 6.51,
+      "warm_median_incremental_scan_ms": 1.84
     },
     "evolution": {
-      "cold_total_ms": 117.91,
+      "cold_total_ms": 108.46,
       "warm_total_ms": [
-        75.87,
-        78.6,
-        76.83,
-        91.67,
-        99.07
+        67.81,
+        61.57,
+        65.42,
+        65.02,
+        60.32
       ],
       "warm_baseline_load_ms": [
-        8.52,
-        8.37,
-        7.6,
-        7.64,
-        8.5
+        7.09,
+        6.85,
+        5.91,
+        6.59,
+        5.77
       ],
       "warm_incremental_scan_ms": [
-        1.93,
-        1.87,
-        1.75,
-        1.67,
-        1.96
+        1.58,
+        1.42,
+        1.3,
+        1.55,
+        1.24
       ],
-      "warm_median_total_ms": 78.6,
-      "warm_median_baseline_load_ms": 8.37,
-      "warm_median_incremental_scan_ms": 1.87
+      "warm_median_total_ms": 65.02,
+      "warm_median_baseline_load_ms": 6.59,
+      "warm_median_incremental_scan_ms": 1.42
     }
   }
 }
