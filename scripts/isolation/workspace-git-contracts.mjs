@@ -236,6 +236,57 @@ test('collector rejects duplicate tree entries during tree parsing', async () =>
   });
 });
 
+test('repository helper reads declared root HEAD and dirty state despite inherited GIT_DIR/GIT_WORK_TREE', async () => {
+  await withRepository(async (declared, git) => {
+    await writeFile(join(declared, 'source.txt'), 'DECLARED');
+    await git(['add', 'source.txt']);
+    await git(['commit', '-q', '-m', 'declared commit']);
+    const declaredCommit = git(['rev-parse', 'HEAD'], 'utf8').trim();
+    await writeFile(join(declared, 'source.txt'), 'DECLARED_DIRTY');
+
+    const redirected = await mkdtemp(join(tmpdir(), 'archsync-git-probe-head-'));
+    const redirectedRunner = createRunner(redirected);
+    try {
+      redirectedRunner(['init', '-q']);
+      redirectedRunner(['config', 'user.name', 'ArchSync Unit']);
+      redirectedRunner(['config', 'user.email', 'unit@archsync.internal']);
+      await writeFile(join(redirected, 'source.txt'), 'REDIRECTED');
+      redirectedRunner(['add', 'source.txt']);
+      redirectedRunner(['commit', '-q', '-m', 'redirected commit']);
+      const probeHelperPath = join(redirected, 'probe-helper.mjs');
+      const repositoryGitModulePath = JSON.stringify(new URL('./repository-git.mjs', import.meta.url).href);
+      await writeFile(
+        probeHelperPath,
+        [
+          `import { repositoryHead, repositoryDirty } from ${repositoryGitModulePath};`,
+          'const [,, repository] = process.argv;',
+          'const result = {',
+          '  source_commit: repositoryHead(repository),',
+          '  source_dirty: repositoryDirty(repository),',
+          '};',
+          'process.stdout.write(JSON.stringify(result));',
+          '',
+        ].join('\n'),
+      );
+
+      const output = execFileSync(process.execPath, [probeHelperPath, declared], {
+        encoding: 'utf8',
+        windowsHide: true,
+        env: {
+          ...process.env,
+          GIT_DIR: join(redirected, '.git'),
+          GIT_WORK_TREE: redirected,
+        },
+      });
+      const result = JSON.parse(output);
+      assert.equal(result.source_commit, declaredCommit);
+      assert.equal(result.source_dirty, true);
+    } finally {
+      await rm(redirected, { recursive: true, force: true });
+    }
+  });
+});
+
 test('collector ignores inherited GIT_DIR and binds repository argument', async () => {
   await withRepository(async (declared, git) => {
     await writeFile(join(declared, 'source.txt'), 'DECLARED');

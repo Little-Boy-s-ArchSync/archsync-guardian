@@ -12,11 +12,12 @@ import { modes, fixtureFiles, hash, validatePolicy, discoverEndpoint, validateEn
 import { networkProfile, networkProfileSha256 } from './isolation/network-policy.mjs';
 import { createSnapshot, validateSnapshot } from './isolation/workspace-snapshot.mjs';
 import { collectGitSnapshot } from './isolation/workspace-git.mjs';
+import { repositoryDirty, repositoryHead } from './isolation/repository-git.mjs';
 
 assert.equal(process.argv.length, 2, 'This authored probe accepts no project, command or configuration arguments');
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const started = new Date().toISOString();
-const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const sourceCommit = repositoryHead(root);
 const sourcePaths = fixtureFiles.map((path) => `scripts/isolation/${path}`).concat('scripts/isolation/manifest.json');
 const collectedInputs = await collectGitSnapshot({ repository: root, commit: sourceCommit, allowlist: sourcePaths });
 const manifest = JSON.parse(collectedInputs.files['scripts/isolation/manifest.json']);
@@ -64,10 +65,10 @@ const report = {
   started_at_utc: started, policy_sha256: hash(collectedInputs.files['scripts/isolation/policy.json']), fixture_sha256: hash(fixturePayload), manifest_sha256: hash(collectedInputs.files['scripts/isolation/manifest.json']),
   source_snapshot: { source_commit: collectedInputs.sourceCommit, objects: collectedInputs.objects },
   source_commit: sourceCommit,
-  source_dirty: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim() !== '',
+  source_dirty: repositoryDirty(root),
   source_files: {}, host: { platform: platform(), release: release(), node: process.version }, cases: rows,
 };
-for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/isolation/workspace-contracts.mjs', 'scripts/isolation/workspace-git.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md', 'docs/phase-4-repair-verification.md', 'docs/phase-4-integration-status.md', 'scripts/isolation/vendor/README.md']) report.source_files[path] = hash(await readFile(join(root, path)));
+for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/isolation/workspace-contracts.mjs', 'scripts/isolation/workspace-git.mjs', 'scripts/isolation/workspace-git-contracts.mjs', 'scripts/isolation/repository-git.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md', 'docs/phase-4-repair-verification.md', 'docs/phase-4-integration-status.md', 'scripts/isolation/vendor/README.md']) report.source_files[path] = hash(await readFile(join(root, path)));
 try {
   const endpoint = await discoverEndpoint();
   const client = dockerClient(endpoint, configDirectory, { ...process.env, ARCHSYNC_HOST_CANARY_SECRET: hostSecret });
