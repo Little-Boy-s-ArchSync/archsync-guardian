@@ -89,7 +89,9 @@ test('pre-start cancellation creates no container and never produces an approval
 test('live collection feeds the same sealed runner on Linux and refuses other platforms', async (t) => {
   const { repository, request } = await fixture(t);
   await writeFile(join(repository, sourcePath), replacement);
-  const input = request(); input.workspace = repository;
+  // This Linux-only API validates its POSIX path schema before refusing other
+  // hosts. A Windows temp path would exercise the wrong rejection instead.
+  const input = request(); input.workspace = process.platform === 'linux' ? repository : '/unused-workspace';
   input.replacements = [{ path: sourcePath, baseSha256: hash(original), sha256: hash(replacement) }];
   if (process.platform !== 'linux') { await assert.rejects(prepareRepairedWorkspaceFixture(input), /requires Linux descriptor-relative opens/); return; }
   const prepared = await prepareRepairedWorkspaceFixture(input);
