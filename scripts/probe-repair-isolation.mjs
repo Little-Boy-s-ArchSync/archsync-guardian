@@ -36,7 +36,7 @@ const snapshot = createSnapshot(fixtureFiles.filter((path) => path.startsWith('p
 const snapshotIdentity = validateSnapshot(snapshot);
 const workspacePayload = Buffer.concat([
   collectedInputs.files['scripts/isolation/fixture-command.mjs'], Buffer.from('\n'), collectedInputs.files['scripts/isolation/workspace-snapshot.mjs'],
-  Buffer.from('\nconst snapshotPacket = JSON.parse(Buffer.from(' + JSON.stringify(Buffer.from(JSON.stringify(snapshot)).toString('base64')) + ', "base64").toString("utf8"));\n'),
+  Buffer.from('\nconst snapshotProjectPath = "";\nconst snapshotPacket = JSON.parse(Buffer.from(' + JSON.stringify(Buffer.from(JSON.stringify(snapshot)).toString('base64')) + ', "base64").toString("utf8"));\n'),
   collectedInputs.files['scripts/isolation/workspace-bootstrap.mjs'],
 ]);
 const temporary = await mkdtemp(join(tmpdir(), 'archsync-unapproved-isolation-'));

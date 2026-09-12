@@ -5,6 +5,7 @@ import { constants as snapshotFlags } from 'node:fs';
 import { spawnSync as snapshotSpawn } from 'node:child_process';
 const snapshotIdentity = validateSnapshot(snapshotPacket);
 snapshotAssert.equal(process.getuid(), 1000);
+snapshotAssert.ok(['', 'scripts/isolation/project'].includes(snapshotProjectPath), 'unsupported fixed project path');
 await snapshotMkdir('/workspace/project', { mode: 0o700 });
 const snapshotDirectories = new Set();
 for (const file of snapshotPacket.files) {
@@ -27,6 +28,10 @@ for (const file of snapshotPacket.files) {
 for (const file of snapshotPacket.files) snapshotAssert.equal(snapshotDigest(await snapshotRead('/workspace/project/' + file.path)), file.sha256);
 console.log(JSON.stringify({ stage: 'WORKSPACE_BOUND', ...snapshotIdentity }));
 const snapshotResult = snapshotSpawn('/usr/local/bin/npm', ['test', '--offline', '--ignore-scripts=true'], {
-  cwd: '/workspace/project', stdio: ['ignore', 'inherit', 'inherit'], timeout: 5000,
+  cwd: '/workspace/project' + (snapshotProjectPath ? '/' + snapshotProjectPath : ''), stdio: ['ignore', 'inherit', 'inherit'], timeout: 5000,
 });
-process.exit(checkedFixtureExit(snapshotResult));
+const snapshotExit = checkedFixtureExit(snapshotResult);
+// A trailing trusted outcome distinguishes a genuine npm exit from bootstrap
+// errors. Project output is untrusted; only this parent chooses the final exit.
+console.log('\n' + JSON.stringify({ stage: 'WORKSPACE_RESULT', ...snapshotIdentity, npm_test_exit: snapshotExit }));
+process.exit(snapshotExit);

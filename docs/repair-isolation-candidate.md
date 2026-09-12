@@ -116,9 +116,11 @@ The generated probe report includes `source_snapshot` with the exact source comm
 and collected object identities for each snapshot path, making it possible to
 verify the payload came from a specific committed state.
 
-This provides a bounded byte-transfer primitive. The candidate now also exposes the bounded repaired-file collection APIs below.
-Offline dependency provisioning, arbitrary project/platform support and binding a
-production capability to the repaired snapshot remain separate integration work. The probe accepts no arbitrary project or command arguments.
+This provides a bounded byte-transfer primitive. The candidate also exposes the
+bounded repaired-file collection APIs and the restricted repaired-fixture runner
+below. Offline dependency provisioning, arbitrary project/platform support and
+binding a production capability to the repaired snapshot remain separate
+integration work. The probes accept no arbitrary project or command arguments.
 
 ## Uncommitted repaired files
 
@@ -213,8 +215,79 @@ These contracts run in the existing `pnpm isolation:verify` suite; Linux CI
 executes the real filesystem cases and other platforms check explicit refusal.
 The existing `pnpm isolation:probe` continues to run the fixed committed authored
 project. Its result is not evidence that a live repaired workspace was executed
-inside the isolation backend. Connecting these APIs to an approved runner,
-offline dependencies and a capability issuer remains open.
+inside the isolation backend. The separate runner below consumes collected
+repaired bytes for one fixed authored fixture. An approved runner, offline
+dependencies and a capability issuer remain open.
+
+## Restricted repaired-fixture execution
+
+`scripts/isolation/repaired-execution.mjs` connects both collectors to the same
+inspected Docker backend. Its only supported fixture is `authored-add-v1`: the
+three existing regular files under `scripts/isolation/project`, with their exact
+base hashes and non-executable Git modes. Only `lib/add.mjs` may be replaced.
+The package manifest and test suite stay byte-bound to this fixed contract.
+Dependency changes, arbitrary projects, command overrides and other replacement
+paths are rejected before Docker is invoked. No dependencies are installed.
+
+```js
+import {
+  prepareRepairedFixture,
+  executePreparedRepairedFixture,
+} from './scripts/isolation/repaired-execution.mjs';
+
+const prepared = await prepareRepairedFixture({
+  repository: trustedRepositoryRoot,
+  commit: reviewedBaseCommit,
+  fixture: 'authored-add-v1',
+  replacements: [{
+    path: 'scripts/isolation/project/lib/add.mjs',
+    baseSha256: reviewedOriginalFileHash,
+    bytes: repairResultBytes,
+  }],
+});
+const result = await executePreparedRepairedFixture(prepared, { signal });
+```
+
+`prepareRepairedWorkspaceFixture` accepts the same request plus the canonical
+Linux `workspace`, and replaces `bytes` with the expected repaired `sha256`.
+It retains the descriptor-relative collector's platform refusal and consistency
+limits. Both preparation APIs retain the complete collector binding and its
+digest in a deeply frozen result. The actual payload is sealed privately in the
+module instance. A serialized, forged or altered preparation cannot be executed;
+the caller must retain the original preparation object. Repaired paths are never
+reopened after collection, and changing the producer's buffer or live files
+cannot change the prepared payload.
+
+The packet keeps the full collector paths rather than rebasing them, so the
+container observes precisely `binding.repaired_snapshot.sha256`. Its fixed npm
+working directory is the nested authored fixture path. The trusted bootstrap
+validates and materializes every packet byte before starting project code. The
+runner requires the first stdout line to be the exact `WORKSPACE_BOUND` identity,
+and a final parent-generated `WORKSPACE_RESULT` matching the real Docker/npm exit.
+The committed base digest cannot substitute for the repaired digest. Bootstrap
+errors, missing/mismatched observations, Docker setup errors, timeout,
+cancellation, output overflow and uncertain cleanup remain `INCONCLUSIVE`.
+A genuine nonzero npm exit remains `FIXTURE_FAILED` only after binding and final
+state checks. This is input and process evidence, not an assertion that hostile
+project logs or a repair's correctness can be trusted.
+
+The fixed image, seccomp network profile, no-mount policy, output/runtime limits
+and owned-container cleanup are unchanged. Only the collected packet goes in;
+no file or generated output is extracted, copied back or subjected to a host
+recheck. Every report remains `UNAPPROVED`, `production_ready: false`, and
+`production_capability: NOT_ISSUED`. The private product capability registry is
+not called or changed.
+
+After committing runner changes, run `pnpm isolation:repaired:probe` for a
+separate actual Docker experiment. It records success, genuine test failure,
+timeout, cancellation and both output-overflow cases using distinct uncommitted
+caller-owned replacement bytes. Each case requires the repaired source's marker,
+the exact base commit and before/after hashes, the matching container digest,
+an unchanged synthetic host canary, and verified owned-container removal. The
+probe deliberately overwrites the producer buffer after preparation to check
+that execution consumes the sealed copy. Reports go to a fresh ignored
+`.artifacts/isolation/repaired-<run>/result.json`; normal verification runs the
+deterministic contracts and does not imply that Docker experiments ran.
 
 ## Lifecycle and outcome handling
 
