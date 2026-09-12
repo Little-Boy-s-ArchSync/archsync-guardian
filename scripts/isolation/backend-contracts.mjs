@@ -1,8 +1,9 @@
 import test from 'node:test';
+import { networkProfile } from './network-policy.mjs';
 import { checkedFixtureExit } from './fixture-command.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { modes, hash, imagePin, labelKey, validatePolicy, validateEndpoint, validateEngine, validateImage, containerEnvironment, createArguments, validateContainer, validateOwnership, execute, classifyExecution, dockerClient, cleanupOwnedContainer } from './backend.mjs';
+import { modes, fixtureFiles, hash, imagePin, labelKey, validatePolicy, validateEndpoint, validateEngine, validateImage, containerEnvironment, createArguments, validateContainer, validateOwnership, execute, classifyExecution, dockerClient, cleanupOwnedContainer } from './backend.mjs';
 const policy = JSON.parse(await readFile(new URL('policy.json', import.meta.url)));
 const manifest = JSON.parse(await readFile(new URL('manifest.json', import.meta.url)));
 const runId = 'a'.repeat(32), name = 'archsync-unapproved-' + runId, cid = 'b'.repeat(64);
@@ -14,13 +15,13 @@ function container() {
   return { Id: cid, Name: '/' + name, Image: image.Id, State: { Status: 'created', Running: false, Pid: 0 }, Mounts: [], NetworkSettings: { Networks: { none: {} } },
     Config: { Image: policy.image, Entrypoint: ['/usr/local/bin/node'], Cmd: ['--input-type=module', '-'], User: policy.user, WorkingDir: '/workspace', OpenStdin: true, Tty: false,
       Labels: { [labelKey]: runId }, Env: ['NODE_VERSION=22.16.0', ...Object.entries(environment).map(([k, v]) => `${k}=${v}`)], Volumes: null, ExposedPorts: null },
-    HostConfig: { NetworkMode: 'none', Privileged: false, ReadonlyRootfs: true, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges:true'], CgroupnsMode: 'private', IpcMode: 'none', PidMode: '', UTSMode: '', UsernsMode: '', Memory: policy.memory_bytes, MemorySwap: policy.memory_bytes, NanoCpus: policy.nano_cpus, PidsLimit: policy.pids_limit,
+    HostConfig: { NetworkMode: 'none', Privileged: false, ReadonlyRootfs: true, CapDrop: ['ALL'], CapAdd: null, SecurityOpt: ['no-new-privileges:true', 'seccomp=' + JSON.stringify(networkProfile())], CgroupnsMode: 'private', IpcMode: 'none', PidMode: '', UTSMode: '', UsernsMode: '', Memory: policy.memory_bytes, MemorySwap: policy.memory_bytes, NanoCpus: policy.nano_cpus, PidsLimit: policy.pids_limit,
       Tmpfs: { '/workspace': policy.tmpfs }, RestartPolicy: { Name: 'no', MaximumRetryCount: 0 }, LogConfig: { Type: 'local', Config: { 'max-file': '1', 'max-size': '64k', compress: 'false' } }, PublishAllPorts: false } };
 }
 
 test('normal verification binds the checked-in fixed fixture and policy bytes', async () => {
   validatePolicy(policy); assert.equal(manifest.status, 'UNAPPROVED');
-  assert.deepEqual(Object.keys(manifest.files), ['policy.json', 'fixture-command.mjs', 'fixture.mjs']);
+  assert.deepEqual(Object.keys(manifest.files), fixtureFiles);
   for (const [path, digest] of Object.entries(manifest.files)) assert.equal(hash(await readFile(new URL(path, import.meta.url))), digest);
 
 });
@@ -43,7 +44,7 @@ test('engine and exact image validation fail before any fixture is run', () => {
 });
 
 test('Docker invocation is fixed, uses no host mount/port/privilege and preserves no host environment', async () => {
-  const args = createArguments(name, runId, environment, policy);
+  const args = createArguments(name, runId, environment, policy, '/tmp/authored/seccomp.json');
   for (const value of ['--pull=never', '--network=none', '--read-only', '--cap-drop=ALL', '--security-opt=no-new-privileges:true', '--entrypoint=/usr/local/bin/node']) assert.ok(args.includes(value));
   for (const value of ['--mount', '--volume', '--privileged', '--publish', '--pid=host', '--network=host']) assert.ok(!args.includes(value));
   let invocation;

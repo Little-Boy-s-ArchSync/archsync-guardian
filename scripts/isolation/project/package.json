@@ -1,0 +1,9 @@
+{
+  "name": "archsync-authored-transfer-probe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pretest": "node -e \"throw new Error('unexpected pretest lifecycle')\"",
+    "test": "node --test test.mjs"
+  }
+}

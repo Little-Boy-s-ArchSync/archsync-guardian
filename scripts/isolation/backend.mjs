@@ -4,8 +4,10 @@ import { spawn } from 'node:child_process';
 import { lstat, realpath } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { networkProfileSha256, validateNetworkSecurityOptions } from './network-policy.mjs';
 
-export const modes = Object.freeze(['success', 'failure', 'filesystem', 'network', 'timeout', 'cancel', 'stdout-overflow', 'stderr-overflow']);
+export const modes = Object.freeze(['success', 'failure', 'workspace-success', 'workspace-failure', 'filesystem', 'network', 'timeout', 'cancel', 'stdout-overflow', 'stderr-overflow']);
+export const fixtureFiles = Object.freeze(['policy.json', 'fixture-command.mjs', 'fixture.mjs', 'workspace-snapshot.mjs', 'workspace-bootstrap.mjs', 'project/package.json', 'project/lib/add.mjs', 'project/test.mjs', 'network-policy.mjs', 'vendor/moby-default-seccomp.json', 'vendor/LICENSE.moby']);
 export const imagePin = 'docker.io/library/node@sha256:048ed02c5fd52e86fda6fbd2f6a76cf0d4492fd6c6fee9e2c463ed5108da0e34';
 export const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 export const labelKey = 'io.archsync.unapproved-isolation-run';
@@ -19,7 +21,8 @@ export function validatePolicy(policy) {
     tmpfs: 'rw,nosuid,nodev,noexec,size=16777216,uid=1000,gid=1000',
     maximum_output_bytes: 65536, control_timeout_ms: 15000, fixture_timeout_ms: 10000,
     termination_timeout_ms: 1000, post_termination_observation_ms: 1800,
-    network_scope: 'EXTERNAL_EGRESS_DENIED_LOOPBACK_REMAINS', host_mounts: 'NONE', production_capability: 'NOT_ISSUED',
+    network_scope: 'NETWORK_SOCKETS_DENIED_PRIVATE_UNIX_PAIRS_ONLY', seccomp_sha256: networkProfileSha256,
+    host_mounts: 'NONE', production_capability: 'NOT_ISSUED',
   }, 'fixed unapproved policy changed');
 }
 
@@ -84,12 +87,15 @@ export function containerEnvironment(mode, input) {
   };
 }
 
-export function createArguments(name, runId, environment, policy) {
+export function createArguments(name, runId, environment, policy, profilePath) {
   validatePolicy(policy);
+  assert.equal(typeof profilePath, 'string');
+  assert.match(profilePath, /^\/[A-Za-z0-9_./ -]+$/u, 'absolute local seccomp profile path required');
+  assert.ok(!profilePath.split('/').includes('..'));
   assert.match(runId, /^[a-f0-9]{32}$/u); assert.equal(name, `archsync-unapproved-${runId}`);
   return ['container', 'create', '--pull=never', '--name', name, '--label', `${labelKey}=${runId}`,
     '--interactive', '--network=none', '--read-only', '--user', policy.user, '--cap-drop=ALL',
-    '--security-opt=no-new-privileges:true', '--cgroupns=private', '--ipc=none', '--pids-limit=64',
+    '--security-opt=no-new-privileges:true', '--security-opt', `seccomp=${profilePath}`, '--cgroupns=private', '--ipc=none', '--pids-limit=64',
     '--memory=268435456', '--memory-swap=268435456', '--cpus=1', '--restart=no',
     '--tmpfs', `/workspace:${policy.tmpfs}`, '--workdir=/workspace',
     '--log-driver=local', '--log-opt=max-size=64k', '--log-opt=max-file=1', '--log-opt=compress=false',
@@ -117,7 +123,7 @@ export function validateContainer(container, name, runId, environment, image, po
   assert.deepEqual([...config.Env].sort(), Object.entries(expectedEnvironment).map(([key, value]) => `${key}=${value}`).sort(), 'unexpected container environment');
   assert.equal(host.NetworkMode, 'none'); assert.equal(host.Privileged, false); assert.equal(host.ReadonlyRootfs, true);
   assert.deepEqual(host.CapDrop, ['ALL']); assert.ok(empty(host.CapAdd));
-  assert.deepEqual(host.SecurityOpt, ['no-new-privileges:true']);
+  validateNetworkSecurityOptions(host.SecurityOpt);
   assert.equal(host.CgroupnsMode, 'private'); assert.equal(host.IpcMode, 'none'); assert.equal(host.PidMode, '');
   assert.equal(host.UTSMode, ''); assert.ok(['', 'private'].includes(host.UsernsMode));
   assert.equal(host.Memory, policy.memory_bytes); assert.equal(host.MemorySwap, policy.memory_bytes);

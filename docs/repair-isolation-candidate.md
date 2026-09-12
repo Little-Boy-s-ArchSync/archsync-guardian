@@ -3,8 +3,9 @@
 Status: **UNAPPROVED — authored fixtures only, no production capability**.
 
 The internal backend in `scripts/isolation/backend.mjs` creates and inspects real
-Linux containers, executes fixed authored processes, bounds output/runtime, and
-terminates/removes its exact owned containers. It is not imported by the product
+Linux containers, transfers bounded project snapshots, executes fixed authored
+processes, bounds output/runtime, and terminates/removes its exact owned
+containers. It is not imported by the product
 runtime or registered with `src/repair-isolation.ts`. That module's private
 capability registry and all production reviewability decisions are unchanged.
 The candidate is not a renamed Vitest executor: its explicit local probe runs
@@ -35,8 +36,9 @@ The command accepts no project path, free-form command, custom image, mount or
 security option. It checks the canonical fixture manifest and exact source
 hashes, creates only its own temporary canary/configuration files and container
 names, and writes a new ignored `.artifacts/isolation/<run>/result.json`.
-Repository source, host home, credentials, daemon sockets and real project files
-are never mounted or copied into the container. There is no host execution
+Host home, credentials and daemon sockets are never mounted or copied into the
+container. The only project currently exercised is the manifest-bound authored
+project under `scripts/isolation/project`. There is no host execution
 fallback and no external provider call or project dependency installation.
 
 `pnpm isolation:verify` runs the deterministic contract tests. It is part of the
@@ -46,8 +48,8 @@ suite does not imply that CI ran the Docker probes.
 
 ## Containment and observations
 
-The payload is the exact concatenation of the manifest-bound helper and authored
-fixture source. It enters Node through stdin into a fixed image and entrypoint.
+The payload contains manifest-bound helpers and authored fixture source. It
+enters Node through stdin into a fixed image and entrypoint.
 No host bind, socket, named or anonymous volume is allowed. Only a 16 MiB
 container-owned tmpfs at `/workspace` is supplied for fixture output; no generated
 file is copied back to the host or followed by a host-side project recheck.
@@ -60,19 +62,56 @@ one CPU and at most 64 processes. The authored process separately checks Linux
 the intended workspace and requires an EROFS denial in the image's otherwise
 world-writable `/tmp`, in addition to host-canary/path/symlink/root-write checks.
 
-The network profile is **external egress denied, loopback retained**. Docker's
-`none` network is inspected; IPv4/IPv6 TCP and UDP and an authored host listener
-are probed using bounded attempts. TCP/UDP timeouts or connection refusals alone
-are insufficient: the harness requires observed no-route or policy-denial errors
-for those egress checks. DNS failure is retained with its exact code as an
-observation, not independently promoted to proof. Container loopback is tested
-and explicitly remains available. This does **not** satisfy a stronger contract
-that prohibits every network socket.
+The network profile is **network socket creation denied; private AF_UNIX pairs
+retained for subprocess stdio**. Docker's `none` network is combined with a
+restricted seccomp profile derived from the complete, pinned Moby default
+profile. The derivation only removes permissions and preserves its existing
+default-deny, architecture and capability rules. It denies socket, socketcall,
+connect, bind, listen, accept and io_uring. Socketpair is limited to AF_UNIX;
+these private, connected pairs do not provide named Unix or IP connections.
+The exact resolved profile is inspected before the container starts.
 
-The host listener has a positive control before the experiment. Only generated
+Bounded probes require EPERM/EACCES for IPv4/IPv6 TCP and UDP, the host-listener
+address, IPv4/IPv6 loopback TCP and UDP, a TCP listener, and named Unix socket
+listen/connect. Timeout, refusal and no-route results cannot pass those checks.
+DNS failure is retained as an observation, not independently promoted to proof.
+The spawned project test also verifies loopback-listener denial. Unsupported
+test suites that need a server or named IPC will fail under this profile.
+
+The host TCP and UDP listeners have positive controls through host loopback
+before the experiment. These controls demonstrate that the listeners are live,
+not that Docker-to-host routing works; the container checks separately require
+actual policy denial. Only generated
 canary data is used. All actual output is bounded and passed through the existing
 Guardian log sanitizer. The report must contain neither the host's synthetic
 secret nor the deliberately printed fixture secret.
+
+## Workspace transfer
+
+`workspace-snapshot.mjs` accepts an explicit list of file paths and byte buffers,
+not a host directory or an archive. It creates a canonical, sorted packet with
+per-file size/SHA-256 and a digest over the full packet. No file is discovered or
+read from the host implicitly. Limits are 128 files, 256 KiB per file, 2 MiB
+total content, 3 MB encoded packet and 16 path segments. Path traversal,
+absolute paths, platform aliases, duplicate/case-colliding paths, file/directory
+collisions, credential/control paths, extra file-type fields and noncanonical
+or tampered bytes are rejected before transfer.
+
+The packet is encoded as data inside the trusted stdin bootstrap. It is
+validated again inside the inspected container before any project code runs.
+The bootstrap creates a fresh `/workspace/project`, creates directories without
+recursive traversal, opens regular files exclusively with O_NOFOLLOW, and
+rechecks every materialized hash before launching the fixed offline `npm test`.
+Pre/post npm lifecycle hooks are disabled. The report retains the observed
+workspace digest; it must match the host packet. Success and deliberate test
+failure are separate real executions. Project-generated symlinks/output stay
+inside the container and are destroyed with it; nothing is extracted or followed
+by a host-side recheck.
+
+This provides a bounded byte-transfer primitive. Secure collection of an
+arbitrary existing/modified host workspace, offline dependency provisioning and
+binding a production capability to the repaired snapshot are separate remaining
+integration work. The probe accepts no arbitrary project or command arguments.
 
 ## Lifecycle and outcome handling
 
@@ -115,11 +154,11 @@ not approve a repair or establish universal resistance to kernel/runtime escape.
 
 The Docker daemon and its runtime are trusted host components; Docker access can
 control the host. No experiment against a few authored inputs removes that trust.
-Real workspace transfer, content/inode binding, hostile symlink/special-file
-handling before a later host recheck, project dependency/platform support,
-complete no-network semantics, image/security approval and a reviewed capability
-issuer are not implemented here. The fixed zero-mount experiment intentionally
-has no API for copying or running arbitrary project tests.
+Safe collection and identity binding of an arbitrary repaired host workspace,
+project dependency/platform support, any approved treatment of test-modified
+files, image/security approval and a reviewed capability issuer remain open.
+The bounded snapshot transfer rejects file-type metadata and never returns
+hostile outputs to a host recheck. It is not yet an arbitrary-project adapter.
 
 Adoption requires the real independent Security/Lead/code review and exact
 policy/image/issuer approval required by the existing ADR and task criteria.
@@ -130,3 +169,5 @@ References: [Docker execution and limits](https://docs.docker.com/engine/contain
 [none network and loopback](https://docs.docker.com/engine/network/drivers/none/),
 [default seccomp](https://docs.docker.com/engine/security/seccomp/), and
 [daemon trust](https://docs.docker.com/engine/security/).
+The exact upstream profile and Apache-2.0 license are retained under
+[`scripts/isolation/vendor`](../scripts/isolation/vendor/README.md).

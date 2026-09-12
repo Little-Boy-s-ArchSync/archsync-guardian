@@ -13,7 +13,8 @@
   "fixture_timeout_ms": 10000,
   "termination_timeout_ms": 1000,
   "post_termination_observation_ms": 1800,
-  "network_scope": "EXTERNAL_EGRESS_DENIED_LOOPBACK_REMAINS",
+  "network_scope": "NETWORK_SOCKETS_DENIED_PRIVATE_UNIX_PAIRS_ONLY",
   "host_mounts": "NONE",
-  "production_capability": "NOT_ISSUED"
+  "production_capability": "NOT_ISSUED",
+  "seccomp_sha256": "869af3bb08698797ef6c0fae9ee02deb7120485b7607969ef4b5fdca55776ce6"
 }

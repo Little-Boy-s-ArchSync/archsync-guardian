@@ -8,7 +8,9 @@ import net from 'node:net';
 import dgram from 'node:dgram';
 import { execFileSync } from 'node:child_process';
 import { sanitizeVerificationLog } from '../dist/index.js';
-import { modes, hash, validatePolicy, discoverEndpoint, validateEngine, validateImage, containerEnvironment, createArguments, validateContainer, dockerClient, checked, classifyExecution, cleanupOwnedContainer } from './isolation/backend.mjs';
+import { modes, fixtureFiles, hash, validatePolicy, discoverEndpoint, validateEngine, validateImage, containerEnvironment, createArguments, validateContainer, dockerClient, checked, classifyExecution, cleanupOwnedContainer } from './isolation/backend.mjs';
+import { networkProfile, networkProfileSha256 } from './isolation/network-policy.mjs';
+import { createSnapshot, validateSnapshot } from './isolation/workspace-snapshot.mjs';
 
 assert.equal(process.argv.length, 2, 'This authored probe accepts no project, command or configuration arguments');
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -18,7 +20,7 @@ const manifest = JSON.parse(manifestBytes);
 assert.equal(manifestBytes.toString(), JSON.stringify(manifest, null, 2) + '\n', 'noncanonical fixture manifest');
 assert.deepEqual(Object.keys(manifest), ['schema_version', 'status', 'files']);
 assert.equal(manifest.schema_version, '1.0.0-unapproved'); assert.equal(manifest.status, 'UNAPPROVED');
-assert.deepEqual(Object.keys(manifest.files), ['policy.json', 'fixture-command.mjs', 'fixture.mjs']);
+assert.deepEqual(Object.keys(manifest.files), fixtureFiles);
 const inputs = {};
 for (const [name, digest] of Object.entries(manifest.files)) {
   const path = join(root, 'scripts/isolation', name);
@@ -27,8 +29,17 @@ for (const [name, digest] of Object.entries(manifest.files)) {
 }
 const policy = JSON.parse(inputs['policy.json']); validatePolicy(policy);
 const fixturePayload = Buffer.concat([inputs['fixture-command.mjs'], Buffer.from('\n'), inputs['fixture.mjs']]);
+const snapshot = createSnapshot(fixtureFiles.filter((path) => path.startsWith('project/')).map((path) => ({ path: path.slice(8), bytes: inputs[path] })));
+const snapshotIdentity = validateSnapshot(snapshot);
+const workspacePayload = Buffer.concat([
+  inputs['fixture-command.mjs'], Buffer.from('\n'), inputs['workspace-snapshot.mjs'],
+  Buffer.from('\nconst snapshotPacket = JSON.parse(Buffer.from(' + JSON.stringify(Buffer.from(JSON.stringify(snapshot)).toString('base64')) + ', "base64").toString("utf8"));\n'),
+  inputs['workspace-bootstrap.mjs'],
+]);
 const temporary = await mkdtemp(join(tmpdir(), 'archsync-unapproved-isolation-'));
 const configDirectory = join(temporary, 'docker-config'); await mkdir(configDirectory, { mode: 0o700 });
+const profilePath = join(temporary, 'seccomp.json');
+await writeFile(profilePath, JSON.stringify(networkProfile()), { mode: 0o600, flag: 'wx' });
 const canary = join(temporary, 'host-canary.txt'); const hostSecret = randomBytes(24).toString('hex');
 await writeFile(canary, hostSecret, { mode: 0o600, flag: 'wx' });
 const fixtureSecret = randomBytes(24).toString('hex');
@@ -45,13 +56,15 @@ let passed = true, infrastructureError = null, environment;
 const report = {
   schema_version: '1.0.0-unapproved', status: 'UNAPPROVED', production_capability: 'NOT_ISSUED',
   arbitrary_project_execution: false, host_mounts: 0, network_scope: policy.network_scope,
-  loopback_exception: 'Docker network none retains container loopback; the production no-network contract is not satisfied.',
+  private_ipc_exception: 'AF_UNIX socketpair is allowed for subprocess stdio; socket, bind, connect and listen are denied, including loopback and named Unix sockets.',
+  seccomp_sha256: networkProfileSha256, workspace_snapshot: snapshotIdentity, workspace_payload_sha256: hash(workspacePayload),
+  workspace_returned_to_host: false,
   started_at_utc: started, policy_sha256: hash(inputs['policy.json']), fixture_sha256: hash(fixturePayload), manifest_sha256: hash(manifestBytes),
   source_commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   source_dirty: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim() !== '',
   source_files: {}, host: { platform: platform(), release: release(), node: process.version }, cases: rows,
 };
-for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md']) report.source_files[path] = hash(await readFile(join(root, path)));
+for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/isolation/workspace-contracts.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md', 'docs/phase-4-repair-verification.md', 'docs/phase-4-integration-status.md', 'scripts/isolation/vendor/README.md']) report.source_files[path] = hash(await readFile(join(root, path)));
 try {
   const endpoint = await discoverEndpoint();
   const client = dockerClient(endpoint, configDirectory, { ...process.env, ARCHSYNC_HOST_CANARY_SECRET: hostSecret });
@@ -68,12 +81,22 @@ try {
   // Positive listener controls prove the canaries were live; their connections
   // are counted separately from the subsequent isolated fixture attempts.
   await new Promise((resolve, reject) => {
-    const socket = net.connect({ host: hostAddress, port });
+    const socket = net.connect({ host: '127.0.0.1', port });
     socket.setTimeout(3000, () => { socket.destroy(); reject(new Error('host listener positive control timed out')); });
     socket.on('data', () => {}); socket.once('end', resolve); socket.once('error', reject);
   });
-  const listenerBaseline = listenerHits; assert.ok(listenerBaseline > 0);
+  await new Promise((resolve, reject) => {
+    const control = dgram.createSocket('udp4');
+    const received = () => { clearTimeout(timer); control.close(); resolve(); };
+    const timer = setTimeout(() => { udpListener.removeListener('message', received); control.close(); reject(new Error('host UDP positive control timed out')); }, 3000);
+    udpListener.once('message', received);
+    control.send('AUTHORED_POSITIVE_CONTROL', port, '127.0.0.1', (error) => {
+      if (error) { clearTimeout(timer); udpListener.removeListener('message', received); control.close(); reject(error); }
+    });
+  });
+  const listenerBaseline = listenerHits; assert.ok(listenerBaseline >= 2);
   report.host_listener_positive_control = true;
+  report.host_listener_positive_control_scope = 'HOST_LOOPBACK_TCP_AND_UDP_ONLY; not proof of Docker-to-host routing. Container socket attempts must independently return EPERM/EACCES.';
   for (const mode of modes) {
     if (abort.signal.aborted) { passed = false; infrastructureError = 'harness interrupted'; break; }
     const runId = randomBytes(16).toString('hex'), name = `archsync-unapproved-${runId}`;
@@ -82,7 +105,7 @@ try {
     const cancel = new AbortController(); let cancelTimer;
     let startedContainer = false, createUncertain = false, knownOwnedId = null;
     try {
-      const created = await client(createArguments(name, runId, environment, policy));
+      const created = await client(createArguments(name, runId, environment, policy, profilePath));
       createUncertain = created.reason !== null;
       const id = checked(created, 'create fixed container').trim(); assert.match(id, /^[a-f0-9]{64}$/u);
       const container = JSON.parse(checked(await client(['container', 'inspect', name, '--format', '{{json .}}']), 'pre-start inspection'));
@@ -92,7 +115,7 @@ try {
       if (mode === 'cancel') cancelTimer = setTimeout(() => cancel.abort(), policy.termination_timeout_ms);
       startedContainer = true;
       const result = await client(['container', 'start', '--attach', '--interactive', id], {
-        input: fixturePayload, maximumBytes: policy.maximum_output_bytes,
+        input: mode.startsWith('workspace-') ? workspacePayload : fixturePayload, maximumBytes: policy.maximum_output_bytes,
         timeoutMs: mode === 'timeout' ? policy.termination_timeout_ms : policy.fixture_timeout_ms,
         signal: AbortSignal.any([abort.signal, cancel.signal]),
       });
@@ -107,16 +130,27 @@ try {
       }
       let expected;
       if (mode === 'failure') expected = row.status === 'FIXTURE_FAILED' && JSON.parse(result.stdout.trim()).npm_test_exit === result.exit_code;
+      else if (mode === 'workspace-failure') expected = row.status === 'FIXTURE_FAILED' && result.exit_code === 1;
       else if (mode === 'timeout') expected = result.reason === 'TIMED_OUT';
       else if (mode === 'cancel') expected = result.reason === 'CANCELLED';
       else if (mode.endsWith('overflow')) expected = result.reason === 'OUTPUT_LIMIT';
       else expected = row.status === 'FIXTURE_PASSED';
       if (mode === 'success' && expected) assert.equal(JSON.parse(result.stdout.trim()).npm_test_exit, 0, 'authored npm test did not pass');
+      if (mode.startsWith('workspace-')) {
+        const binding = JSON.parse(result.stdout.split('\n').find((line) => line.startsWith('{"stage":"WORKSPACE_BOUND"')) ?? 'null');
+        assert.deepEqual(binding, { stage: 'WORKSPACE_BOUND', ...snapshotIdentity }, 'container workspace bytes differ from the transferred snapshot');
+        assert.ok(!result.stdout.includes('unexpected pretest lifecycle'));
+        assert.match(result.stdout, /^# tests 3$/mu, 'all three authored project tests must actually run');
+        assert.match(result.stdout, mode === 'workspace-failure' ? /^# pass 2$/mu : /^# pass 3$/mu);
+        assert.match(result.stdout, mode === 'workspace-failure' ? /^# fail 1$/mu : /^# fail 0$/mu);
+        if (mode === 'workspace-failure') assert.match(result.stdout, /^not ok 1 - transferred project executes the exact nested source$/mu);
+        row.workspace_binding = binding;
+      }
       if (mode === 'network' && expected) {
         const measurement = JSON.parse(result.stdout.trim());
-        const denied = new Set(['ENETUNREACH', 'EHOSTUNREACH', 'EACCES', 'EPERM']);
-        assert.ok(['tcp4', 'tcp6', 'udp4', 'udp6', 'host_listener'].every((key) => denied.has(measurement[key])), 'a timeout/refusal alone is not egress-denial evidence');
-        assert.equal(measurement.loopback_available, true); row.measurements = measurement;
+        const denied = new Set(['EACCES', 'EPERM']);
+        assert.ok(['tcp4', 'tcp6', 'udp4', 'udp6', 'host_listener', 'loopback_tcp4', 'loopback_tcp6', 'loopback_udp4', 'loopback_udp6', 'tcp_listener', 'unix_listener', 'unix_connect'].every((key) => denied.has(measurement[key])), 'network checks require policy denial, not timeout/refusal/no-route');
+        assert.equal(measurement.loopback_available, false); row.measurements = measurement;
       }
       assert.equal(expected, true, `unexpected outcome for ${mode}`);
       row.expected_outcome_observed = true;

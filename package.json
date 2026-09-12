@@ -58,7 +58,7 @@
     "phase5:verify": "pnpm phase3:verify && pnpm phase4:assets && pnpm phase5:evidence:verify",
     "verify": "pnpm phase5:verify",
     "repo:verify-clean": "node scripts/verify-clean-worktree.mjs -- pnpm verify",
-    "isolation:verify": "node --test scripts/isolation/backend-contracts.mjs",
+    "isolation:verify": "node --test scripts/isolation/backend-contracts.mjs scripts/isolation/workspace-contracts.mjs",
     "isolation:probe": "node scripts/probe-repair-isolation.mjs"
   },
   "dependencies": {

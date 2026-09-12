@@ -50,11 +50,16 @@ if (mode === 'success' || mode === 'failure') {
   });
   const udp = (type, host) => new Promise((resolve, reject) => {
     const socket = dgram.createSocket(type);
-    const timer = setTimeout(() => { socket.close(); resolve('TIMEOUT'); }, 700);
-    socket.once('error', (error) => { clearTimeout(timer); socket.close(); resolve(error.code); });
+    let settled = false;
+    const finish = (code, unexpected = false) => {
+      if (settled) return; settled = true; clearTimeout(timer);
+      try { socket.close(); } catch {}
+      if (unexpected) reject(new Error('unexpected network UDP send')); else resolve(code);
+    };
+    const timer = setTimeout(() => finish('TIMEOUT'), 700);
+    socket.once('error', (error) => finish(error.code));
     socket.send('AUTHORED_EGRESS_PROBE', Number(process.env.ARCHSYNC_PROBE_PORT), host, (error) => {
-      if (error) { clearTimeout(timer); socket.close(); resolve(error.code); }
-      else { clearTimeout(timer); socket.close(); reject(new Error('unexpected external UDP send')); }
+      finish(error?.code, !error);
     });
   });
   // Documentation-only address ranges: no external service is targeted.
@@ -68,15 +73,23 @@ if (mode === 'success' || mode === 'failure') {
   let dns;
   try { await resolver.resolve4('authored-probe.invalid'); throw new Error('unexpected DNS response'); }
   catch (error) { assert.ok(error.code); dns = error.code; }
-  // Report the limitation explicitly: network=none does NOT disable loopback.
-  const server = net.createServer((socket) => socket.end('loopback'));
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-  await new Promise((resolve, reject) => {
-    const socket = net.connect({ host: '127.0.0.1', port: server.address().port });
-    socket.on('data', () => {}); socket.once('end', resolve); socket.once('error', reject);
+  const loopback_tcp4 = await tcp('127.0.0.1');
+  const loopback_tcp6 = await tcp('::1');
+  const loopback_udp4 = await udp('udp4', '127.0.0.1');
+  const loopback_udp6 = await udp('udp6', '::1');
+  const listenDenied = (options) => new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.once('error', (error) => resolve(error.code));
+    server.listen(options, () => server.close(() => reject(new Error('unexpected network listener'))));
   });
-  await new Promise((resolve) => server.close(resolve));
-  emit({ mode, tcp4, tcp6, udp4, udp6, dns, host_listener, loopback_available: true, production_network_contract_satisfied: false });
+  const tcp_listener = await listenDenied({ host: '127.0.0.1', port: 0 });
+  const unix_listener = await listenDenied('/workspace/denied.sock');
+  const unix_connect = await new Promise((resolve, reject) => {
+    const socket = net.connect('/workspace/denied.sock');
+    socket.once('error', (error) => { socket.destroy(); resolve(error.code); });
+    socket.once('connect', () => { socket.destroy(); reject(new Error('unexpected Unix socket connection')); });
+  });
+  emit({ mode, tcp4, tcp6, udp4, udp6, dns, host_listener, loopback_tcp4, loopback_tcp6, loopback_udp4, loopback_udp6, tcp_listener, unix_listener, unix_connect, loopback_available: false });
 } else if (['timeout', 'cancel'].includes(mode)) {
   const child = spawn(process.execPath, ['-e', "console.log('DESCENDANT_STARTED'); setTimeout(() => console.log('LATE_DESCENDANT_MARKER'), 1500); setInterval(() => {}, 1000)"], { stdio: ['ignore', 'inherit', 'inherit'], detached: true });
   child.unref();

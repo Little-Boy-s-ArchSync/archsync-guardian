@@ -2,8 +2,16 @@
   "schema_version": "1.0.0-unapproved",
   "status": "UNAPPROVED",
   "files": {
-    "policy.json": "e18222eae50893fbf0534a63c32c504bec6a45668cdae1c0abf0676515e7d065",
+    "policy.json": "911502d7f50271f21022e08bdc8ab8184b06b580ee0d7dd19231b85d43220d1c",
     "fixture-command.mjs": "8af92a464fad97a28209ec378c831a8544f806eb19d34a2377a51cd1a3124afe",
-    "fixture.mjs": "5512b8facab0eb06ce3c0eed6d9a47087635724db6d59c16d2cc25b62b7603c8"
+    "fixture.mjs": "0f58af5833f7f0395cefd4affbcfc7ca3f3c9a9b87107ca60f87dab23bea55bc",
+    "workspace-snapshot.mjs": "70572700c77779d2e62dbe384afe9a8ce95df2bad4e30700281ae0be1d717fa3",
+    "workspace-bootstrap.mjs": "303d8ec325946cfd83581608b7370d65f94d9a46f5786fb04446473e9756e5ea",
+    "project/package.json": "9170e0626f550cc3ad8d5e016e9e3092d102c09cfdfbc3c4bf1cd5b68bac3f9d",
+    "project/lib/add.mjs": "fb6e8256e50afcdab2bc23a3aadafeebc74c4bdd7d6d589da64017cc6a6af77e",
+    "project/test.mjs": "88f476a882183de85cd94b601c93814c3060759aecbd76392cf1d80c1fded50c",
+    "network-policy.mjs": "43448495f6a5cf3aeb8bc0f1df985e6c1b820188e528e6526a41d75af59a3002",
+    "vendor/moby-default-seccomp.json": "de1f5327ca42b80be02daba8d39c0d087a530dc3c16f7028170fe068c9d66e61",
+    "vendor/LICENSE.moby": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
   }
 }
