@@ -27,6 +27,10 @@ pnpm isolation:probe
 ```
 
 The probe itself uses `--pull=never` and refuses a missing or mismatched image.
+Fixture files are now loaded through `scripts/isolation/workspace-git.mjs` from the
+current `HEAD` commit object, not from the live working tree. The collector only
+reads allowlisted paths and records the source object identity for each file in
+the report; this makes the transfer source auditable and ignores unrelated working-tree edits.
 The official image contains Node 22.16.0, matching the project's pinned local
 verification toolchain. The pin identifies bytes and reproducibility; it is not
 a security approval or an assertion that the older image is ready for hostile
@@ -107,6 +111,10 @@ workspace digest; it must match the host packet. Success and deliberate test
 failure are separate real executions. Project-generated symlinks/output stay
 inside the container and are destroyed with it; nothing is extracted or followed
 by a host-side recheck.
+
+The generated probe report includes `source_snapshot` with the exact source commit
+and collected object identities for each snapshot path, making it possible to
+verify the payload came from a specific committed state.
 
 This provides a bounded byte-transfer primitive. Secure collection of an
 arbitrary existing/modified host workspace, offline dependency provisioning and

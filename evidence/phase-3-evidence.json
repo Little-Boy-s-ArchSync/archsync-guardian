@@ -71,7 +71,7 @@
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
-    "package.json": "9f0fdb5e2a94af2875ff5044b5ce5f205a3e5c1560a4f524cbd79c1144132e91",
+    "package.json": "921a23986869af351388b9be4e5a4ff1bdbcdfb01c52d5fbe8e31c4570174690",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
@@ -312,91 +312,91 @@
   "environment": {
     "platform": "darwin",
     "os_release": "27.0.0",
-    "node": "v22.16.0",
+    "node": "v26.0.0",
     "cpu": "Apple M1 Pro",
     "logical_cpus": 10
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 164.4,
+      "cold_total_ms": 143.73,
       "warm_total_ms": [
-        86.88,
-        92.93,
-        82.42,
-        82.43,
-        87.16
+        77.79,
+        75.35,
+        73.17,
+        77.84,
+        77.19
       ],
       "warm_baseline_load_ms": [
-        7.83,
-        9.85,
-        7.51,
-        10.31,
-        7.63
+        7.81,
+        7.13,
+        7.64,
+        7.3,
+        7.43
       ],
       "warm_incremental_scan_ms": [
-        1.84,
-        2.23,
-        2,
-        1.58,
-        2.07
+        1.57,
+        1.25,
+        1.44,
+        1.42,
+        1.77
       ],
-      "warm_median_total_ms": 86.88,
-      "warm_median_baseline_load_ms": 7.83,
-      "warm_median_incremental_scan_ms": 2
+      "warm_median_total_ms": 77.19,
+      "warm_median_baseline_load_ms": 7.43,
+      "warm_median_incremental_scan_ms": 1.44
     },
     "violation": {
-      "cold_total_ms": 133.18,
+      "cold_total_ms": 117.63,
       "warm_total_ms": [
-        91,
-        84.01,
-        89.65,
-        86.5,
-        101.09
+        85.43,
+        77.67,
+        89.26,
+        88.19,
+        95.32
       ],
       "warm_baseline_load_ms": [
-        8.92,
-        8.08,
-        8.26,
-        8.02,
-        9.1
+        8.41,
+        7.87,
+        7.26,
+        7.6,
+        8.71
       ],
       "warm_incremental_scan_ms": [
-        1.78,
-        1.74,
-        1.71,
-        1.63,
-        1.81
+        1.87,
+        1.16,
+        1.86,
+        1.42,
+        1.75
       ],
-      "warm_median_total_ms": 89.65,
-      "warm_median_baseline_load_ms": 8.26,
-      "warm_median_incremental_scan_ms": 1.74
+      "warm_median_total_ms": 88.19,
+      "warm_median_baseline_load_ms": 7.87,
+      "warm_median_incremental_scan_ms": 1.75
     },
     "evolution": {
-      "cold_total_ms": 149.89,
+      "cold_total_ms": 133.61,
       "warm_total_ms": [
-        93.77,
-        94.38,
-        88.46,
-        82.06,
-        78.38
+        83.08,
+        79.04,
+        94.15,
+        102.6,
+        86.19
       ],
       "warm_baseline_load_ms": [
-        8.9,
-        7.86,
-        8.69,
-        9.19,
-        7.53
+        8.17,
+        8.02,
+        8.85,
+        14.3,
+        8.92
       ],
       "warm_incremental_scan_ms": [
-        1.75,
-        1.4,
-        1.46,
-        2,
-        1.49
+        1.73,
+        1.45,
+        3.17,
+        1.62,
+        1.46
       ],
-      "warm_median_total_ms": 88.46,
-      "warm_median_baseline_load_ms": 8.69,
-      "warm_median_incremental_scan_ms": 1.49
+      "warm_median_total_ms": 86.19,
+      "warm_median_baseline_load_ms": 8.85,
+      "warm_median_incremental_scan_ms": 1.62
     }
   }
 }

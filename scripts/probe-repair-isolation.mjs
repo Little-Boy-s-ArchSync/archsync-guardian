@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
-import { readFile, writeFile, mkdir, mkdtemp, lstat, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, mkdtemp, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir, networkInterfaces, platform, release } from 'node:os';
@@ -11,30 +11,32 @@ import { sanitizeVerificationLog } from '../dist/index.js';
 import { modes, fixtureFiles, hash, validatePolicy, discoverEndpoint, validateEngine, validateImage, containerEnvironment, createArguments, validateContainer, dockerClient, checked, classifyExecution, cleanupOwnedContainer } from './isolation/backend.mjs';
 import { networkProfile, networkProfileSha256 } from './isolation/network-policy.mjs';
 import { createSnapshot, validateSnapshot } from './isolation/workspace-snapshot.mjs';
+import { collectGitSnapshot } from './isolation/workspace-git.mjs';
 
 assert.equal(process.argv.length, 2, 'This authored probe accepts no project, command or configuration arguments');
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const started = new Date().toISOString();
-const manifestBytes = await readFile(join(root, 'scripts/isolation/manifest.json'));
-const manifest = JSON.parse(manifestBytes);
-assert.equal(manifestBytes.toString(), JSON.stringify(manifest, null, 2) + '\n', 'noncanonical fixture manifest');
+const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+const sourcePaths = fixtureFiles.map((path) => `scripts/isolation/${path}`).concat('scripts/isolation/manifest.json');
+const collectedInputs = await collectGitSnapshot({ repository: root, commit: sourceCommit, allowlist: sourcePaths });
+const manifest = JSON.parse(collectedInputs.files['scripts/isolation/manifest.json']);
+assert.equal(collectedInputs.files['scripts/isolation/manifest.json'].toString(), JSON.stringify(manifest, null, 2) + '\n', 'noncanonical fixture manifest');
 assert.deepEqual(Object.keys(manifest), ['schema_version', 'status', 'files']);
 assert.equal(manifest.schema_version, '1.0.0-unapproved'); assert.equal(manifest.status, 'UNAPPROVED');
 assert.deepEqual(Object.keys(manifest.files), fixtureFiles);
-const inputs = {};
 for (const [name, digest] of Object.entries(manifest.files)) {
-  const path = join(root, 'scripts/isolation', name);
-  assert.ok((await lstat(path)).isFile(), 'authored input must be a regular non-symlink file');
-  const bytes = await readFile(path); assert.equal(hash(bytes), digest, `authored input ${name} differs from manifest`); inputs[name] = bytes;
+  const bytes = collectedInputs.files[`scripts/isolation/${name}`];
+  assert.equal(hash(bytes), digest, `authored input ${name} differs from manifest`);
 }
-const policy = JSON.parse(inputs['policy.json']); validatePolicy(policy);
-const fixturePayload = Buffer.concat([inputs['fixture-command.mjs'], Buffer.from('\n'), inputs['fixture.mjs']]);
-const snapshot = createSnapshot(fixtureFiles.filter((path) => path.startsWith('project/')).map((path) => ({ path: path.slice(8), bytes: inputs[path] })));
+const policy = JSON.parse(collectedInputs.files['scripts/isolation/policy.json']);
+validatePolicy(policy);
+const fixturePayload = Buffer.concat([collectedInputs.files['scripts/isolation/fixture-command.mjs'], Buffer.from('\n'), collectedInputs.files['scripts/isolation/fixture.mjs']]);
+const snapshot = createSnapshot(fixtureFiles.filter((path) => path.startsWith('project/')).map((path) => ({ path: path.slice(8), bytes: collectedInputs.files[`scripts/isolation/${path}`] })));
 const snapshotIdentity = validateSnapshot(snapshot);
 const workspacePayload = Buffer.concat([
-  inputs['fixture-command.mjs'], Buffer.from('\n'), inputs['workspace-snapshot.mjs'],
+  collectedInputs.files['scripts/isolation/fixture-command.mjs'], Buffer.from('\n'), collectedInputs.files['scripts/isolation/workspace-snapshot.mjs'],
   Buffer.from('\nconst snapshotPacket = JSON.parse(Buffer.from(' + JSON.stringify(Buffer.from(JSON.stringify(snapshot)).toString('base64')) + ', "base64").toString("utf8"));\n'),
-  inputs['workspace-bootstrap.mjs'],
+  collectedInputs.files['scripts/isolation/workspace-bootstrap.mjs'],
 ]);
 const temporary = await mkdtemp(join(tmpdir(), 'archsync-unapproved-isolation-'));
 const configDirectory = join(temporary, 'docker-config'); await mkdir(configDirectory, { mode: 0o700 });
@@ -59,12 +61,13 @@ const report = {
   private_ipc_exception: 'AF_UNIX socketpair is allowed for subprocess stdio; socket, bind, connect and listen are denied, including loopback and named Unix sockets.',
   seccomp_sha256: networkProfileSha256, workspace_snapshot: snapshotIdentity, workspace_payload_sha256: hash(workspacePayload),
   workspace_returned_to_host: false,
-  started_at_utc: started, policy_sha256: hash(inputs['policy.json']), fixture_sha256: hash(fixturePayload), manifest_sha256: hash(manifestBytes),
-  source_commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+  started_at_utc: started, policy_sha256: hash(collectedInputs.files['scripts/isolation/policy.json']), fixture_sha256: hash(fixturePayload), manifest_sha256: hash(collectedInputs.files['scripts/isolation/manifest.json']),
+  source_snapshot: { source_commit: collectedInputs.sourceCommit, objects: collectedInputs.objects },
+  source_commit: sourceCommit,
   source_dirty: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim() !== '',
   source_files: {}, host: { platform: platform(), release: release(), node: process.version }, cases: rows,
 };
-for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/isolation/workspace-contracts.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md', 'docs/phase-4-repair-verification.md', 'docs/phase-4-integration-status.md', 'scripts/isolation/vendor/README.md']) report.source_files[path] = hash(await readFile(join(root, path)));
+for (const path of ['scripts/isolation/backend.mjs', 'scripts/isolation/backend-contracts.mjs', 'scripts/isolation/workspace-contracts.mjs', 'scripts/isolation/workspace-git.mjs', 'scripts/probe-repair-isolation.mjs', 'package.json', 'docs/repair-isolation-candidate.md', 'docs/phase-4-repair-verification.md', 'docs/phase-4-integration-status.md', 'scripts/isolation/vendor/README.md']) report.source_files[path] = hash(await readFile(join(root, path)));
 try {
   const endpoint = await discoverEndpoint();
   const client = dockerClient(endpoint, configDirectory, { ...process.env, ARCHSYNC_HOST_CANARY_SECRET: hostSecret });
