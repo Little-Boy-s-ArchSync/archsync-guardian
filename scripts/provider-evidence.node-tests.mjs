@@ -118,6 +118,65 @@ test("accepts explicitly redacted JSON without modifying its bytes", () => {
   assert.deepEqual(Buffer.from(JSON.parse(packet.bytes).attempts[0].response.base64, "base64"), input.attempts[0].response);
 });
 
+test("rejects original duplicate JSON members and escaped aliases during creation and verification", () => {
+  const hidden = [
+    '{"api_key":"synthetic-value","api_key":"[REDACTED]"}',
+    '{"api\\u005fkey":"synthetic-value","api_key":"[REDACTED]"}',
+    '{"note":"member@example.invalid","note":"clear"}',
+    '{"nested":[{"note":"member@example.invalid","no\\u0074e":"clear"}]}',
+    '{"safe":"one","safe":"two"}',
+  ];
+  for (const text of hidden) {
+    for (const target of ["request", "response"]) {
+      const input = fixture();
+      const content = Buffer.from(text);
+      if (target === "request") input.request = content;
+      else input.attempts[0].response = content;
+      assert.throws(() => createProviderEvidencePacket(input), /duplicate decoded JSON keys/u);
+
+      const value = JSON.parse(createProviderEvidencePacket(fixture()).bytes);
+      const replacement = { bytes: content.length, sha256: hash(content), base64: content.toString("base64") };
+      if (target === "request") value.request = replacement;
+      else value.attempts[0].response = replacement;
+      const forged = encoded(value);
+      assert.throws(() => verifyProviderEvidencePacket(forged, hash(forged)), /duplicate decoded JSON keys/u);
+    }
+  }
+});
+
+test("duplicate-key scanner handles escaped strings and independent nested object scopes", () => {
+  const input = fixture();
+  input.request = Buffer.from(JSON.stringify({ text: 'Quotes " commas , braces {} and backslash \\', items: [{ value: "first" }, { value: "second" }], value: { value: "third" } }));
+  const packet = createProviderEvidencePacket(input);
+  assert.equal(verifyProviderEvidencePacket(packet.bytes, packet.sha256).outcome, "success");
+  assert.deepEqual(Buffer.from(JSON.parse(packet.bytes).request.base64, "base64"), input.request);
+});
+
+test("token-shaped run identifiers fail creation and verification", () => {
+  const input = fixture();
+  input.run_id = "ghp_authorednotarealsecret";
+  assert.throws(() => createProviderEvidencePacket(input), /run_id requires redaction/u);
+  const value = JSON.parse(createProviderEvidencePacket(fixture()).bytes);
+  value.run_id = input.run_id;
+  const forged = encoded(value);
+  assert.throws(() => verifyProviderEvidencePacket(forged, hash(forged)), /run_id requires redaction/u);
+});
+
+test("sparse attempts cannot create a packet that its own verifier would reject", () => {
+  const input = fixture();
+  const second = { ...input.attempts[0], attempt: 2 };
+  input.attempts = [];
+  input.attempts[1] = second;
+  assert.throws(() => createProviderEvidencePacket(input), /missing array entry/u);
+  const inherited = [];
+  inherited.length = 1;
+  Object.setPrototypeOf(inherited, { 0: fixture().attempts[0] });
+  input.attempts = inherited;
+  assert.throws(() => createProviderEvidencePacket(input), /missing array entry/u);
+  const dense = createProviderEvidencePacket(fixture());
+  assert.equal(verifyProviderEvidencePacket(dense.bytes, dense.sha256).attempts, 1);
+});
+
 test("rejects invalid shape, identifiers, controls, UTF-8 and excessive content", () => {
   const mutations = [
     (x) => { x.run_id = "../escape"; },
@@ -288,5 +347,12 @@ test("invalid or unsafe inputs create no files", posix, async (t) => {
   const input = fixture();
   input.request = Buffer.from('{"password":"synthetic-value"}');
   await assert.rejects(persistProviderEvidence(root, input), /credential field/u);
+  const token = fixture();
+  token.run_id = "ghp_authorednotarealsecret";
+  await assert.rejects(persistProviderEvidence(root, token), /run_id requires redaction/u);
+  const sparse = fixture();
+  sparse.attempts[1] = { ...sparse.attempts[0], attempt: 2 };
+  delete sparse.attempts[0];
+  await assert.rejects(persistProviderEvidence(root, sparse), /missing array entry/u);
   assert.deepEqual(await readdir(root), []);
 });

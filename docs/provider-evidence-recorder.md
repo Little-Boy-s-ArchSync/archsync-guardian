@@ -21,7 +21,7 @@ alone cannot become success. Supplied success means only the caller's attempt
 outcome; it is not contract validation, correctness, research acceptance, or a
 claim of provider authenticity.
 
-The primitive requires 1–8 attempts numbered consecutively from 1; it refuses a
+The primitive requires 1–8 populated attempts numbered consecutively from 1; it refuses a
 retry after success, an outcome inconsistent with the final attempt, reversed or
 overlapping timestamps, unknown fields, non-finite usage, or unsafe run IDs.
 Requests are limited to 256 KiB, each response to 1 MiB, total responses to 4 MiB,
@@ -32,7 +32,10 @@ received-attempt artifact format and remain in the existing runner manifest.
 Only valid UTF-8 content is accepted. Known credential, email and absolute-path
 patterns are checked with the existing diagnostic redactor. JSON content is also
 checked recursively after decoding escapes, including credential-key rejection
-unless the value is exactly `[REDACTED]`. Input is rejected rather than silently
+unless the value is exactly `[REDACTED]`. Duplicate decoded JSON object keys are
+rejected before last-key-wins parsing can conceal the original retained content.
+Run IDs receive both portable syntax and diagnostic-redaction checks before use
+in a packet or filename. Input is rejected rather than silently
 modified. JSON nesting is bounded at 32 levels; text with diagnostic markers must
 have physical lines no longer than 4096 characters before the regex scanner is
 used. These finite checks are not a guarantee that every secret or form of PII is

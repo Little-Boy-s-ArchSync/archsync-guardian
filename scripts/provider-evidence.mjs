@@ -63,6 +63,38 @@ function checkContentRedaction(text) {
   requireValue(redactProviderDiagnostic(text) === text, "content requires redaction");
 }
 
+function rejectDuplicateJsonKeys(text) {
+  // JSON.parse has already established valid syntax. Inspect every original
+  // member name before last-key-wins parsing can hide retained sensitive bytes.
+  const stack = [];
+  for (let index = 0; index < text.length; index += 1) {
+    const token = text[index];
+    if (token === "\"") {
+      const start = index;
+      index += 1;
+      while (text[index] !== "\"") {
+        if (text[index] === "\\") index += 1;
+        index += 1;
+      }
+      const current = stack.at(-1);
+      if (current?.keys && current.expectsKey) {
+        const key = JSON.parse(text.slice(start, index + 1));
+        requireValue(!current.keys.has(key), "content contains duplicate decoded JSON keys");
+        current.keys.add(key);
+        current.expectsKey = false;
+      }
+    } else if (token === "{") {
+      stack.push({ keys: new Set(), expectsKey: true });
+    } else if (token === "[") {
+      stack.push({});
+    } else if (token === "}" || token === "]") {
+      stack.pop();
+    } else if (token === "," && stack.at(-1)?.keys) {
+      stack.at(-1).expectsKey = true;
+    }
+  }
+}
+
 function artifact(value, maximum, field) {
   requireValue(Buffer.isBuffer(value) && value.length <= maximum, `${field} must be bounded bytes`);
   // Snapshot caller-owned buffers before the first filesystem await.
@@ -72,7 +104,10 @@ function artifact(value, maximum, field) {
   requireValue(!/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(text), `${field} contains control bytes`);
   let parsed;
   try { parsed = JSON.parse(text); } catch { /* Non-JSON text still receives the diagnostic check. */ }
-  if (parsed !== undefined) inspectJson(parsed);
+  if (parsed !== undefined) {
+    rejectDuplicateJsonKeys(text);
+    inspectJson(parsed);
+  }
   else checkContentRedaction(text);
   return { bytes: bytes.length, sha256: digest(bytes), base64: bytes.toString("base64") };
 }
@@ -90,12 +125,16 @@ function usage(value) {
 export function createProviderEvidencePacket(input) {
   keys(input, ["run_id", "origin", "provider", "model", "model_version", "prompt_version", "started_at", "finished_at", "outcome", "request", "attempts"], "run");
   requireValue(typeof input.run_id === "string" && /^[a-z0-9][a-z0-9_-]{0,63}$/u.test(input.run_id), "run_id must be a portable identifier");
+  safeText(input.run_id, "run_id");
   requireValue(["synthetic", "caller-supplied-unverified"].includes(input.origin), "origin must be explicit");
   requireValue(["success", "failed"].includes(input.outcome), "outcome must be explicit");
   const startedAt = timestamp(input.started_at, "started_at");
   const finishedAt = timestamp(input.finished_at, "finished_at");
   requireValue(finishedAt >= startedAt, "run timestamps are reversed");
   requireValue(Array.isArray(input.attempts) && input.attempts.length > 0 && input.attempts.length <= providerEvidenceLimits.attempts, "attempt count is invalid");
+  for (let index = 0; index < input.attempts.length; index += 1) {
+    requireValue(Object.hasOwn(input.attempts, index), "attempt sequence contains a missing array entry");
+  }
   let priorFinish = startedAt;
   let responseBytes = 0;
   const attempts = input.attempts.map((attempt, index) => {
