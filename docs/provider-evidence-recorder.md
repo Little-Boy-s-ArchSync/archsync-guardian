@@ -146,3 +146,47 @@ requirements. The privacy/security checklist remains NOT APPROVED.
 
 Run `pnpm provider:evidence:verify` for the regression checks. They are also part
 of `pnpm phase4:assets`, `pnpm phase4:verify` and the normal `pnpm verify` gate.
+
+## Preparation-side run receipt intake
+
+`verifyProviderRunEvidence(bytes, expected)` in
+`scripts/provider-run-evidence-intake.mjs` verifies the fixed synthetic
+capture context and replays the existing provider parser, runner, retry and
+budget logic from its retained responses. It has no network callback, credential
+loader, signer or capability issuer. The producer now returns
+`binding.manifest_sha256` for the complete runner journal.
+
+The consumer must independently retain five SHA-256 values:
+`packet_sha256` (the producer's evidence digest),
+`configuration_sha256`, `request_sha256`,
+`context_sha256` and `manifest_sha256`.
+Copying all five from an incoming untrusted packet does not authenticate it.
+
+Intake first applies the existing exact packet/content/privacy checks. It then
+checks the canonical context, fixed fixture endpoint, exact HTTP body, complete
+configuration, run/model/prompt identities, attempt order, HTTP observations and
+full runner manifest against those independent bindings. Replaying the existing
+runner must reproduce that manifest exactly. A hash-valid packet cannot pass
+with inconsistent raw usage, budget/success claims, prompt, result path or
+failure journal. The original response bytes are never normalized or replaced.
+
+The immutable receipt retains per-attempt raw-response hashes, HTTP status,
+measured usage and every failure, including a secondary backoff failure.
+`measured_usage` sums all available response measurements, including failed
+HTTP attempts and retries; `attempts_with_unknown_usage` explicitly lists
+unmeasured attempts. These known totals are not a complete spend figure when
+that list is nonempty. The runner's original last-response totals remain
+unchanged. Replayed result hashes also bind the response derived from raw bytes.
+
+No-response transport failures and timing are recorded observations supplied by
+the original capture. Intake can check journal consistency and timestamp order;
+it cannot authenticate remote execution, elapsed time, unobserved retries or
+provider identity. Its fixed status is `CONSISTENT_SYNTHETIC_CAPTURE`, its
+acceptance remains `UNREVIEWED_PROVIDER_EVIDENCE`, and production readiness
+is false with capability `NOT_ISSUED`. Receipt consistency never approves
+research results, a provider configuration or an isolation candidate.
+
+Zero-attempt failures and captures rejected by the existing byte/privacy limits
+still have no packet and cannot enter this intake. Their durable retention,
+approved raw storage, real transport and Benchmark result-row integration remain
+separate work. Replaying a received packet does not close those gaps.

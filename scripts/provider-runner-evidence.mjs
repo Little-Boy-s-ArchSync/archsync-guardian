@@ -177,6 +177,7 @@ async function capture(input, dependencies) {
     configuration_sha256: configurationSha256,
     request_sha256: hash(body),
     context_sha256: hash(request),
+    manifest_sha256: hash(encode(result.manifest)),
     transport_attempts: attempts.map(({ attempt, http_status }) => ({ attempt, http_status })),
   };
   requireValue(result.manifest.attempts === attempts.length, "runner and capture attempt counts differ");

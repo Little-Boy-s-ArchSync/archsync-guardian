@@ -40,7 +40,7 @@
   },
   "dependency_sha256": {
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
-    "package.json": "1c0dcbb32d82fcfe48ce4beb25e91fcc5e0ea08c9dddc1d30df0dc53fbc66e49",
+    "package.json": "252b3f3ef875e888e410cc73b6fdbe5337fc61ab6cbfbafc18caf490e31aac09",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "tsconfig.json": "67e6b1c37664a036c86e92b884c169756003ab0c1c7d7b511e1243e84583962c",

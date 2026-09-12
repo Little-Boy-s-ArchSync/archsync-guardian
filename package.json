@@ -49,7 +49,7 @@
     "phase3:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase3-evidence.mjs --write",
     "phase3:evidence:verify": "node scripts/phase3-evidence.mjs",
     "privacy:verify": "node scripts/verify-offline.mjs",
-    "provider:evidence:verify": "node --test scripts/provider-evidence.node-tests.mjs scripts/provider-runner-evidence.node-tests.mjs",
+    "provider:evidence:verify": "node --test scripts/provider-evidence.node-tests.mjs scripts/provider-runner-evidence.node-tests.mjs scripts/provider-run-evidence-intake.node-tests.mjs",
     "phase4:assets": "node scripts/verify-phase4-assets.mjs && pnpm isolation:verify && pnpm provider:evidence:verify",
     "phase4:verify": "pnpm typecheck && pnpm test:coverage && pnpm build && pnpm phase4:assets",
     "phase5:evidence:update": "pnpm test:coverage && pnpm build && node scripts/phase5-evidence.mjs --write",
