@@ -2,8 +2,9 @@
 
 Status: **UNREVIEWED — no provider execution or storage approval**.
 
-P4-106 currently has an in-memory run manifest and an artifact-path metadata
-field, but no response persistence in its provider runner. The separate
+P4-106 has an in-memory run manifest and an artifact-path metadata
+field. The opt-in fixture bridge described below connects that runner to byte
+capture; the product runner still performs no filesystem writes. The separate
 `scripts/provider-evidence.mjs` primitive prepares the recording boundary using
 explicitly supplied, already received bytes. It does not call a provider, read
 credentials, choose a model, collect source files, import a transport, or change
@@ -70,10 +71,77 @@ preparatory artifact envelope, not a replacement for the runner or Benchmark run
 manifest. Those integrations must preserve their own exact configuration and
 request bindings before real execution.
 
+## Injected fixture runner bridge
+
+`scripts/provider-runner-evidence.mjs` connects `executeReasonerRun` and
+`OpenAICompatibleProvider` to the recorder. `executeProviderEvidenceRun(input,
+dependencies)` requires an explicit transport callback, clock and retry wait;
+there is no default network implementation or credential loader. The endpoint
+is fixed to `https://fixture.invalid/chat/completions`, authorization headers are
+not passed to the injected callback, and every artifact is marked `synthetic`.
+This implements and tests the capture boundary with offline fixtures. It is not
+a deployed provider adapter, proof of remote provider identity or authorization
+for live traffic. An injected callback is trusted executable code; this function
+is not an OS network sandbox for a hostile callback.
+
+Input contains the run ID, explicit provider/model/model version/prompt version,
+prompt, reliability policy and optional temperature/seed. Callers cannot supply
+attempts, success flags, parsed responses, credentials or a replacement endpoint.
+Configuration and request content are checked and copied before execution. The
+transport receives the actual immutable request body string from the existing
+provider adapter, request/configuration hashes, run ID, attempt number, timeout,
+and cancellation signal. It returns only `{ status, bytes }`, where `bytes` is a
+Buffer containing the complete original response. The bridge snapshots those
+bytes before parsing them; it retains HTTP errors, malformed responses and
+over-budget responses as failed attempts. Valid measured usage, including
+explicit cost, is required for success; missing cost is not inferred to be zero.
+The runner's validation and budget checks determine outcomes.
+
+The packet's `request` field is a canonical capture-context envelope. Its
+`http_request.body` is the exact HTTP request string, accompanied by its SHA-256
+and a snapshot of the full configuration. `observed_execution` binds the entire
+returned runner manifest and each observed HTTP status. This preserves secondary
+failures during retry backoff as well as the primary `attempt.failure` recorded
+by the existing packet format. Packet verification checks this envelope's bytes
+and hash; it does not independently replay the runner or authenticate a provider.
+Keep the returned packet digest separately as with the underlying primitive.
+
+Timeout/cancellation closes the current attempt and signals the callback. A late
+callback result cannot mutate a finished attempt or manufacture success. Only
+complete responses received before termination are captured; streaming chunks
+and bytes arriving after termination are outside this complete-response callback
+contract. The bridge does not claim an ignored abort stopped remote computation.
+Every actual callback invocation must represent one attempt without hidden
+internal retries; a future transport must expose any lower-level retries or
+streaming through a separately reviewed interface.
+
+Content which violates the existing size, UTF-8, duplicate-key or redaction
+checks fails closed: the result is failed, `capture_issue` explains the rejection,
+and `evidence` is null. No sanitized substitute is presented as original bytes.
+If the complete journal/context exceeds packet metadata or size limits, the
+runner result is returned with `capture_issue` and no packet. `result.ok` is the
+runner outcome; it alone does not mean that capture or persistence succeeded.
+Pre-call failures have zero attempts and return the original runner manifest
+with no packet. The existing 1–8 attempt and byte limits still apply, including
+the additional capture context in the request limit.
+
+`executeAndPersistProviderEvidenceRun(directory, input, dependencies)` executes
+the same bridge and publishes its generated packet through the existing POSIX
+exclusive writer. It accepts no caller-supplied outcome or packet. Failed capture
+and zero-attempt runs publish nothing. Those cases retain the runner result in
+memory only; this bridge does not durably retain their complete raw responses or
+all failure evidence. A real integration needs approved storage/retention for
+that gap. Persistence does not change retention authority: callers must retain
+the returned manifest for those cases. Windows
+persistence is refused before invoking the callback; portable execution and
+serialization tests still run. Existing directory permissions, append-only
+publication and storage-owner trust limitations apply unchanged.
+
 Before P4-106 can close, named reviewers must approve the provider and retention
 policy, model/configuration and dataset freezes, storage/access/deletion controls,
-and a real adapter integration that captures every attempt at the transport
-boundary. Synthetic tests and supplied caller metadata cannot replace those
+and a deployed adapter integration that captures every attempt at the transport
+boundary under those approvals. The fixture bridge prepares that integration;
+synthetic tests and supplied caller metadata cannot replace those
 requirements. The privacy/security checklist remains NOT APPROVED.
 
 Run `pnpm provider:evidence:verify` for the regression checks. They are also part
