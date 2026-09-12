@@ -116,10 +116,105 @@ The generated probe report includes `source_snapshot` with the exact source comm
 and collected object identities for each snapshot path, making it possible to
 verify the payload came from a specific committed state.
 
-This provides a bounded byte-transfer primitive. Secure collection of an
-arbitrary existing/modified host workspace, offline dependency provisioning and
-binding a production capability to the repaired snapshot are separate remaining
-integration work. The probe accepts no arbitrary project or command arguments.
+This provides a bounded byte-transfer primitive. The candidate now also exposes the bounded repaired-file collection APIs below.
+Offline dependency provisioning, arbitrary project/platform support and binding a
+production capability to the repaired snapshot remain separate integration work. The probe accepts no arbitrary project or command arguments.
+
+## Uncommitted repaired files
+
+`scripts/isolation/workspace-repaired.mjs` provides two internal APIs. Both start
+from a full, exact SHA-1 Git commit and the complete explicit list of regular
+files to transfer. Each replacement names an existing allowlisted file and its
+expected base SHA-256. Additions, deletions, renames, executable-mode changes,
+symlinks, submodules and no-op replacements are unsupported and rejected; an
+empty buffer means an empty regular file, not deletion. Paths outside the list
+are never discovered or included, so this does not certify that an entire
+repository is unchanged. The working tree and index are never written.
+
+An editor or repair runner that already owns the proposed bytes can call the
+portable API directly:
+
+```js
+import { collectRepairedSnapshot } from './scripts/isolation/workspace-repaired.mjs';
+
+const repaired = await collectRepairedSnapshot({
+  repository: trustedRepositoryRoot,
+  commit: reviewedBaseCommit,              // full 40-character commit ID
+  allowlist: ['package.json', 'src/add.mjs'],
+  replacements: [{
+    path: 'src/add.mjs',
+    baseSha256: reviewedOriginalFileHash,
+    bytes: repairResultBytes,              // owned Buffer, no SharedArrayBuffer
+  }],
+});
+```
+
+The API copies the replacement buffers and manifest synchronously before Git
+lookup. It resolves and verifies the committed base objects, checks the expected
+original hashes, and overlays only the supplied replacements. It does not read
+repaired files or apply a shell patch. A stale base, alias path, extra field or
+oversized request fails before a packet can be returned. Path/schema/byte-limit
+validation precedes any Git lookup. This is the supported integration point on
+macOS and Windows when a trusted producer supplies the bytes.
+
+On **Linux only**, `collectRepairedWorkspaceSnapshot` reads the corresponding
+uncommitted files from a live workspace:
+
+```js
+import { collectRepairedWorkspaceSnapshot } from './scripts/isolation/workspace-repaired.mjs';
+
+const repaired = await collectRepairedWorkspaceSnapshot({
+  repository: trustedRepositoryRoot,
+  workspace: canonicalAbsoluteWorkspaceRoot,
+  commit: reviewedBaseCommit,
+  allowlist: ['package.json', 'src/add.mjs'],
+  replacements: [{
+    path: 'src/add.mjs',
+    baseSha256: reviewedOriginalFileHash,
+    sha256: expectedRepairResultHash,
+  }],
+});
+```
+
+The expected repaired digest must come from the trusted repair artifact, not an
+unverified read of the same mutable path. The adapter checks every selected live
+file: replacement bytes must match that digest and remaining files must match
+the committed base. It anchors each directory and leaf open through held Linux
+`/proc/self/fd` directory descriptors with `O_NOFOLLOW`, refuses hardlinks and
+mount crossings beneath the selected root, and bounds file/total bytes and the
+number of open directory descriptors. Nonblocking opens allow special files
+such as FIFOs to be rejected without waiting for a writer. It retains the file
+descriptors until collection ends, checks device/inode/mode/link count/size and
+nanosecond timestamps before/after reads, and rejects observed path replacement
+or mutation. Descriptors are closed on success and failure.
+
+This requires a trusted Linux kernel and local filesystem, usable `/proc`, and
+an exclusively controlled repair operation. It does **not** establish an atomic
+filesystem-wide snapshot, prevent future edits, detect every temporary change
+between observations, or guarantee completion on a hung filesystem. No project
+code should run concurrently during collection. A packet contains a bounded copy
+matching the expected hashes; later verification must use that packet rather
+than reopen its original live paths. Node has no portable descriptor-relative
+open primitive, so the live adapter fails closed on macOS and Windows before
+Git/file lookup. A path checked with `lstat` and then opened normally is not used
+as a substitute.
+
+Both APIs return the existing transferable `snapshot` plus a separate `binding`
+and its `bindingSha256`. The binding retains the exact base commit, verified Git
+object/mode/size for every selected source file, base and repaired snapshot
+identities, each changed file's before/after digest, and the collection method.
+The Linux variant adds observed filesystem identities, not host paths. A caller
+must retain the binding with the packet and compare the container's observed
+workspace digest to `binding.repaired_snapshot.sha256`; the binding digest is an
+integrity value, not a reviewer signature. `status` remains `UNAPPROVED` and
+`production_capability` remains `NOT_ISSUED`.
+
+These contracts run in the existing `pnpm isolation:verify` suite; Linux CI
+executes the real filesystem cases and other platforms check explicit refusal.
+The existing `pnpm isolation:probe` continues to run the fixed committed authored
+project. Its result is not evidence that a live repaired workspace was executed
+inside the isolation backend. Connecting these APIs to an approved runner,
+offline dependencies and a capability issuer remains open.
 
 ## Lifecycle and outcome handling
 
@@ -162,8 +257,8 @@ not approve a repair or establish universal resistance to kernel/runtime escape.
 
 The Docker daemon and its runtime are trusted host components; Docker access can
 control the host. No experiment against a few authored inputs removes that trust.
-Safe collection and identity binding of an arbitrary repaired host workspace,
-project dependency/platform support, any approved treatment of test-modified
+Broader repaired-file operations and arbitrary-project collection, project
+dependency/platform support, any approved treatment of test-modified
 files, image/security approval and a reviewed capability issuer remain open.
 The bounded snapshot transfer rejects file-type metadata and never returns
 hostile outputs to a host recheck. It is not yet an arbitrary-project adapter.

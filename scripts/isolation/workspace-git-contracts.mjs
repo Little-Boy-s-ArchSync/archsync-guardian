@@ -1,13 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, link, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { deflateSync } from 'node:zlib';
 
 import { collectGitSnapshot } from './workspace-git.mjs';
-import { snapshotLimits } from './workspace-snapshot.mjs';
+import { snapshotLimits, validateSnapshot } from './workspace-snapshot.mjs';
+import { collectRepairedSnapshot, collectRepairedWorkspaceSnapshot } from './workspace-repaired.mjs';
+import { createHash } from 'node:crypto';
 
 const isGitEnvVariable = (key) => key.slice(0, 4).toUpperCase() === 'GIT_';
 const safeGitEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !isGitEnvVariable(key)));
@@ -385,5 +387,214 @@ test('dirty working-tree changes do not affect committed artifact collection', a
     const collected = await collectGitSnapshot({ repository, commit, allowlist: ['tracked.txt'] });
     assert.equal(collected.files['tracked.txt'].toString(), 'clean-tree');
     assert.equal(git(['rev-parse', `${commit}:tracked.txt`], 'utf8').trim(), collected.objects['tracked.txt'].object);
+  });
+});
+
+const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
+
+async function withRepairRepository(execute) {
+  await withRepository(async (repository, git) => {
+    await mkdir(join(repository, 'src'));
+    await writeFile(join(repository, 'src/add.mjs'), 'export const add = (a, b) => a - b;\n');
+    await writeFile(join(repository, 'package.json'), '{"private":true}\n');
+    git(['add', 'src/add.mjs', 'package.json']);
+    git(['commit', '-q', '-m', 'authored repair base']);
+    const commit = git(['rev-parse', 'HEAD']).trim();
+    const before = await readFile(join(repository, 'src/add.mjs'));
+    const repaired = Buffer.from('export const add = (a, b) => a + b;\n');
+    const options = {
+      repository, commit, allowlist: ['package.json', 'src/add.mjs'],
+      replacements: [{ path: 'src/add.mjs', baseSha256: sha256(before), bytes: repaired }],
+    };
+    await execute({ repository, git, before, repaired, options });
+  });
+}
+
+const workspaceOptions = ({ repository, options, repaired }) => ({
+  ...options, workspace: repository,
+  replacements: [{ path: 'src/add.mjs', baseSha256: options.replacements[0].baseSha256, sha256: sha256(repaired) }],
+});
+
+test('repaired bytes execute the intended change and bind both snapshots without changing Git', async () => {
+  await withRepairRepository(async ({ repository, git, repaired, options }) => {
+    const beforeStatus = git(['status', '--porcelain']);
+    const result = await collectRepairedSnapshot(options);
+    const captured = Buffer.from(result.snapshot.files.find((file) => file.path === 'src/add.mjs').base64, 'base64');
+    const module = await import('data:text/javascript;base64,' + captured.toString('base64'));
+    assert.equal(module.add(7, 4), 11);
+    assert.equal(result.binding.source_commit, options.commit);
+    assert.equal(result.binding.changes[0].base_object, git(['rev-parse', options.commit + ':src/add.mjs']).trim());
+    assert.equal(result.binding.changes[0].repaired_sha256, sha256(repaired));
+    assert.deepEqual(result.binding.repaired_snapshot, validateSnapshot(result.snapshot));
+    assert.equal(result.bindingSha256, sha256(JSON.stringify(result.binding)));
+    assert.notEqual(result.binding.base_snapshot.sha256, result.binding.repaired_snapshot.sha256);
+    assert.equal(result.binding.status, 'UNAPPROVED');
+    assert.equal(result.binding.production_capability, 'NOT_ISSUED');
+    assert.equal(git(['status', '--porcelain']), beforeStatus);
+    assert.equal(git(['rev-parse', 'HEAD']).trim(), options.commit);
+    assert.equal((await readFile(join(repository, 'src/add.mjs'))).includes('a - b'), true);
+  });
+});
+
+test('repaired collector snapshots caller buffers and manifests before asynchronous Git lookup', async () => {
+  await withRepairRepository(async ({ options, repaired }) => {
+    const expected = Buffer.from(repaired);
+    const collection = collectRepairedSnapshot(options);
+    repaired.fill(0);
+    options.commit = '0'.repeat(40);
+    options.allowlist.splice(0, 2, '.env');
+    options.replacements[0].path = '.env';
+    options.replacements[0].baseSha256 = '0'.repeat(64);
+    const result = await collection;
+    assert.deepEqual(Buffer.from(result.snapshot.files.find((file) => file.path === 'src/add.mjs').base64, 'base64'), expected);
+    assert.deepEqual(result.snapshot.files.map(({ path }) => path), ['package.json', 'src/add.mjs']);
+  });
+});
+
+test('malformed repaired requests fail before repository lookup', async () => {
+  const valid = { repository: '/not-a-repository', commit: 'a'.repeat(40), allowlist: ['ok.mjs'], replacements: [{ path: 'ok.mjs', baseSha256: 'b'.repeat(64), bytes: Buffer.from('ok') }] };
+  const invalid = [
+    { ...valid, allowlist: ['ok.mjs', 'OK.mjs'] },
+    { ...valid, allowlist: ['src', 'src/file.mjs'] },
+    { ...valid, allowlist: ['../ok.mjs'] },
+    { ...valid, allowlist: ['.env'] },
+    { ...valid, allowlist: ['aux.txt'] },
+    { ...valid, allowlist: ['ok.mjs', 'ok.mjs'] },
+    { ...valid, allowlist: new Array(1) },
+    { ...valid, replacements: [...valid.replacements, ...valid.replacements] },
+    { ...valid, replacements: [{ ...valid.replacements[0], path: 'elsewhere' }] },
+    { ...valid, replacements: [{ ...valid.replacements[0], bytes: Buffer.alloc(snapshotLimits.fileBytes + 1) }] },
+    { ...valid, replacements: [{ ...valid.replacements[0], bytes: Buffer.from(new SharedArrayBuffer(2)) }] },
+    { ...valid, replacements: [{ ...valid.replacements[0], deleted: true }] },
+    { ...valid, replacements: [{ ...valid.replacements[0], baseSha256: 'short' }] },
+    { ...valid, commit: 'HEAD' },
+    { ...valid, command: 'npm test' },
+  ];
+  for (const options of invalid) {
+    await assert.rejects(collectRepairedSnapshot(options), (error) => {
+      assert.equal(error.code, 'ERR_ASSERTION');
+      return true;
+    });
+  }
+});
+
+test('repaired collector rejects stale base, no-op, additions, deletions and over-budget final snapshots', async () => {
+  await withRepairRepository(async ({ repository, git, before, options }) => {
+    await assert.rejects(collectRepairedSnapshot({ ...options, replacements: [{ ...options.replacements[0], baseSha256: '0'.repeat(64) }] }), /base digest mismatch/);
+    await assert.rejects(collectRepairedSnapshot({ ...options, replacements: [{ ...options.replacements[0], bytes: before }] }), /must change/);
+    await assert.rejects(collectRepairedSnapshot({ ...options, allowlist: ['new.mjs'], replacements: [{ path: 'new.mjs', baseSha256: sha256(''), bytes: Buffer.from('new') }] }), /missing from committed/);
+    await assert.rejects(collectRepairedSnapshot({ ...options, replacements: [{ path: 'src/add.mjs', baseSha256: sha256(before), bytes: null }] }), /Buffer/);
+    const paths = Array.from({ length: 8 }, (_, i) => `large-${i}.txt`);
+    for (const path of paths) await writeFile(join(repository, path), Buffer.alloc(snapshotLimits.fileBytes));
+    git(['add', ...paths]);
+    git(['commit', '-q', '-m', 'bounded base']);
+    await assert.rejects(collectRepairedSnapshot({
+      repository, commit: git(['rev-parse', 'HEAD']).trim(), allowlist: [...paths, 'package.json'],
+      replacements: [{ path: 'large-0.txt', baseSha256: sha256(Buffer.alloc(snapshotLimits.fileBytes)), bytes: Buffer.from('repair') }],
+    }));
+  });
+});
+
+test('live repaired collector fails closed on hosts without descriptor-relative Linux opens', { skip: process.platform === 'linux' }, async () => {
+  const options = { repository: '/not-a-repository', workspace: '/not-a-workspace', commit: 'a'.repeat(40), allowlist: ['file.mjs'], replacements: [{ path: 'file.mjs', baseSha256: 'b'.repeat(64), sha256: 'c'.repeat(64) }] };
+  await assert.rejects(collectRepairedWorkspaceSnapshot(options), /requires Linux descriptor-relative opens/);
+});
+
+test('Linux live repaired workspace captures real uncommitted bytes with original source identity', { skip: process.platform !== 'linux' }, async () => {
+  await withRepairRepository(async (context) => {
+    const { repository, repaired, options, git } = context;
+    await writeFile(join(repository, 'src/add.mjs'), repaired);
+    await writeFile(join(repository, '.env'), 'NOT_ALLOWED_IN_SNAPSHOT');
+    const beforeStatus = git(['status', '--porcelain']);
+    const result = await collectRepairedWorkspaceSnapshot(workspaceOptions(context));
+    assert.equal(result.binding.source_commit, options.commit);
+    assert.equal(result.binding.collection.kind, 'LINUX_DESCRIPTOR_RELATIVE_WORKSPACE');
+    assert.equal(result.binding.collection.observed_files.length, 2);
+    assert.deepEqual(result.snapshot, (await collectRepairedSnapshot(options)).snapshot);
+    assert.equal(JSON.stringify(result).includes('NOT_ALLOWED_IN_SNAPSHOT'), false);
+    assert.equal(git(['status', '--porcelain']), beforeStatus);
+  });
+});
+
+test('Linux live repaired workspace refuses leaf and parent symlinks, root aliases and hardlinks', { skip: process.platform !== 'linux' }, async () => {
+  await withRepairRepository(async (context) => {
+    const { repository, repaired } = context;
+    const input = workspaceOptions(context);
+    const external = await mkdtemp(join(tmpdir(), 'archsync-repair-external-'));
+    try {
+      await writeFile(join(external, 'add.mjs'), repaired);
+      await rm(join(repository, 'src/add.mjs'));
+      await symlink(join(external, 'add.mjs'), join(repository, 'src/add.mjs'));
+      await assert.rejects(collectRepairedWorkspaceSnapshot(input), /ELOOP/);
+      await rm(join(repository, 'src/add.mjs'));
+      await link(join(external, 'add.mjs'), join(repository, 'src/add.mjs'));
+      await assert.rejects(collectRepairedWorkspaceSnapshot(input), /single-link/);
+      await rm(join(repository, 'src'), { recursive: true });
+      await symlink(external, join(repository, 'src'));
+      await assert.rejects(collectRepairedWorkspaceSnapshot(input), /ENOTDIR|ELOOP/);
+      const alias = join(external, 'alias');
+      await symlink(repository, alias);
+      await assert.rejects(collectRepairedWorkspaceSnapshot({ ...input, workspace: alias }), /ENOTDIR|ELOOP/);
+    } finally { await rm(external, { recursive: true, force: true }); }
+  });
+});
+
+test('Linux live repaired workspace rejects unexpected changes, stale expectations, missing and special files', { skip: process.platform !== 'linux' }, async () => {
+  await withRepairRepository(async (context) => {
+    const { repository, repaired } = context;
+    const input = workspaceOptions(context);
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /unexpected workspace bytes/);
+    await writeFile(join(repository, 'src/add.mjs'), repaired);
+    await chmod(join(repository, 'src/add.mjs'), 0o755);
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /executable mode changed/);
+    await chmod(join(repository, 'src/add.mjs'), 0o644);
+    await writeFile(join(repository, 'package.json'), '{"private":false}\n');
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /unexpected workspace bytes/);
+    await writeFile(join(repository, 'package.json'), '{"private":true}\n');
+    await assert.rejects(collectRepairedWorkspaceSnapshot({ ...input, workspace: '/nonexistent', replacements: [{ ...input.replacements[0], baseSha256: '0'.repeat(64) }] }), /base digest mismatch/);
+    await rm(join(repository, 'src/add.mjs'));
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /ENOENT/);
+    execFileSync('mkfifo', [join(repository, 'src/add.mjs')]);
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /single-link regular/);
+    await rm(join(repository, 'src/add.mjs'));
+    await mkdir(join(repository, 'src/add.mjs'));
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /single-link regular/);
+    await rm(join(repository, 'src/add.mjs'), { recursive: true });
+    await writeFile(join(repository, 'src/add.mjs'), Buffer.alloc(snapshotLimits.fileBytes + 1));
+    await assert.rejects(collectRepairedWorkspaceSnapshot(input), /too large/);
+  });
+});
+
+test('Linux live repaired workspace detects a file replacement during read and closes held descriptors', { skip: process.platform !== 'linux' }, async () => {
+  await withRepairRepository(async (context) => {
+    const { repository, repaired } = context;
+    await writeFile(join(repository, 'src/add.mjs'), repaired);
+    const harness = join(repository, 'race-harness.mjs');
+    await writeFile(harness, `
+      import assert from 'node:assert/strict';
+      import fs from 'node:fs';
+      import { syncBuiltinESMExports } from 'node:module';
+      import { collectRepairedWorkspaceSnapshot } from ${JSON.stringify(new URL('./workspace-repaired.mjs', import.meta.url).href)};
+      const input = JSON.parse(process.argv[2]);
+      const originalRead = fs.readSync;
+      const baselineFds = fs.readdirSync('/proc/self/fd').length;
+      let changed = false;
+      fs.readSync = (...args) => {
+        const result = originalRead(...args);
+        if (!changed && fs.readlinkSync('/proc/self/fd/' + args[0]).endsWith('/src/add.mjs')) {
+          changed = true;
+          fs.renameSync(input.workspace + '/src/add.mjs', input.workspace + '/src/moved.mjs');
+          fs.writeFileSync(input.workspace + '/src/add.mjs', 'SUBSTITUTE');
+        }
+        return result;
+      };
+      syncBuiltinESMExports();
+      await assert.rejects(collectRepairedWorkspaceSnapshot(input), /changed/);
+      assert.equal(changed, true);
+      fs.readSync = originalRead;
+      syncBuiltinESMExports();
+      assert.equal(fs.readdirSync('/proc/self/fd').length, baselineFds);
+    `);
+    execFileSync(process.execPath, [harness, JSON.stringify(workspaceOptions(context))], { timeout: 15000, encoding: 'utf8' });
   });
 });
