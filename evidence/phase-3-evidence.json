@@ -71,7 +71,7 @@
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
-    "package.json": "6059ba438706ff212d1c775727cc9f0dc3f1bde7887e438d02590d3b2492eb9b",
+    "package.json": "84027c216ce3ca43ca891e6344ad75b312d9505f18a04c47ecbf41f216c0f291",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
@@ -79,7 +79,7 @@
     "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
     "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3",
     "src/privacy.test.ts": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116",
-    "docs/OPERATIONS-PRIVACY.md": "9f8604365d1198810d5becb82e3c0f34f01fe4fb8a65a72827d9771a149e3299",
+    "docs/OPERATIONS-PRIVACY.md": "4345ea2f42a0e13517a439a4e2e90a1a7a9b1af0139f64bd81ea15ddf8ee06c3",
     "scripts/core-compatibility.mjs": "fb23bd739c5b3943d5ab0d9c0be5c103c03f0bb410e1c602e9751f4026b6ba4a",
     "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json": "6b53de40a277692383b6407b428ee40f237fad2dc916229bac8060f8ce904507"
   },
@@ -311,92 +311,92 @@
   ],
   "environment": {
     "platform": "darwin",
-    "os_release": "25.5.0",
-    "node": "v26.0.0",
+    "os_release": "27.0.0",
+    "node": "v22.16.0",
     "cpu": "Apple M1 Pro",
     "logical_cpus": 10
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 130.68,
+      "cold_total_ms": 143.37,
       "warm_total_ms": [
-        84.75,
-        86.2,
-        79.6,
-        76.35,
-        74.6
+        74.81,
+        77.47,
+        72.81,
+        74.87,
+        69.43
       ],
       "warm_baseline_load_ms": [
-        12.59,
-        8.18,
-        10.04,
-        6.98,
-        7.26
+        6.6,
+        7.8,
+        6.83,
+        8.08,
+        6.64
       ],
       "warm_incremental_scan_ms": [
-        2.19,
-        1.58,
-        1.86,
-        1.38,
-        1.29
+        1.76,
+        1.99,
+        2.2,
+        1.3,
+        1.27
       ],
-      "warm_median_total_ms": 79.6,
-      "warm_median_baseline_load_ms": 8.18,
-      "warm_median_incremental_scan_ms": 1.58
+      "warm_median_total_ms": 74.81,
+      "warm_median_baseline_load_ms": 6.83,
+      "warm_median_incremental_scan_ms": 1.76
     },
     "violation": {
-      "cold_total_ms": 120.13,
+      "cold_total_ms": 123.04,
       "warm_total_ms": [
-        92.18,
-        65.8,
-        66.94,
-        85.18,
-        85.03
+        76.16,
+        87.73,
+        85.55,
+        91.04,
+        85.66
       ],
       "warm_baseline_load_ms": [
-        10.66,
-        7.18,
-        6.39,
-        7.18,
-        10.88
+        8.32,
+        9.01,
+        8.33,
+        8.02,
+        13.26
       ],
       "warm_incremental_scan_ms": [
-        1.58,
-        1.33,
-        1.13,
-        2.01,
-        2.72
+        1.32,
+        1.4,
+        1.57,
+        1.53,
+        1.63
       ],
-      "warm_median_total_ms": 85.03,
-      "warm_median_baseline_load_ms": 7.18,
-      "warm_median_incremental_scan_ms": 1.58
+      "warm_median_total_ms": 85.66,
+      "warm_median_baseline_load_ms": 8.33,
+      "warm_median_incremental_scan_ms": 1.53
     },
     "evolution": {
-      "cold_total_ms": 122.2,
+      "cold_total_ms": 133.99,
       "warm_total_ms": [
-        86.21,
-        78.63,
-        69.91,
-        80.1,
-        77.63
+        141.68,
+        89.88,
+        82.72,
+        77.57,
+        87.43
       ],
       "warm_baseline_load_ms": [
-        9.62,
-        7.15,
-        6.67,
-        6.76,
-        8.14
+        8.53,
+        7.39,
+        7.46,
+        7.26,
+        9.03
       ],
       "warm_incremental_scan_ms": [
-        2.2,
-        1.31,
-        1.31,
-        1.25,
-        1.19
+        1.5,
+        1.23,
+        1.32,
+        1.56,
+        1.36
       ],
-      "warm_median_total_ms": 78.63,
-      "warm_median_baseline_load_ms": 7.15,
-      "warm_median_incremental_scan_ms": 1.31
+      "warm_median_total_ms": 87.43,
+      "warm_median_baseline_load_ms": 7.46,
+      "warm_median_incremental_scan_ms": 1.36
     }
   }
 }
