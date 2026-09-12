@@ -112,6 +112,12 @@ function artifact(value, maximum, field) {
   return { bytes: bytes.length, sha256: digest(bytes), base64: bytes.toString("base64") };
 }
 
+/** Validate and snapshot content before an injected transport or JSON parser uses it. */
+export function snapshotProviderEvidenceContent(bytes, kind) {
+  requireValue(kind === "request" || kind === "response", "content kind is invalid");
+  return artifact(bytes, kind === "request" ? providerEvidenceLimits.requestBytes : providerEvidenceLimits.responseBytes, kind);
+}
+
 function usage(value) {
   if (value === null) return null;
   keys(value, ["input_tokens", "output_tokens", "cost_usd"], "usage");
