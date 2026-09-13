@@ -27,6 +27,15 @@ export class FakeReasonerProvider {
         return outcome;
     }
 }
+function isObject(value) {
+    return typeof value === "object" && value !== null;
+}
+function hasFiniteNonNegativeTokens(value) {
+    return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+function hasFiniteNonNegativeCost(value) {
+    return typeof value === "number" && isNonNegativeFinite(value);
+}
 export class OpenAICompatibleProvider {
     id;
     model;
@@ -64,13 +73,21 @@ export class OpenAICompatibleProvider {
         if (result.status < 200 || result.status >= 300) {
             throw new ProviderFailure("provider", `provider returned HTTP ${result.status}`);
         }
+        if (!isObject(result.body)) {
+            throw new ProviderFailure("invalid-response", "provider response body must be an object");
+        }
         const body = result.body;
-        const content = body.choices?.[0]?.message?.content;
-        const input = body.usage?.prompt_tokens;
-        const output = body.usage?.completion_tokens;
-        const cost = body.usage?.cost_usd ?? 0;
-        if (typeof content !== "string" || typeof input !== "number" ||
-            typeof output !== "number" || typeof cost !== "number") {
+        const choices = Array.isArray(body.choices) ? body.choices : [];
+        const firstChoice = choices[0];
+        const content = isObject(firstChoice) && isObject(firstChoice.message) ? firstChoice.message.content : undefined;
+        const usage = isObject(body.usage) ? body.usage : {};
+        const input = usage.prompt_tokens;
+        const output = usage.completion_tokens;
+        const cost = usage.cost_usd ?? 0;
+        if (typeof content !== "string" ||
+            !hasFiniteNonNegativeTokens(input) ||
+            !hasFiniteNonNegativeTokens(output) ||
+            !hasFiniteNonNegativeCost(cost)) {
             throw new ProviderFailure("invalid-response", "provider response is missing content or usage");
         }
         return { content, input_tokens: input, output_tokens: output, cost_usd: cost };
