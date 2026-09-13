@@ -121,13 +121,13 @@ export class OpenAICompatibleProvider implements ReasonerProvider {
       throw new ProviderFailure("invalid-response", "provider response body must be an object");
     }
     const body = result.body;
-    const choices = isObject(body.choices) && Array.isArray(body.choices) ? body.choices : [];
+    const choices = Array.isArray(body.choices) ? body.choices : [];
     const firstChoice = choices[0];
     const content = isObject(firstChoice) && isObject(firstChoice.message) ? firstChoice.message.content : undefined;
     const usage = isObject(body.usage) ? body.usage : {};
     const input = usage.prompt_tokens;
     const output = usage.completion_tokens;
-    const cost = usage.cost_usd === undefined ? 0 : usage.cost_usd;
+    const cost = usage.cost_usd ?? 0;
     if (
       typeof content !== "string" ||
       !hasFiniteNonNegativeTokens(input) ||
