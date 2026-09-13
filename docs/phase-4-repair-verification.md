@@ -138,6 +138,15 @@ executor supplied by a caller is insufficient. A missing executable, denied
 isolation setup, timeout, output overflow, or executor failure is infrastructure
 uncertainty and cannot become a passing result.
 
+An [unapproved Docker candidate](repair-isolation-candidate.md) now implements
+real container execution and cleanup for fixed authored fixtures, including a
+hashed project snapshot transferred as explicit file bytes. It has zero host
+mounts and a pinned restricted seccomp profile that denies socket creation and
+named connections, including loopback. Private AF_UNIX socket pairs remain
+available for subprocess stdio. It issues no production capability. Its optional
+Docker probes and normal deterministic contract tests do not change this
+verifier's production gate.
+
 Environment variables are allowlisted rather than inherited wholesale.
 Proxy variables point to a closed loopback port, package managers are placed in
 offline mode, and temporary/cache/config paths are redirected into the
