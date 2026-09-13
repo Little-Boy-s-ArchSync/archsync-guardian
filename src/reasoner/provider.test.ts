@@ -398,10 +398,16 @@ describe("reasoner providers", () => {
     })).rejects.toMatchObject({ kind: "cancelled" });
 
     for (const body of [
+      null,
       { usage: { prompt_tokens: 1, completion_tokens: 1 } },
+      { choices: [{ message: { content: "x" } }] },
       { choices: [{ message: { content: "x" } }], usage: { completion_tokens: 1 } },
       { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: 1 } },
       { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: 1, completion_tokens: 1, cost_usd: "x" } },
+      { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: -1, completion_tokens: 1 } },
+      { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: Number.NaN, completion_tokens: 1 } },
+      { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: 1, completion_tokens: Number.POSITIVE_INFINITY } },
+      { choices: [{ message: { content: "x" } }], usage: { prompt_tokens: 1, completion_tokens: 1, cost_usd: Number.NEGATIVE_INFINITY } },
     ]) {
       bodies.push(body);
       await expect(provider.generate({ prompt: "p", max_tokens: 1, timeout_ms: 1, temperature: 0 })).rejects.toMatchObject({ kind: "invalid-response" });
