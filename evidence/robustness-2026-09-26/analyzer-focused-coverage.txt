@@ -1,0 +1,29 @@
+$ vitest run src/analyzer.test.ts src/analyzer-adversarial.test.ts src/phase3.test.ts --coverage --coverage.include=src/analyzer.ts
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+      Coverage enabled with v8
+
+ ✓ src/phase3.test.ts (12 tests) 3891ms
+   ✓ Phase 3 Git diff architecture gate > passes an internal source change and reuses the baseline cache  460ms
+   ✓ Phase 3 Git diff architecture gate > rebuilds a corrupt custom baseline cache safely  381ms
+   ✓ Phase 3 Git diff architecture gate > requests review for a non-forbidden topology evolution  432ms
+   ✓ Phase 3 Git diff architecture gate > writes a GitHub step summary and supports model-only evidence  526ms
+   ✓ Phase 3 Git diff architecture gate > tracks a same-component TypeScript rename  307ms
+   ✓ Phase 3 Git diff architecture gate > compares a committed feature branch with its merge base  323ms
+   ✓ Phase 3 Git diff architecture gate > does not block an unrelated diff for a pre-existing baseline violation  311ms
+   ✓ Phase 3 Git diff architecture gate > tracks modified and empty untracked TypeScript files in a newly inferred component  338ms
+ ✓ src/analyzer.test.ts (12 tests) 342ms
+ ✓ src/analyzer-adversarial.test.ts (18 tests) 110ms
+
+ Test Files  3 passed (3)
+      Tests  42 passed (42)
+   Start at  12:53:29
+   Duration  6.59s (transform 156ms, setup 0ms, collect 1.19s, tests 4.34s, environment 0ms, prepare 264ms)
+
+ % Coverage report from v8
+-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------|---------|----------|---------|---------|-------------------
+All files    |     100 |      100 |     100 |     100 |                   
+ analyzer.ts |     100 |      100 |     100 |     100 |                   
+-------------|---------|----------|---------|---------|-------------------

@@ -13,6 +13,7 @@ import {
   formatPhase3Result,
   mergeIncrementalObservedArchitecture,
 } from "./phase3.js";
+import { guardianAnalyzerVersion } from "./contracts.js";
 import { baselineSources, testArchitecture, writeSources } from "./test-helpers.js";
 
 const execFileAsync = promisify(execFile);
@@ -313,7 +314,7 @@ export async function bypass(): Promise<void> { await database.query("select 1")
     };
     const baseline = {
       version: "0.1" as const,
-      analyzer: { id: "archsync-typescript" as const, version: "0.2" as const, stack: "typescript-node" as const },
+      analyzer: { id: "archsync-typescript" as const, version: guardianAnalyzerVersion, stack: "typescript-node" as const },
       metadata: { name: "baseline", scanned_files: 1 },
       components: {
         postgres: {

@@ -1,0 +1,2 @@
+$ node scripts/core-compatibility.mjs
+PASS CORE/GUARDIAN COMPATIBILITY (Core 0.1.1/0.1.0; Guardian result 0.1; Core 503b5fe97aa39a78d5e5de80b794a94508e106cc; SHA-256 7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9)

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "platform": "darwin",
+  "architecture": "arm64",
+  "node_version": "22.16.0",
+  "pnpm_version": "11.16.0",
+  "package": {
+    "name": "ArchSync CLI",
+    "package": "@archsync/guardian",
+    "version": "0.3.3"
+  },
+  "provenance": {
+    "mode": "package",
+    "source_commit": "d86b6f51cd0ce6b7d91e49190a340aa906ca3ede",
+    "package_content_sha256": "d3af4d687394f1f4c3837a9cd4ce7dd33c5b4151d00f218bb46c779a4ee3bb39",
+    "integrity": "verified"
+  },
+  "checks": [
+    "package-file-allowlist",
+    "bundled-core-runtime",
+    "bundled-cli-entrypoints",
+    "warning-free-install",
+    "isolated-global-prefix",
+    "binary-on-path",
+    "version-provenance",
+    "exact-core-dependency-provenance",
+    "core-cli-json-envelope",
+    "doctor",
+    "external-project-model-validation",
+    "installed-pass-block-review-demo",
+    "no-global-dlx-fallback"
+  ]
+}

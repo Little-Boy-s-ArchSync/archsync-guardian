@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "6d84229f2ea59c6787e12089653452b40f66e2f51ecaf4ffada2439352c8e434",
+    "implementation_source_sha256": "898286a5761042b304352b885152898b528cf2fd6075e51789ff67c0586b31db",
     "fixture_tree": {
       "files": [
         {
@@ -220,7 +220,7 @@
       },
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "092127ced2da12491365649111af9e67feb4db34f0c1f55255ec48a610b8c507"
+        "sha256": "403edad8055ec1d36d48557587f55e2a0465b08570757c4d53dd226f28597705"
       },
       {
         "file": "scripts/core-compatibility.mjs",
@@ -248,7 +248,7 @@
       },
       {
         "file": "src/analyzer.test.ts",
-        "sha256": "05487e352f18b862410deff73c24adbd1d9417f28cc1da265c705f61d7f4b08f"
+        "sha256": "b7a7a858e960bce76d5c74af24faae40d489c4c39bea689463bb10c3c9516422"
       },
       {
         "file": "src/benchmark.test.ts",
@@ -256,7 +256,7 @@
       },
       {
         "file": "src/compatibility.test.ts",
-        "sha256": "315d838752ed520a4a0e5c13c325393d957e9fec57e8c1d31a6233212c04c54a"
+        "sha256": "e3f4e8017e406e75d8d77479b98a5e079ebab30bf13a196666508979c3560f01"
       },
       {
         "file": "src/doctor.test.ts",
@@ -264,7 +264,7 @@
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "85789dd5287b51925647597ad8b817693e96d8902a2ec514f3dfa5c82d62fc19"
+        "sha256": "96c260997c7e68afe8ff81baeea78d6eed4d558e82a1f555eee2c1659589a5fb"
       },
       {
         "file": "src/model-cli.test.ts",
@@ -272,11 +272,11 @@
       },
       {
         "file": "src/phase3-git.test.ts",
-        "sha256": "20bf6a791445df28733a0840d4eb53ca340250d765856eee481130ab38fe713c"
+        "sha256": "af03206dd4e4ec95d187447b4949512aa7d7072495cffdd8a4a66f09231113aa"
       },
       {
         "file": "src/phase3.test.ts",
-        "sha256": "cd8906f42b30e00bf05afdc2e15e05bedb6d6a08c8e497ed31ec8bcd81d49e6f"
+        "sha256": "6a2a028a25561f6705337ed26aef96c9f91be235783b55459e3ee8d9b5046d36"
       },
       {
         "file": "src/privacy.test.ts",
@@ -288,7 +288,7 @@
       },
       {
         "file": "src/version.test.ts",
-        "sha256": "f8a55b33c088fb22722bb86f3b522c33ea46916083ae282c5c98b8a83467610a"
+        "sha256": "cf7846c543788cc282a16e4996b93ddbaffdca33118175afa1f6767d3ecb0f07"
       },
       {
         "file": "tsconfig.json",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "c45844b2cfb5b91971fdb164d1b8896d467d70fc1bb6d7d85e5c93d17b3f81ad",
+    "verification_source_sha256": "f1ecdd71ec37304e4b561e231981d3d13ff3f6757dba3ef2facfcfbedf90c863",
     "dependency_source": [
       {
         "file": "package.json",
@@ -363,7 +363,7 @@
         "cli_json": "1.0.0"
       },
       "guardian": {
-        "analyzer": "0.2",
+        "analyzer": "0.3",
         "observed_graph": "0.1",
         "finding": "0.1",
         "source_evidence": "0.1",
@@ -376,20 +376,20 @@
       }
     },
     "source_sha256": {
-      "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
+      "src/contracts.ts": "57411aea96aa92defee6fa1a1305bf81ec0c13ae006f9b761c2534ffbc17f149",
       "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
-      "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
+      "src/analyzer.ts": "3c44dae6255417e4319ffc9bedc110a6cf330e51250e2d1d45b47dcabd0052d2",
       "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
-      "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
-      "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
+      "src/phase3-git.ts": "621e0644e09412f5b7b0a92cd7b754d8ce759e2f5ff0138245ed7679782e9001",
+      "src/phase3.ts": "2d400e0acdc94d368958275405ff6f33eaa0e5021d389c778fa9f9979a2b2156",
       "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
       "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
-      "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
+      "src/version.ts": "872c6dcfa0042ea4f1e3981cd10f63bea9c89848d035e3dfb2c411133ede0725"
     }
   },
   "core_dependency": {
@@ -411,7 +411,7 @@
   },
   "analyzer": {
     "id": "archsync-typescript",
-    "version": "0.2",
+    "version": "0.3",
     "stack": "typescript-node",
     "supported_detectors": [
       "component-root",
@@ -433,12 +433,12 @@
       "gateway|http|service",
       "service|data|postgres"
     ],
-    "normalized_observed_sha256": "bfce42e50fcd35d3444942f02608a6314c9e16f273373f9daec55882f3659a93"
+    "normalized_observed_sha256": "11ace71e4d69710bbdd26b126e69854295a8bd7a8c050e74c730c65f3791a114"
   },
   "compatibility_replay": {
     "current_core_architecture_model": "0.1.1",
     "previous_core_architecture_model": "0.1.0",
-    "normalized_guardian_result_sha256": "9fabbc1afe6a823761eff699fe3ece79e121a41e78ad5555260099cb210757b0",
+    "normalized_guardian_result_sha256": "92a61f56d36631503e4621e29d78119a630c0022aed36ac036466a7b44d241ff",
     "exact_current_previous_match": true,
     "unsupported_version": "9.0.0",
     "unsupported_message": "Unsupported architecture contract version '9.0.0'. Supported versions: 0.1.1, 0.1.0, 0.1."
@@ -554,7 +554,7 @@
         ]
       }
     ],
-    "normalized_observed_sha256": "53cff9ef5024abfe01acf01252210f82aad9d99e23415213c9189d7cdf2cd41b"
+    "normalized_observed_sha256": "d6a1da652c7a776fa531c130659763e318916b452ad61d918bba2a25d05ee661"
   },
   "finding_demo": {
     "classification": "violation",
@@ -570,7 +570,7 @@
         "confidence": 0.99
       }
     ],
-    "normalized_result_sha256": "0216f68fbe8f06979430078d9240e8d8e196f4b9c7db134a64fc51d606241d95"
+    "normalized_result_sha256": "daca92049dd7b8bfd0295e02e97a848e913114b80fcab07dd56b7fa923c0679e"
   },
   "enforced_gates": {
     "coverage_thresholds_percent": {

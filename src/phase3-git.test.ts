@@ -12,6 +12,21 @@ import {
 import { testArchitecture } from "./test-helpers.js";
 
 describe("Phase 3 Git output parsing", () => {
+  it("preserves literal NUL-delimited rename paths and statistics", () => {
+    const files = parseNameStatus("R090\0old\tname.ts\0new\nname.ts\0M\0other.ts\0", "");
+    parseNumStat("2\t1\t\0old\tname.ts\0new\nname.ts\0malformed\0", "", files);
+    expect(files.get("new\nname.ts")).toMatchObject({previous_path:"old\tname.ts", status:"renamed", additions:2, deletions:1});
+    expect(files.get("other.ts")).toMatchObject({status:"modified"});
+  });
+
+  it("decodes Git patch quoted bytes, escapes, and literal Unicode", () => {
+    const names = ['café.ts', 'tab\tfile.ts', 'quote"file.ts', 'back\\file.ts', 'emoji😀.ts', 'unknown\\q.ts'];
+    const headers = ['"b/caf\\303\\251.ts"', '"b/tab\\tfile.ts"', '"b/quote\\"file.ts"', '"b/back\\\\file.ts"', '"b/emoji😀.ts"', '"b/unknown\\q.ts"'];
+    const files = parseNameStatus(names.map((name) => `M\0${name}\0`).join(""), "");
+    parseChangedLines(headers.map((header) => `+++ ${header}\n@@ -1 +1 @@`).join("\n"), "", files);
+    for (const name of names) expect(files.get(name)?.changed_lines).toEqual([{start:1,end:1}]);
+  });
+
   it("normalizes platform paths and maps source files to known or inferred components", () => {
     const expected = testArchitecture();
 

@@ -37,7 +37,7 @@ describe("CLI version provenance", () => {
       core_evidence: "1.0.0",
       core_conformance: "1.0.0",
       core_cli_json: "1.0.0",
-      guardian_analyzer: "0.2",
+      guardian_analyzer: "0.3",
       guardian_observed_graph: "0.1",
       guardian_finding: "0.1",
       guardian_source_evidence: "0.1",

@@ -796,7 +796,7 @@ describe("ArchSync rechecks and deterministic decisions", () => {
       diff: { added_nodes: [], removed_nodes: [], changed_nodes: [], added_edges: [], removed_edges: [] },
       observed: {
         version: "0.1",
-        analyzer: { id: "archsync-typescript", version: "0.2", stack: "typescript-node" },
+        analyzer: { id: "archsync-typescript", version: "0.3", stack: "typescript-node" },
         metadata: { name: "test", scanned_files: 0 },
         components: {},
         relationships: [],

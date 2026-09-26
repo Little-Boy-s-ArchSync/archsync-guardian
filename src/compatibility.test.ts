@@ -54,7 +54,7 @@ describe("Core and Guardian contract compatibility", () => {
         cli_json: "1.0.0",
       },
       guardian: {
-        analyzer: "0.2",
+        analyzer: "0.3",
         observed_graph: "0.1",
         finding: "0.1",
         source_evidence: "0.1",
@@ -80,7 +80,7 @@ describe("Core and Guardian contract compatibility", () => {
       core_evidence: "1.0.0",
       core_conformance: "1.0.0",
       core_cli_json: "1.0.0",
-      guardian_analyzer: "0.2",
+      guardian_analyzer: "0.3",
       guardian_observed_graph: "0.1",
       guardian_finding: "0.1",
       guardian_source_evidence: "0.1",
@@ -108,7 +108,7 @@ describe("Core and Guardian contract compatibility", () => {
       decision: "BLOCK",
       observed: {
         version: "0.1",
-        analyzer: { version: "0.2" },
+        analyzer: { version: "0.3" },
       },
     });
     expect(currentResult.findings).not.toHaveLength(0);

@@ -1,0 +1,39 @@
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ✓ src/phase3-adversarial.test.ts (18 tests) 10393ms
+   ✓ incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads  303ms
+   ✓ incremental validity against full scans > matches a fresh full scan after add, with cold and warm caches  842ms
+   ✓ incremental validity against full scans > matches a fresh full scan after modify, with cold and warm caches  488ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete, with cold and warm caches  392ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-within, with cold and warm caches  449ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-across, with cold and warm caches  477ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete-component, with cold and warm caches  471ms
+   ✓ incremental validity against full scans > publishes concurrent cold cache writes without temporary-file collisions  533ms
+   ✓ incremental validity against full scans > invalidates the baseline when architecture rules change  924ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "café.ts"  1240ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts"  486ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "café.ts"  355ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts"  335ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts"  374ms
+   ✓ incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model  866ms
+   ✓ incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted  1257ms
+   ✓ incremental validity against full scans > preserves evidence from a nested component when only its parent component changes  338ms
+ ✓ src/phase3.test.ts (12 tests) 4843ms
+   ✓ Phase 3 Git diff architecture gate > passes an internal source change and reuses the baseline cache  778ms
+   ✓ Phase 3 Git diff architecture gate > passes a documentation-only diff without parsing a source component  309ms
+   ✓ Phase 3 Git diff architecture gate > rebuilds a corrupt custom baseline cache safely  468ms
+   ✓ Phase 3 Git diff architecture gate > requests review for a non-forbidden topology evolution  436ms
+   ✓ Phase 3 Git diff architecture gate > writes a GitHub step summary and supports model-only evidence  409ms
+   ✓ Phase 3 Git diff architecture gate > tracks a same-component TypeScript rename  357ms
+   ✓ Phase 3 Git diff architecture gate > compares a committed feature branch with its merge base  407ms
+   ✓ Phase 3 Git diff architecture gate > does not block an unrelated diff for a pre-existing baseline violation  360ms
+   ✓ Phase 3 Git diff architecture gate > reports a resolved baseline violation without blocking the fix  310ms
+   ✓ Phase 3 Git diff architecture gate > tracks modified and empty untracked TypeScript files in a newly inferred component  710ms
+ ✓ src/phase3-git.test.ts (7 tests) 5ms
+
+ Test Files  3 passed (3)
+      Tests  37 passed (37)
+   Start at  12:53:45
+   Duration  17.87s (transform 485ms, setup 0ms, collect 1.79s, tests 15.24s, environment 0ms, prepare 236ms)
+

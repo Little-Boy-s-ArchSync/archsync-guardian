@@ -1,0 +1,42 @@
+$ node scripts/package-install-e2e.mjs --evidence .artifacts/package-install.json
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Command failed: /Users/andytran/.npm/_npx/2ad0c2d1aba2dd61/node_modules/node/bin/node /Users/andytran/Library/pnpm/.tools/pnpm/11.16.0/bin/pnpm pack --json --pack-destination /var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-install-e2e-ERPlga/packages
+{
+  "error": {
+    "code": "ELIFECYCLE",
+    "message": "@archsync/guardian@0.3.3 prepack: `pnpm build && node scripts/package-provenance.mjs write`\nExit status 1"
+  }
+}
+
+$ pnpm build && node scripts/package-provenance.mjs write
+$ tsc -b
+file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/package-provenance.mjs:20
+    throw new Error("refusing to package a dirty tracked source tree");
+          ^
+
+Error: refusing to package a dirty tracked source tree
+    at file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/package-provenance.mjs:20:11
+    at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.16.0
+
+
+1 !== 0
+
+    at run (file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/package-install-e2e.mjs:32:10)
+    at runPnpm (file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/package-install-e2e.mjs:42:10)
+    at file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/package-install-e2e.mjs:68:16 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual'
+}
+
+Node.js v22.16.0
+[ELIFECYCLE] Command failed with exit code 1.

@@ -217,3 +217,7 @@ for the proposed runtime boundary. Phase 4 reasoning is an evidence-only foundat
 repair generation, automatic approval/merge, MCP transport, rendered/dynamic IaC,
 cloud-state discovery, production telemetry and experimental validation remain
 outside this integration branch.
+
+### Analyzer semantic version
+
+The current analyzer version is `0.3`. It distinguishes lexical bindings, ignores type-only client imports, rejects incompatible client protocols, and limits binary-expression endpoint inference to the supported operators. The observed graph schema remains `0.1`. The Git-gate cache includes the analyzer version, so graphs from analyzer `0.2` are not reused as current results. Frozen historical evidence retains the analyzer version that originally produced it.

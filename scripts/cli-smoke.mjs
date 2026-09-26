@@ -59,7 +59,7 @@ try {
 
   const version = run(["--version"]);
   assert.equal(version.status, 0, version.stderr);
-  assert.match(version.stdout, /Core Model 0\.1\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/);
+  assert.match(version.stdout, /Core Model 0\.1\.1, Guardian Analyzer 0\.3, Git Gate 0\.3/);
   pass("version reports component contracts");
 
   const versionJson = run(["version", "--json"]);

@@ -265,7 +265,7 @@ import ignored from "node:fs";
 
 const [destructured] = ["value"];
 let unset;
-const suffix = "v1";
+const suffix = "/v1";
 const config = { connectionString: "postgres://ignored:5432/db" };
 const spreadConfig = { url: "redis://ignored:6379" };
 const noOptions = new defaultPg.Client;

@@ -31,7 +31,7 @@ export declare const coreGuardianContractMatrix: Readonly<{
         cli_json: "1.0.0";
     };
     guardian: {
-        analyzer: "0.2";
+        analyzer: "0.3";
         observed_graph: "0.1";
         finding: "0.1";
         source_evidence: "0.1";

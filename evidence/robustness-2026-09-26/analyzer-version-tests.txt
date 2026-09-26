@@ -1,0 +1,14 @@
+$ vitest run src/version.test.ts src/compatibility.test.ts src/guardian.test.ts src/repair-verification.test.ts
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ✓ src/repair-verification.test.ts (81 tests) 651ms
+ ✓ src/version.test.ts (6 tests) 328ms
+ ✓ src/compatibility.test.ts (8 tests) 126ms
+ ✓ src/guardian.test.ts (9 tests) 127ms
+
+ Test Files  4 passed (4)
+      Tests  104 passed (104)
+   Start at  12:49:39
+   Duration  3.02s (transform 154ms, setup 0ms, collect 1.07s, tests 1.23s, environment 0ms, prepare 201ms)
+
