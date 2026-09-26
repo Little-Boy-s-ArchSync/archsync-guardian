@@ -13,7 +13,7 @@ export const observedGraphVersion = "0.1" as const;
 export const findingContractVersion = "0.1" as const;
 export const sourceEvidenceContractVersion = "0.1" as const;
 export const guardianResultContractVersion = "0.1" as const;
-export const guardianAnalyzerVersion = "0.3" as const;
+export const guardianAnalyzerVersion = "0.4" as const;
 
 export type DetectorId =
   | "component-root"

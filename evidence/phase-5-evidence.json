@@ -25,12 +25,12 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "cdd296fb80b444faf690d0502766eede1cce4802b9429ca3c8865589b391d9f4",
+  "generated_dist_sha256": "5e5f5e92e4475011ec0125a0eea073227ceda824a4cff2a7e665a6a6a6952cec",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
   "governance_sha256": {
-    "README.md": "cc108c0430b09f1f71bb253726187480f3c2e83bd21ebd0b34374ebf84601a8d",
+    "README.md": "f40b94a82bcd8b2e8d2aabd93c53bc8b679e4a31002cce05e4ca89676176f93e",
     "docs/BOUNDARY.md": "aed32740fbfa42629837e3393046c35dfb9ca6660d084df731c3553887425e3f",
     "docs/OPERATIONS-PRIVACY.md": "4345ea2f42a0e13517a439a4e2e90a1a7a9b1af0139f64bd81ea15ddf8ee06c3",
     "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",

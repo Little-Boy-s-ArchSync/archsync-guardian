@@ -429,15 +429,47 @@ function variableEndpoints(
   const amqpConnections = new Map<string, EndpointTarget>();
   const amqpChannels = new Map<string, EndpointTarget>();
   const declarations: ts.VariableDeclaration[] = [];
-  // Flow-insensitive invalidation: any direct assignment makes that binding unknown,
+  // Flow-insensitive invalidation: any recognized binding write makes it unknown,
   // including uses before the write. This deliberately trades recall for fewer stale edges.
   const mutated = new Set<string>();
+  const markWrite = (expression: ts.Expression): void => {
+    const target = unwrapExpression(expression);
+    if (ts.isIdentifier(target)) {
+      mutated.add(identifierKey(target));
+    } else if (ts.isArrayLiteralExpression(target)) {
+      for (const element of target.elements) markWrite(element);
+    } else if (ts.isObjectLiteralExpression(target)) {
+      for (const property of target.properties) {
+        if (ts.isShorthandPropertyAssignment(property)) {
+          // Shorthand property symbols differ from the variable being assigned.
+          const symbol = sourceCheckers.get(sourceFile)!.getShorthandAssignmentValueSymbol(property);
+          const declaration = symbol?.declarations?.[0];
+          if (declaration) mutated.add(`${property.name.text}@${declaration.pos}`);
+        } else if (ts.isPropertyAssignment(property)) {
+          markWrite(property.initializer);
+        } else if (ts.isSpreadAssignment(property)) {
+          markWrite(property.expression);
+        }
+      }
+    } else if (ts.isSpreadElement(target)) {
+      markWrite(target.expression);
+    } else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+      markWrite(target.left);
+    }
+    // Property/element writes mutate an object, not the receiver or index binding.
+  };
   const collect = (node: ts.Node): void => {
     if (ts.isVariableDeclaration(node)) declarations.push(node);
     if (ts.isBinaryExpression(node) &&
       node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment &&
-      node.operatorToken.kind <= ts.SyntaxKind.LastAssignment && ts.isIdentifier(node.left)) {
-      mutated.add(identifierKey(node.left));
+      node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+      markWrite(node.left);
+    } else if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) &&
+      (node.operator === ts.SyntaxKind.PlusPlusToken || node.operator === ts.SyntaxKind.MinusMinusToken)) {
+      markWrite(node.operand);
+    } else if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) &&
+      !ts.isVariableDeclarationList(node.initializer)) {
+      markWrite(node.initializer);
     }
     ts.forEachChild(node, collect);
   };

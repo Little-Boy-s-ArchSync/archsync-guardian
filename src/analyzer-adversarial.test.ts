@@ -72,3 +72,27 @@ it('resolves parentheses within string concatenation', async () => {
 it('preserves the known side of the existing fallback heuristic', async () => {
   expect(await edges('fetch("https://actual" ?? unknownValue);')).toEqual(['http|actual']);
 });
+it.each([
+  ['array assignment', '[url] = incoming;'],
+  ['object shorthand assignment', '({url} = incoming);'],
+  ['renamed object assignment', '({value: url} = incoming);'],
+  ['nested default assignment', '({value: [url = "https://fallback"]} = incoming);'],
+  ['object rest assignment', '({...url} = incoming);'],
+  ['array rest assignment', '[...url] = incoming;'],
+  ['postfix increment', 'url++;'],
+  ['prefix decrement', '--url;'],
+  ['for-of assignment', 'for (url of incoming) {}'],
+  ['for-in assignment', 'for (url in incoming) {}'],
+  ['for-of destructuring', 'for ({value: url} of incoming) {}'],
+])('invalidates endpoint provenance after %s', async (_label, write) => {
+  expect(await edges(`let url:any="https://stale"; ${write} fetch(url);`)).toEqual([]);
+});
+it('invalidates a database receiver written by destructuring', async () => {
+  expect(await edges('import {Client} from "pg"; let db=new Client({connectionString:"postgres://stale/x"}); [db]=incoming; db.query("x");')).toEqual([]);
+});
+it('keeps reads and property writes from invalidating unrelated endpoint bindings', async () => {
+  expect(await edges('const url="https://actual"; const obj:any={}; obj[url]=1; const values=[url]; const copy={url}; +url; fetch(url);')).toEqual(['http|actual']);
+});
+it('keeps a sibling endpoint when a shadowed loop binding is written', async () => {
+  expect(await edges('let url="https://actual"; for(let url of incoming){url++;} fetch(url);')).toEqual(['http|actual']);
+});

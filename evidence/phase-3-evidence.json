@@ -23,7 +23,7 @@
       "cli_json": "1.0.0"
     },
     "guardian": {
-      "analyzer": "0.3",
+      "analyzer": "0.4",
       "observed_graph": "0.1",
       "finding": "0.1",
       "source_evidence": "0.1",
@@ -48,10 +48,10 @@
     "dependency_status": "upstream-integration-pr-merged"
   },
   "source_sha256": {
-    "src/analyzer.ts": "3c44dae6255417e4319ffc9bedc110a6cf330e51250e2d1d45b47dcabd0052d2",
+    "src/analyzer.ts": "b04fd26bbc7a0d43fd0b883b11a3b0f81eaa8154b172e1a55191f34654ad1df8",
     "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
     "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
-    "src/contracts.ts": "57411aea96aa92defee6fa1a1305bf81ec0c13ae006f9b761c2534ffbc17f149",
+    "src/contracts.ts": "fd98eaa5f08d5c2238ebcbf7b2b1d4012394e7cf867f924cf568f8dc000fbd74",
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
     "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
@@ -318,85 +318,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 163.79,
+      "cold_total_ms": 145.21,
       "warm_total_ms": [
-        96.02,
-        78.47,
-        91.62,
-        74.66,
-        76.43
+        75.95,
+        80.73,
+        71.51,
+        73.68,
+        72.78
       ],
       "warm_baseline_load_ms": [
-        6.58,
-        7.49,
-        6.73,
-        8.71,
-        6.73
+        7.16,
+        7.82,
+        6.67,
+        7.19,
+        6.99
       ],
       "warm_incremental_scan_ms": [
-        4.26,
-        6.42,
-        4.02,
-        3.65,
-        2.8
+        4.47,
+        6.69,
+        3.1,
+        2.98,
+        2.96
       ],
-      "warm_median_total_ms": 78.47,
-      "warm_median_baseline_load_ms": 6.73,
-      "warm_median_incremental_scan_ms": 4.02
+      "warm_median_total_ms": 73.68,
+      "warm_median_baseline_load_ms": 7.16,
+      "warm_median_incremental_scan_ms": 3.1
     },
     "violation": {
-      "cold_total_ms": 115.48,
+      "cold_total_ms": 147.25,
       "warm_total_ms": [
-        78.08,
-        87.6,
-        95.34,
-        78.81,
-        89.56
+        84.57,
+        81.97,
+        79.19,
+        74.8,
+        70.7
       ],
       "warm_baseline_load_ms": [
-        7.22,
-        7.78,
-        6.73,
-        7.72,
-        6.68
+        7.44,
+        7.34,
+        7.11,
+        7.43,
+        7.04
       ],
       "warm_incremental_scan_ms": [
-        4.55,
-        2.63,
-        2.65,
-        2.7,
-        2.85
+        3.88,
+        3.04,
+        3.05,
+        2.98,
+        2.58
       ],
-      "warm_median_total_ms": 87.6,
-      "warm_median_baseline_load_ms": 7.22,
-      "warm_median_incremental_scan_ms": 2.7
+      "warm_median_total_ms": 79.19,
+      "warm_median_baseline_load_ms": 7.34,
+      "warm_median_incremental_scan_ms": 3.04
     },
     "evolution": {
-      "cold_total_ms": 121.13,
+      "cold_total_ms": 112.35,
       "warm_total_ms": [
-        74.41,
-        74.56,
-        75.77,
-        72.09,
-        76.6
+        77.42,
+        73.5,
+        71.28,
+        73.17,
+        73.15
       ],
       "warm_baseline_load_ms": [
-        6.92,
-        7.24,
-        7.25,
-        7.08,
-        7.94
+        8.98,
+        7.81,
+        6.96,
+        7,
+        7.36
       ],
       "warm_incremental_scan_ms": [
-        2.89,
-        2.91,
-        2.56,
-        2.91,
-        2.56
+        3.18,
+        2.78,
+        2.39,
+        2.81,
+        2.86
       ],
-      "warm_median_total_ms": 74.56,
-      "warm_median_baseline_load_ms": 7.24,
-      "warm_median_incremental_scan_ms": 2.89
+      "warm_median_total_ms": 73.17,
+      "warm_median_baseline_load_ms": 7.36,
+      "warm_median_incremental_scan_ms": 2.81
     }
   }
 }

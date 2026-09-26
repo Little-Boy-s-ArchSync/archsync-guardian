@@ -3,7 +3,7 @@ export declare const observedGraphVersion: "0.1";
 export declare const findingContractVersion: "0.1";
 export declare const sourceEvidenceContractVersion: "0.1";
 export declare const guardianResultContractVersion: "0.1";
-export declare const guardianAnalyzerVersion: "0.3";
+export declare const guardianAnalyzerVersion: "0.4";
 export type DetectorId = "component-root" | "typescript-fetch" | "typescript-pg" | "typescript-redis" | "typescript-amqp-publish" | "typescript-amqp-consume";
 export interface SourceEvidence {
     kind: "source-location";

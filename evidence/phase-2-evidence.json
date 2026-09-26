@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "898286a5761042b304352b885152898b528cf2fd6075e51789ff67c0586b31db",
+    "implementation_source_sha256": "ba69da46cb6da34b843bf34b96b40304121ceb41391a3b034ca0b1854dc55cac",
     "fixture_tree": {
       "files": [
         {
@@ -220,7 +220,7 @@
       },
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "403edad8055ec1d36d48557587f55e2a0465b08570757c4d53dd226f28597705"
+        "sha256": "0ffca9fd42a83228561df7ae169c5eebf5102e8e2442f2665eefd215c647673e"
       },
       {
         "file": "scripts/core-compatibility.mjs",
@@ -256,7 +256,7 @@
       },
       {
         "file": "src/compatibility.test.ts",
-        "sha256": "e3f4e8017e406e75d8d77479b98a5e079ebab30bf13a196666508979c3560f01"
+        "sha256": "2b6d69093ee6c928e91ffc83556f8bc33a6a97132aa59cd50fd16d187cdcc47a"
       },
       {
         "file": "src/doctor.test.ts",
@@ -264,7 +264,7 @@
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "96c260997c7e68afe8ff81baeea78d6eed4d558e82a1f555eee2c1659589a5fb"
+        "sha256": "3f1ca7f227665440e0b4a26179a4486e4c768d8322e835eabc61ad61fa994fe2"
       },
       {
         "file": "src/model-cli.test.ts",
@@ -288,7 +288,7 @@
       },
       {
         "file": "src/version.test.ts",
-        "sha256": "cf7846c543788cc282a16e4996b93ddbaffdca33118175afa1f6767d3ecb0f07"
+        "sha256": "ac82058447ee957477356a441c7dbb11232c8aad85ab577f0550823121a25912"
       },
       {
         "file": "tsconfig.json",
@@ -303,7 +303,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "f1ecdd71ec37304e4b561e231981d3d13ff3f6757dba3ef2facfcfbedf90c863",
+    "verification_source_sha256": "6c5ec5ce8b0703665be4496774033d766a13c88f6b315efcc408cecb5c9c74a4",
     "dependency_source": [
       {
         "file": "package.json",
@@ -363,7 +363,7 @@
         "cli_json": "1.0.0"
       },
       "guardian": {
-        "analyzer": "0.3",
+        "analyzer": "0.4",
         "observed_graph": "0.1",
         "finding": "0.1",
         "source_evidence": "0.1",
@@ -376,9 +376,9 @@
       }
     },
     "source_sha256": {
-      "src/contracts.ts": "57411aea96aa92defee6fa1a1305bf81ec0c13ae006f9b761c2534ffbc17f149",
+      "src/contracts.ts": "fd98eaa5f08d5c2238ebcbf7b2b1d4012394e7cf867f924cf568f8dc000fbd74",
       "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
-      "src/analyzer.ts": "3c44dae6255417e4319ffc9bedc110a6cf330e51250e2d1d45b47dcabd0052d2",
+      "src/analyzer.ts": "b04fd26bbc7a0d43fd0b883b11a3b0f81eaa8154b172e1a55191f34654ad1df8",
       "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
@@ -411,7 +411,7 @@
   },
   "analyzer": {
     "id": "archsync-typescript",
-    "version": "0.3",
+    "version": "0.4",
     "stack": "typescript-node",
     "supported_detectors": [
       "component-root",
@@ -433,12 +433,12 @@
       "gateway|http|service",
       "service|data|postgres"
     ],
-    "normalized_observed_sha256": "11ace71e4d69710bbdd26b126e69854295a8bd7a8c050e74c730c65f3791a114"
+    "normalized_observed_sha256": "7b7f1734d7a6e0731479e75d9dd06918abef9959ac7d45d0eb9fe271c9359245"
   },
   "compatibility_replay": {
     "current_core_architecture_model": "0.1.1",
     "previous_core_architecture_model": "0.1.0",
-    "normalized_guardian_result_sha256": "92a61f56d36631503e4621e29d78119a630c0022aed36ac036466a7b44d241ff",
+    "normalized_guardian_result_sha256": "3b202299e02795e440d48cd33412d8824d740e64c322fde71c338051c9c28849",
     "exact_current_previous_match": true,
     "unsupported_version": "9.0.0",
     "unsupported_message": "Unsupported architecture contract version '9.0.0'. Supported versions: 0.1.1, 0.1.0, 0.1."
@@ -554,7 +554,7 @@
         ]
       }
     ],
-    "normalized_observed_sha256": "d6a1da652c7a776fa531c130659763e318916b452ad61d918bba2a25d05ee661"
+    "normalized_observed_sha256": "b5d6571645cd657229fe1ff5ae892010948e1019604abdad37708a11cb358841"
   },
   "finding_demo": {
     "classification": "violation",
@@ -570,7 +570,7 @@
         "confidence": 0.99
       }
     ],
-    "normalized_result_sha256": "daca92049dd7b8bfd0295e02e97a848e913114b80fcab07dd56b7fa923c0679e"
+    "normalized_result_sha256": "52562ca4c498830903d448bc605fce97c1a4c21abbdae791ecd68b8e64083aca"
   },
   "enforced_gates": {
     "coverage_thresholds_percent": {
