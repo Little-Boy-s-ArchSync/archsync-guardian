@@ -20,6 +20,37 @@ import type {
 import { guardianAnalyzerVersion, observedGraphVersion } from "./contracts.js";
 import { redactSensitiveText } from "./privacy.js";
 
+// Bind names within each parsed file without resolving dependencies or loading libraries.
+// Symbol identity prevents an imported client or endpoint from leaking into shadowing scopes.
+const sourceCheckers = new WeakMap<ts.SourceFile, ts.TypeChecker>();
+function identifierKey(identifier: ts.Identifier): string {
+  const symbol = sourceCheckers.get(identifier.getSourceFile())?.getSymbolAtLocation(identifier);
+  const declaration = symbol?.declarations?.[0];
+  return declaration ? `${identifier.text}@${declaration.pos}` : identifier.text;
+}
+
+function bindSource(sourceFile: ts.SourceFile): void {
+  const sources = new Map([[sourceFile.fileName, sourceFile]]);
+  const contents = new Map([[sourceFile.fileName, sourceFile.text]]);
+  const host: ts.CompilerHost = {
+    getSourceFile: sources.get.bind(sources),
+    getDefaultLibFileName: () => "",
+    // Required CompilerHost adapter; this binding-only program never emits files.
+    /* v8 ignore next */
+    writeFile: () => undefined,
+    getCurrentDirectory: () => "",
+    fileExists: (name) => name === sourceFile.fileName,
+    readFile: contents.get.bind(contents),
+    getCanonicalFileName: (name) => name,
+    useCaseSensitiveFileNames: () => true,
+    // Required formatting adapter; no emit or diagnostic formatting is requested.
+    /* v8 ignore next */
+    getNewLine: () => "\n",
+  };
+  const program = ts.createProgram([sourceFile.fileName], { noLib: true, noResolve: true }, host);
+  sourceCheckers.set(sourceFile, program.getTypeChecker());
+}
+
 interface EndpointTarget {
   id: string;
   relationshipType: RelationshipType;
@@ -180,6 +211,30 @@ function targetFromEnvironment(name: string): EndpointTarget | undefined {
   return undefined;
 }
 
+// Only evaluate string concatenation when all operands have a static string value.
+// Selecting one URL-shaped operand can change the actual destination.
+function staticString(expression: ts.Expression, seen = new Set<ts.Node>()): string | undefined {
+  if (seen.has(expression)) return undefined;
+  seen.add(expression);
+  if (ts.isStringLiteralLike(expression)) return expression.text;
+  if (ts.isParenthesizedExpression(expression)) return staticString(expression.expression, seen);
+  if (ts.isIdentifier(expression)) {
+    const symbol = sourceCheckers.get(expression.getSourceFile())!.getSymbolAtLocation(expression);
+    const declaration = symbol?.valueDeclaration;
+    if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer &&
+      ts.isVariableDeclarationList(declaration.parent) &&
+      (declaration.parent.flags & ts.NodeFlags.Const) !== 0) {
+      return staticString(declaration.initializer, seen);
+    }
+  }
+  if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+    const left = staticString(expression.left, new Set(seen));
+    const right = staticString(expression.right, new Set(seen));
+    if (left !== undefined && right !== undefined) return left + right;
+  }
+  return undefined;
+}
+
 function expressionEndpoint(
   expression: ts.Expression,
   endpoints: ReadonlyMap<string, EndpointTarget>,
@@ -188,17 +243,24 @@ function expressionEndpoint(
     return expressionEndpoint(expression.expression, endpoints);
   }
   if (ts.isStringLiteralLike(expression)) return targetFromUrl(expression.text);
-  if (ts.isIdentifier(expression)) return endpoints.get(expression.text);
+  if (ts.isIdentifier(expression)) return endpoints.get(identifierKey(expression));
   if (
     ts.isPropertyAccessExpression(expression) &&
     ts.isPropertyAccessExpression(expression.expression) &&
     ts.isIdentifier(expression.expression.expression) &&
-    expression.expression.expression.text === "process" &&
+    identifierKey(expression.expression.expression) === "process" &&
     expression.expression.name.text === "env"
   ) {
     return targetFromEnvironment(expression.name.text);
   }
-  if (ts.isBinaryExpression(expression)) {
+  if (ts.isBinaryExpression(expression) && expression.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+    const value = staticString(expression);
+    return value === undefined ? undefined : targetFromUrl(value);
+  }
+  if (ts.isBinaryExpression(expression) && [
+    ts.SyntaxKind.QuestionQuestionToken,
+    ts.SyntaxKind.BarBarToken,
+  ].includes(expression.operatorToken.kind)) {
     return expressionEndpoint(expression.right, endpoints) ?? expressionEndpoint(expression.left, endpoints);
   }
   if (ts.isTemplateExpression(expression)) {
@@ -239,26 +301,27 @@ function importBindings(sourceFile: ts.SourceFile): ImportBindings {
     const packageName = statement.moduleSpecifier.text;
     if (!['pg', 'redis', 'amqplib'].includes(packageName)) continue;
     const clause = statement.importClause;
-    if (!clause) continue;
+    if (!clause || clause.isTypeOnly) continue;
 
     if (clause.name) {
-      if (packageName === "pg") bindings.pgNamespaces.add(clause.name.text);
-      if (packageName === "redis") bindings.redisNamespaces.add(clause.name.text);
-      if (packageName === "amqplib") bindings.amqpNamespaces.add(clause.name.text);
+      if (packageName === "pg") bindings.pgNamespaces.add(identifierKey(clause.name));
+      if (packageName === "redis") bindings.redisNamespaces.add(identifierKey(clause.name));
+      if (packageName === "amqplib") bindings.amqpNamespaces.add(identifierKey(clause.name));
     }
 
     const namedBindings = clause.namedBindings;
     if (namedBindings && ts.isNamespaceImport(namedBindings)) {
-      if (packageName === "pg") bindings.pgNamespaces.add(namedBindings.name.text);
-      if (packageName === "redis") bindings.redisNamespaces.add(namedBindings.name.text);
-      if (packageName === "amqplib") bindings.amqpNamespaces.add(namedBindings.name.text);
+      if (packageName === "pg") bindings.pgNamespaces.add(identifierKey(namedBindings.name));
+      if (packageName === "redis") bindings.redisNamespaces.add(identifierKey(namedBindings.name));
+      if (packageName === "amqplib") bindings.amqpNamespaces.add(identifierKey(namedBindings.name));
       continue;
     }
     if (!namedBindings || !ts.isNamedImports(namedBindings)) continue;
 
     for (const element of namedBindings.elements) {
+      if (element.isTypeOnly) continue;
       const imported = element.propertyName?.text ?? element.name.text;
-      const local = element.name.text;
+      const local = identifierKey(element.name);
       if (packageName === "pg" && ["Client", "Pool"].includes(imported)) {
         bindings.pgConstructors.add(local);
       }
@@ -293,10 +356,10 @@ function matchesBoundMember(
   namespaces: ReadonlySet<string>,
   member: string,
 ): boolean {
-  if (ts.isIdentifier(expression)) return identifiers.has(expression.text);
+  if (ts.isIdentifier(expression)) return identifiers.has(identifierKey(expression));
   return ts.isPropertyAccessExpression(expression) &&
     ts.isIdentifier(expression.expression) &&
-    namespaces.has(expression.expression.text) &&
+    namespaces.has(identifierKey(expression.expression)) &&
     expression.name.text === member;
 }
 
@@ -366,8 +429,48 @@ function variableEndpoints(
   const amqpConnections = new Map<string, EndpointTarget>();
   const amqpChannels = new Map<string, EndpointTarget>();
   const declarations: ts.VariableDeclaration[] = [];
+  // Flow-insensitive invalidation: any recognized binding write makes it unknown,
+  // including uses before the write. This deliberately trades recall for fewer stale edges.
+  const mutated = new Set<string>();
+  const markWrite = (expression: ts.Expression): void => {
+    const target = unwrapExpression(expression);
+    if (ts.isIdentifier(target)) {
+      mutated.add(identifierKey(target));
+    } else if (ts.isArrayLiteralExpression(target)) {
+      for (const element of target.elements) markWrite(element);
+    } else if (ts.isObjectLiteralExpression(target)) {
+      for (const property of target.properties) {
+        if (ts.isShorthandPropertyAssignment(property)) {
+          // Shorthand property symbols differ from the variable being assigned.
+          const symbol = sourceCheckers.get(sourceFile)!.getShorthandAssignmentValueSymbol(property);
+          const declaration = symbol?.declarations?.[0];
+          if (declaration) mutated.add(`${property.name.text}@${declaration.pos}`);
+        } else if (ts.isPropertyAssignment(property)) {
+          markWrite(property.initializer);
+        } else if (ts.isSpreadAssignment(property)) {
+          markWrite(property.expression);
+        }
+      }
+    } else if (ts.isSpreadElement(target)) {
+      markWrite(target.expression);
+    } else if (ts.isBinaryExpression(target) && target.operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+      markWrite(target.left);
+    }
+    // Property/element writes mutate an object, not the receiver or index binding.
+  };
   const collect = (node: ts.Node): void => {
     if (ts.isVariableDeclaration(node)) declarations.push(node);
+    if (ts.isBinaryExpression(node) &&
+      node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment &&
+      node.operatorToken.kind <= ts.SyntaxKind.LastAssignment) {
+      markWrite(node.left);
+    } else if ((ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) &&
+      (node.operator === ts.SyntaxKind.PlusPlusToken || node.operator === ts.SyntaxKind.MinusMinusToken)) {
+      markWrite(node.operand);
+    } else if ((ts.isForOfStatement(node) || ts.isForInStatement(node)) &&
+      !ts.isVariableDeclarationList(node.initializer)) {
+      markWrite(node.initializer);
+    }
     ts.forEachChild(node, collect);
   };
   collect(sourceFile);
@@ -375,7 +478,8 @@ function variableEndpoints(
   for (let pass = 0; pass < 4; pass += 1) {
     for (const declaration of declarations) {
       if (!ts.isIdentifier(declaration.name) || !declaration.initializer) continue;
-      const name = declaration.name.text;
+      const name = identifierKey(declaration.name);
+      if (mutated.has(name)) continue;
       const direct = expressionEndpoint(declaration.initializer, endpoints);
       if (direct) endpoints.set(name, direct);
       const initializer = unwrapExpression(declaration.initializer);
@@ -390,7 +494,7 @@ function variableEndpoints(
         const [options] = initializer.arguments ?? [];
         const connection = options && objectPropertyExpression(options, "connectionString");
         const target = connection && expressionEndpoint(connection, endpoints);
-        if (target) {
+        if (target?.componentType === "database") {
           endpoints.set(name, target);
           pgResources.set(name, target);
         }
@@ -403,7 +507,7 @@ function variableEndpoints(
         const [options] = initializer.arguments;
         const connection = options && objectPropertyExpression(options, "url");
         const target = connection && expressionEndpoint(connection, endpoints);
-        if (target) {
+        if (target?.componentType === "cache") {
           endpoints.set(name, target);
           redisResources.set(name, target);
         }
@@ -423,9 +527,9 @@ function variableEndpoints(
         if (
           initializer.expression.name.text === "createChannel" &&
           ts.isIdentifier(receiver) &&
-          amqpConnections.has(receiver.text)
+          amqpConnections.has(identifierKey(receiver))
         ) {
-          amqpChannels.set(name, amqpConnections.get(receiver.text)!);
+          amqpChannels.set(name, amqpConnections.get(identifierKey(receiver))!);
         }
       }
     }
@@ -506,15 +610,16 @@ export async function analyzeTypeScriptRepository(
     }
     ensureComponent(sourceId, anchor);
 
+    bindSource(sourceFile);
     const bindings = importBindings(sourceFile);
     const { endpoints, pgResources, redisResources, amqpChannels } = variableEndpoints(sourceFile, bindings);
 
     const visit = (node: ts.Node): void => {
       if (ts.isCallExpression(node)) {
-        if (ts.isIdentifier(node.expression) && node.expression.text === "fetch") {
+        if (ts.isIdentifier(node.expression) && identifierKey(node.expression) === "fetch") {
           const [argument] = node.arguments;
           const target = argument && expressionEndpoint(argument, endpoints);
-          if (target) {
+          if (target?.relationshipType === "http") {
             addRelationship(sourceId, target, lineEvidence(sourceFile, node, file, "typescript-fetch", 1));
           }
         }
@@ -522,7 +627,7 @@ export async function analyzeTypeScriptRepository(
         if (ts.isPropertyAccessExpression(node.expression)) {
           const method = node.expression.name.text;
           const receiver = node.expression.expression;
-          const receiverName = ts.isIdentifier(receiver) ? receiver.text : undefined;
+          const receiverName = ts.isIdentifier(receiver) ? identifierKey(receiver) : undefined;
           const pgResource = receiverName ? pgResources.get(receiverName) : undefined;
           if (method === "query" && pgResource) {
             addRelationship(sourceId, pgResource, lineEvidence(sourceFile, node, file, "typescript-pg", 0.99));

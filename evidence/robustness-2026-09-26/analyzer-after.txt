@@ -1,0 +1,12 @@
+$ vitest run src/analyzer-adversarial.test.ts src/analyzer.test.ts
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ✓ src/analyzer-adversarial.test.ts (18 tests) 107ms
+ ✓ src/analyzer.test.ts (12 tests) 138ms
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  12:47:34
+   Duration  1.35s (transform 65ms, setup 0ms, collect 711ms, tests 246ms, environment 0ms, prepare 106ms)
+

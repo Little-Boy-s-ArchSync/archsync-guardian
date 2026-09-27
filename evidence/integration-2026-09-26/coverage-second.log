@@ -1,0 +1,108 @@
+$ vitest run --coverage
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+      Coverage enabled with v8
+
+ ✓ src/phase3-adversarial.test.ts (18 tests) 6326ms
+   ✓ incremental validity against full scans > matches a fresh full scan after add, with cold and warm caches  363ms
+   ✓ incremental validity against full scans > matches a fresh full scan after modify, with cold and warm caches  308ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete, with cold and warm caches  352ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-within, with cold and warm caches  320ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-across, with cold and warm caches  332ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete-component, with cold and warm caches  314ms
+   ✓ incremental validity against full scans > publishes concurrent cold cache writes without temporary-file collisions  341ms
+   ✓ incremental validity against full scans > invalidates the baseline when architecture rules change  400ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts"  320ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "line\nfile.ts"  489ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "café.ts"  523ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts"  568ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts"  318ms
+   ✓ incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model  433ms
+   ✓ incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted  340ms
+ ✓ src/phase3.test.ts (12 tests) 2764ms
+   ✓ Phase 3 Git diff architecture gate > passes an internal source change and reuses the baseline cache  359ms
+   ✓ Phase 3 Git diff architecture gate > rebuilds a corrupt custom baseline cache safely  337ms
+ ✓ src/repair-verification.test.ts (81 tests) 567ms
+ ✓ src/benchmark.test.ts (12 tests) 593ms
+ ✓ src/version.test.ts (6 tests) 296ms
+ ✓ src/phase4-integration.test.ts (2 tests) 243ms
+ ✓ src/analyzer.test.ts (12 tests) 120ms
+ ✓ src/model-cli.test.ts (7 tests) 194ms
+ ✓ src/guardian.test.ts (9 tests) 130ms
+ ✓ src/compatibility.test.ts (8 tests) 154ms
+ ✓ src/analyzer-adversarial.test.ts (18 tests) 93ms
+ ✓ src/iac-kubernetes.test.ts (6 tests) 49ms
+ ✓ src/reasoner/provider.test.ts (18 tests) 27ms
+ ✓ src/iac.test.ts (1 test) 26ms
+ ✓ src/doctor.test.ts (8 tests) 17ms
+ ✓ src/runtime/collector.test.ts (5 tests) 16ms
+ ✓ src/iac-terraform.test.ts (5 tests) 19ms
+ ✓ src/iac-normalize.test.ts (5 tests) 36ms
+ ✓ src/reasoner/explain.test.ts (4 tests) 14ms
+ ✓ src/runtime/graph.test.ts (3 tests) 14ms
+ ✓ src/evolution/scorecard.test.ts (3 tests) 11ms
+ ✓ src/iac-security.test.ts (3 tests) 48ms
+ ✓ src/reasoner/handoff.test.ts (6 tests) 21ms
+ ✓ src/reasoner/prompt.test.ts (1 test) 10ms
+ ✓ src/iac-governance.test.ts (3 tests) 5ms
+ ✓ src/reasoner/taxonomy.test.ts (9 tests) 8ms
+ ✓ src/reasoner/redaction.test.ts (3 tests) 4ms
+ ✓ src/evolution/approval.test.ts (5 tests) 3ms
+ ✓ src/reasoner/contracts.test.ts (6 tests) 5ms
+ ✓ src/phase3-git.test.ts (7 tests) 5ms
+ ✓ src/privacy.test.ts (2 tests) 3ms
+ ✓ src/reasoner/citations.test.ts (2 tests) 2ms
+
+ Test Files  32 passed (32)
+      Tests  290 passed (290)
+   Start at  12:51:39
+   Duration  21.68s (transform 425ms, setup 0ms, collect 3.24s, tests 11.82s, environment 5ms, prepare 1.79s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   99.86 |    99.91 |   98.38 |   99.86 |                   
+ src               |   99.82 |    99.88 |   97.71 |   99.82 |                   
+  analyzer.ts      |     100 |    99.61 |   88.88 |     100 | 34                
+  benchmark.ts     |     100 |      100 |     100 |     100 |                   
+  compatibility.ts |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  doctor.ts        |     100 |      100 |     100 |     100 |                   
+  guardian.ts      |     100 |      100 |     100 |     100 |                   
+  iac-contracts.ts |     100 |      100 |     100 |     100 |                   
+  ...kubernetes.ts |     100 |      100 |     100 |     100 |                   
+  iac-normalize.ts |     100 |      100 |     100 |     100 |                   
+  iac-security.ts  |     100 |      100 |     100 |     100 |                   
+  iac-terraform.ts |     100 |      100 |     100 |     100 |                   
+  iac.ts           |     100 |      100 |     100 |     100 |                   
+  model-cli.ts     |     100 |      100 |     100 |     100 |                   
+  phase3-git.ts    |     100 |      100 |     100 |     100 |                   
+  phase3.ts        |    98.4 |    99.38 |   95.83 |    98.4 | 180-187           
+  privacy.ts       |     100 |      100 |     100 |     100 |                   
+  ...-isolation.ts |     100 |      100 |     100 |     100 |                   
+  ...rification.ts |     100 |      100 |     100 |     100 |                   
+  version.ts       |     100 |      100 |     100 |     100 |                   
+ src/evolution     |     100 |      100 |     100 |     100 |                   
+  approval.ts      |     100 |      100 |     100 |     100 |                   
+  scorecard.ts     |     100 |      100 |     100 |     100 |                   
+ src/reasoner      |     100 |      100 |     100 |     100 |                   
+  citations.ts     |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  explain.ts       |     100 |      100 |     100 |     100 |                   
+  handoff.ts       |     100 |      100 |     100 |     100 |                   
+  prompt.ts        |     100 |      100 |     100 |     100 |                   
+  provider.ts      |     100 |      100 |     100 |     100 |                   
+  redaction.ts     |     100 |      100 |     100 |     100 |                   
+  taxonomy.ts      |     100 |      100 |     100 |     100 |                   
+ src/runtime       |     100 |      100 |     100 |     100 |                   
+  canonical.ts     |     100 |      100 |     100 |     100 |                   
+  collector.ts     |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  graph.ts         |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
+ERROR: Coverage for lines (99.86%) does not meet global threshold (100%)
+ERROR: Coverage for functions (98.38%) does not meet global threshold (100%)
+ERROR: Coverage for statements (99.86%) does not meet global threshold (100%)
+ERROR: Coverage for branches (99.91%) does not meet global threshold (100%)
+[ELIFECYCLE] Command failed with exit code 1.

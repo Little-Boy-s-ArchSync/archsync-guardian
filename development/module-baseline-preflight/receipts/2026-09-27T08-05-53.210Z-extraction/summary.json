@@ -1,0 +1,861 @@
+{
+  "status": "DEVELOPMENT_PREFLIGHT_EXECUTED_REQUIRES_INTERPRETATION",
+  "groups": 8,
+  "cases": [
+    {
+      "case": "M1",
+      "group": "M1",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 3,
+      "comparator_pairs": 3,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M2",
+      "group": "M2",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 2,
+      "comparator_pairs": 2,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M3",
+      "group": "M3",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 1,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M4",
+      "group": "M4",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 3,
+      "comparator_pairs": 3,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M5-files",
+      "group": "M5",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 1,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M5-alias",
+      "group": "M5",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 1,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M5-nodenext",
+      "group": "M5",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 1,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M6",
+      "group": "M6",
+      "guardian_exit": 0,
+      "guardian_status": "complete-within-scope",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 1,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": []
+    },
+    {
+      "case": "M7-unresolved",
+      "group": "M7",
+      "guardian_exit": 2,
+      "guardian_status": "incomplete",
+      "comparator_exit": 0,
+      "guardian_pairs": 0,
+      "comparator_pairs": 0,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": [
+        "unresolved-module"
+      ]
+    },
+    {
+      "case": "M7-outside",
+      "group": "M7",
+      "guardian_exit": 2,
+      "guardian_status": "incomplete",
+      "comparator_exit": 0,
+      "guardian_pairs": 0,
+      "comparator_pairs": 0,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": [
+        "target-outside-scope"
+      ]
+    },
+    {
+      "case": "M7-syntax",
+      "group": "M7",
+      "guardian_exit": 2,
+      "guardian_status": "incomplete",
+      "comparator_exit": 0,
+      "guardian_pairs": 0,
+      "comparator_pairs": 0,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": true
+      },
+      "observed_issues": [
+        "syntax-error"
+      ]
+    },
+    {
+      "case": "M7-empty",
+      "group": "M7",
+      "guardian_exit": 2,
+      "guardian_status": "incomplete",
+      "comparator_exit": null,
+      "guardian_pairs": 0,
+      "comparator_pairs": 0,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": false,
+        "comparator_exit_zero": false,
+        "comparator_graph_present": false,
+        "comparator_source_population_exact": false,
+        "scoped_pair_sets_equal": false
+      },
+      "observed_issues": [
+        "empty-scope"
+      ]
+    },
+    {
+      "case": "M8",
+      "group": "M8",
+      "guardian_exit": 2,
+      "guardian_status": "incomplete",
+      "comparator_exit": 0,
+      "guardian_pairs": 1,
+      "comparator_pairs": 2,
+      "checks": {
+        "guardian_output_present": true,
+        "guardian_status_expected": true,
+        "guardian_exit_expected": true,
+        "guardian_source_population_exact": true,
+        "guardian_developer_asserted_pairs": true,
+        "guardian_required_issues_present": true,
+        "guardian_architecture_null_when_incomplete": true,
+        "guardian_exclusions": true,
+        "guardian_locations": true,
+        "comparator_executed": true,
+        "comparator_exit_zero": true,
+        "comparator_graph_present": true,
+        "comparator_source_population_exact": true,
+        "scoped_pair_sets_equal": false
+      },
+      "observed_issues": [
+        "unsupported-commonjs",
+        "unsupported-dynamic-import",
+        "unsupported-import-type"
+      ]
+    }
+  ],
+  "research_accuracy": null,
+  "D3_executed": false,
+  "rule_semantics_equivalence_tested": false,
+  "files": [
+    {
+      "file": "comparator-help.invocation.json",
+      "sha256": "91aa2d9d65e5530a7c9d8e87975635c151a5d0140476c4e3476cc287fa84e0fb"
+    },
+    {
+      "file": "comparator-help.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "comparator-help.stdout.txt",
+      "sha256": "62394859e6c9fdac336cb9b48eee9df22b2f01ba31e3a8cbab4ee6adbc6d8267"
+    },
+    {
+      "file": "comparator-version.invocation.json",
+      "sha256": "9a6b4bdf0eeeadc1bc18bb35cd2c9fc48e531127f35bb719b9fd51061abe1714"
+    },
+    {
+      "file": "comparator-version.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "comparator-version.stdout.txt",
+      "sha256": "1c34eef3a20720c6d7bbfc0944ecc44bc70e1a89a6e600a971a967c7b7dc3bcc"
+    },
+    {
+      "file": "guardian-head.invocation.json",
+      "sha256": "ed48a9c338dedef5147be6b8701d2c39babe83da2b595f2944f38ef016cf4a1a"
+    },
+    {
+      "file": "guardian-head.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "guardian-head.stdout.txt",
+      "sha256": "5ed1b341679352f483502c0c10a45ab33aef79b38235c89385d2a9adffc45d34"
+    },
+    {
+      "file": "input-snapshot.json",
+      "sha256": "7576f231917bdd26c90aa44d1fdec5ff829768c59051ef2c0a27fe9e921737a9"
+    },
+    {
+      "file": "M1/comparator.invocation.json",
+      "sha256": "6821e1c81ebd28c5117cd5560dd3b58bfdfcd98060645b61a85044c6d763cc56"
+    },
+    {
+      "file": "M1/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M1/comparator.stdout.txt",
+      "sha256": "a97ca2bfb795bdf7af6b4826dc38d18ca1423f9992801f079c8f5022ec8d422f"
+    },
+    {
+      "file": "M1/dependency-cruiser.json",
+      "sha256": "f8dd96f1462e0af7e50d1d9b16f851b67dbeb673b5dcd8805201fd6f5eb4a09a"
+    },
+    {
+      "file": "M1/guardian.invocation.json",
+      "sha256": "561bb49aff072a5704e109615a463fdd7742bc33d3e4791ac768ab1086a60468"
+    },
+    {
+      "file": "M1/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M1/guardian.stdout.txt",
+      "sha256": "7641e96492d698c6a6a771a1f7a84a63c5c808b9989da848802472529a28bdfa"
+    },
+    {
+      "file": "M1/normalized.json",
+      "sha256": "4bd971add6cbd1670abf4b603c7cde45e464e4a2527aabb1617ffe44a20ad915"
+    },
+    {
+      "file": "M1/population.json",
+      "sha256": "b4ab48ca7bc83d90be970288e073556fb58f9c306ec1f1d247e493f35e7c11d0"
+    },
+    {
+      "file": "M2/comparator.invocation.json",
+      "sha256": "ab342be1864718e6156daf8e92620d2afdd0d99e7d7d8d9e37598af6c097e907"
+    },
+    {
+      "file": "M2/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M2/comparator.stdout.txt",
+      "sha256": "891c60773b2f0f060a1428851f68c50975eb0e4ad4414b99a20d18ad7aef7ca4"
+    },
+    {
+      "file": "M2/dependency-cruiser.json",
+      "sha256": "c0164ec0b063eb8395fc7ffd3881aa95faa6ad6047af4a7a2f5dd9d0bfcd9f05"
+    },
+    {
+      "file": "M2/guardian.invocation.json",
+      "sha256": "96af0f2bd962cb97a013d153150293cf9133e3aa8bd693002857493cdf2c34ac"
+    },
+    {
+      "file": "M2/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M2/guardian.stdout.txt",
+      "sha256": "6cd3514709ade0fd1690f320b8439ba491476d28a207c11581d604ae02410c1a"
+    },
+    {
+      "file": "M2/normalized.json",
+      "sha256": "442b8e1bf642cdb137197298a82edbc97fe0f32ab5f29d47d220888b26cd37cd"
+    },
+    {
+      "file": "M2/population.json",
+      "sha256": "b0f32c342b43d3ceba445ecd4862a689ec6cb2da83ea6a9f46648663cb86c6a7"
+    },
+    {
+      "file": "M3/comparator.invocation.json",
+      "sha256": "fe4ab4ffc96fa4607c16f870e7cae54c589bc14b3f02ed2edd01899628a20bed"
+    },
+    {
+      "file": "M3/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M3/comparator.stdout.txt",
+      "sha256": "d0cd135a4b8ae9e35679e7d7ea164507c1c25dccd108bdf3bddbbcf011b16a6d"
+    },
+    {
+      "file": "M3/dependency-cruiser.json",
+      "sha256": "9235a2a280ebdc21b3fe1c0a6a222868fe772d81b16e010123910a702302206c"
+    },
+    {
+      "file": "M3/guardian.invocation.json",
+      "sha256": "14abfab0fbceb4244464fd8808bf2db10e2eda151df674933d447e50c3edf454"
+    },
+    {
+      "file": "M3/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M3/guardian.stdout.txt",
+      "sha256": "1d0f03dd9dad720b3ed2368353bf7f390cc79d748c41150d8d20fd3a6aa1d05c"
+    },
+    {
+      "file": "M3/normalized.json",
+      "sha256": "d81f5c36c9c8a1640b7779703e43629dd07f02e6d8ba505d393f9cb4c429338e"
+    },
+    {
+      "file": "M3/population.json",
+      "sha256": "4fe594f06f48fc9c1e3fa514564fa2d9dcacf74280625f9a14056f91a530b01b"
+    },
+    {
+      "file": "M4/comparator.invocation.json",
+      "sha256": "c3a9189acbd3bce6f56230f0347bc87345ed9a60e74572fd5e6d458cc56b883c"
+    },
+    {
+      "file": "M4/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M4/comparator.stdout.txt",
+      "sha256": "586c9e1d3c09a4cd19296ae1322dc10befdffb3867e9f9960e97089a62ef7c61"
+    },
+    {
+      "file": "M4/dependency-cruiser.json",
+      "sha256": "0ff298474129242078af73b7e8a4cdebfe109d5e9718816ec483a02ab3860cc7"
+    },
+    {
+      "file": "M4/guardian.invocation.json",
+      "sha256": "72b084784a77f2c0a1319097fdc94849ca94ddf6ef721f2e23303917c8c631c9"
+    },
+    {
+      "file": "M4/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M4/guardian.stdout.txt",
+      "sha256": "f1d428572eb0180c5b15f2ff2b4ee582557e4097dfc7f9475dbbf3e873cb2485"
+    },
+    {
+      "file": "M4/normalized.json",
+      "sha256": "7f458f075c7d752ce8ff9737dd8f032264183408a36785935d3bd5fad745c6a3"
+    },
+    {
+      "file": "M4/population.json",
+      "sha256": "bd11e37f46ae871e0bc805afc931e06000c8847b56f5d1831dac04683fa501fa"
+    },
+    {
+      "file": "M5-alias/comparator.invocation.json",
+      "sha256": "18300e6e85bb420add00d033210c40c3afdbaed07ad901aeca4a08da469de007"
+    },
+    {
+      "file": "M5-alias/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-alias/comparator.stdout.txt",
+      "sha256": "aff3ea94d319cc391d4d2326da88ce2b0717b16f60359b2d057641ed2aad2bce"
+    },
+    {
+      "file": "M5-alias/dependency-cruiser.json",
+      "sha256": "6eab51ab2bd22f53b51ec8ca4e43de6d0b7eba7305b5adc6cdc6aa6c93913d92"
+    },
+    {
+      "file": "M5-alias/guardian.invocation.json",
+      "sha256": "19728cbb2cdf6d0751d4a76ba9a5243d1272f98657ae163022fb2f228c68e851"
+    },
+    {
+      "file": "M5-alias/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-alias/guardian.stdout.txt",
+      "sha256": "494a4578fda299868aa8b6cc34e7ae16fb208b0615d13539d9d06e8692a648ad"
+    },
+    {
+      "file": "M5-alias/normalized.json",
+      "sha256": "d3d24ffba8af131eb1ac8f912d9a8201b194465bafc8b39ad0301306706f4b65"
+    },
+    {
+      "file": "M5-alias/population.json",
+      "sha256": "cd4125e678b7b2150c1cde2121617032d6be8635c7538d3737a550d717adb12d"
+    },
+    {
+      "file": "M5-files/comparator.invocation.json",
+      "sha256": "b4379430cdf0fe78f413d716c01426dac5c7830e19d3ad953d18b45692edb098"
+    },
+    {
+      "file": "M5-files/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-files/comparator.stdout.txt",
+      "sha256": "dc904ea7b81e7ca6f381089fd371fa6140ef2d354e04eb3f719c40b78d57a6ad"
+    },
+    {
+      "file": "M5-files/dependency-cruiser.json",
+      "sha256": "9235a2a280ebdc21b3fe1c0a6a222868fe772d81b16e010123910a702302206c"
+    },
+    {
+      "file": "M5-files/guardian.invocation.json",
+      "sha256": "5c944cb63173c6129b772ffb10a0c16d78592af7927452a2fab023c667d68e7e"
+    },
+    {
+      "file": "M5-files/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-files/guardian.stdout.txt",
+      "sha256": "9032bef493735e030f02c2c1ca43da4d4dc1f12eb11eb8e4d715ccdbaca4ed34"
+    },
+    {
+      "file": "M5-files/normalized.json",
+      "sha256": "316238d6a8f4856a8983f5b869450bbdf3a49eeb87d818979ba26fc03d9e0a7f"
+    },
+    {
+      "file": "M5-files/population.json",
+      "sha256": "4fe594f06f48fc9c1e3fa514564fa2d9dcacf74280625f9a14056f91a530b01b"
+    },
+    {
+      "file": "M5-nodenext/comparator.invocation.json",
+      "sha256": "21be1f38caaaf2292c068a7ebf3b5e06d79ae5526d5ba4032458185c7cc27475"
+    },
+    {
+      "file": "M5-nodenext/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-nodenext/comparator.stdout.txt",
+      "sha256": "e1b7502314c4ace837cd242305f14b160ad730295a9ef6e4e3909a4852efe457"
+    },
+    {
+      "file": "M5-nodenext/dependency-cruiser.json",
+      "sha256": "77c60d266a5af0a651ecc88f3af1a37d4d72c24e46133c566dd2affa268b366b"
+    },
+    {
+      "file": "M5-nodenext/guardian.invocation.json",
+      "sha256": "ed8b68f222aff7a9109ab7f912ff49f6238b956b51f0b9f8f10e0119dd7f7631"
+    },
+    {
+      "file": "M5-nodenext/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M5-nodenext/guardian.stdout.txt",
+      "sha256": "176acdecbfbb2e328950a74fdc2b1ac844dbd4570fcae2b5a9bb457f5649b758"
+    },
+    {
+      "file": "M5-nodenext/normalized.json",
+      "sha256": "281693a431937600a025e67db871b1b425c9a97b41847fcd3695d1a5525f94f7"
+    },
+    {
+      "file": "M5-nodenext/population.json",
+      "sha256": "151a7f4e9b0723bc71c33711880afff36f2c5a3fd330638b5834812fa46af295"
+    },
+    {
+      "file": "M6/comparator.invocation.json",
+      "sha256": "2b9fed74f6e6d67c431ce9fa9fba2f04fb67129232bf23674821acc9fcb9b732"
+    },
+    {
+      "file": "M6/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M6/comparator.stdout.txt",
+      "sha256": "d93f5e51c57e8bdd40bcb8c99168f357800d9693506cbc96cae025ff9f9958ac"
+    },
+    {
+      "file": "M6/dependency-cruiser.json",
+      "sha256": "9235a2a280ebdc21b3fe1c0a6a222868fe772d81b16e010123910a702302206c"
+    },
+    {
+      "file": "M6/guardian.invocation.json",
+      "sha256": "ee026f5a4498b1691472165ebe0d287d2e2052e9c1a6bd3dd22cb906a303de38"
+    },
+    {
+      "file": "M6/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M6/guardian.stdout.txt",
+      "sha256": "4e3b3ea63237191b20b97665018bfda557842fbf3d2d6f2ca5aac1ed25820305"
+    },
+    {
+      "file": "M6/normalized.json",
+      "sha256": "921b1a9d33deb13f7e827309096a72eba2d7b4da9fb8ec5f2e954bd34ae0dd39"
+    },
+    {
+      "file": "M6/population.json",
+      "sha256": "4fe594f06f48fc9c1e3fa514564fa2d9dcacf74280625f9a14056f91a530b01b"
+    },
+    {
+      "file": "M7-empty/comparator-not-executed.json",
+      "sha256": "4a4d60f8d57b4db6bbb2143da3dd64680cc2b27bce4b0461750f2b6a1657e7c2"
+    },
+    {
+      "file": "M7-empty/dependency-cruiser.json",
+      "sha256": "604b0e7937cdd29e4423751c83bf7afee4045ca79a56b5b2ae89e389eba9ee37"
+    },
+    {
+      "file": "M7-empty/guardian.invocation.json",
+      "sha256": "40ebaf9f4072af3ad930a70235fca09bd59e696aa2a44606ccee72c886d6be13"
+    },
+    {
+      "file": "M7-empty/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-empty/guardian.stdout.txt",
+      "sha256": "22b8dc915abe91fd766b57ef140159323ef1343b6bfe2e2422af0948d5d95a05"
+    },
+    {
+      "file": "M7-empty/normalized.json",
+      "sha256": "d35d56cc0e3958e236216eb255cd2ba3f60e3030612bc47b210fcc8367c50679"
+    },
+    {
+      "file": "M7-empty/population.json",
+      "sha256": "e54ae2a16253ca463a75231f6301159c96facc7b9b272b3953c567d060a26dd7"
+    },
+    {
+      "file": "M7-outside/comparator.invocation.json",
+      "sha256": "ef1bff3c1c97fe8db6020f2a0fc3f453dd60aab5a218acc80f7d32de8d898750"
+    },
+    {
+      "file": "M7-outside/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-outside/comparator.stdout.txt",
+      "sha256": "8dce5f55c7a0491a532a5b54d73fb8a97fa28af9a56874279de5905dbb8c1e54"
+    },
+    {
+      "file": "M7-outside/dependency-cruiser.json",
+      "sha256": "a4217e9e3524a4b962de18d91c127d7b39a326fa607da94bd89cf74a2964f60c"
+    },
+    {
+      "file": "M7-outside/guardian.invocation.json",
+      "sha256": "2a9173daa6d79a62d8c7aebddff8a706363062804c1f1f1a79aac98b7f2b5655"
+    },
+    {
+      "file": "M7-outside/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-outside/guardian.stdout.txt",
+      "sha256": "fd37d264761b46e50684e1407debd104d87efe2d4e3afc759ba675077357a569"
+    },
+    {
+      "file": "M7-outside/normalized.json",
+      "sha256": "5885d9b9201bbee1f923f356707338b736622a308e76a35b89a8b1b2c6cecb95"
+    },
+    {
+      "file": "M7-outside/population.json",
+      "sha256": "6057ef2476dcce753667b95747f7adb6409c1bebd3520ac50c45352d83ab2ffb"
+    },
+    {
+      "file": "M7-syntax/comparator.invocation.json",
+      "sha256": "3b7d2cce75e1043728eccea145baf01c21cb21f9451749b846d58a68b1f7e388"
+    },
+    {
+      "file": "M7-syntax/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-syntax/comparator.stdout.txt",
+      "sha256": "bd8bba535573a16ca9e6b3737d0ae1cdbcb32b67ba7e92951cc3a8493421289d"
+    },
+    {
+      "file": "M7-syntax/dependency-cruiser.json",
+      "sha256": "a4217e9e3524a4b962de18d91c127d7b39a326fa607da94bd89cf74a2964f60c"
+    },
+    {
+      "file": "M7-syntax/guardian.invocation.json",
+      "sha256": "b007814e1ee5eca0bbc812330685b891de7e7eeb5821944c1b40ff930f9daba6"
+    },
+    {
+      "file": "M7-syntax/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-syntax/guardian.stdout.txt",
+      "sha256": "441d6512c7a75c3813ff7c8efd7016dcf54325bf4681c51e469b4e8575e12103"
+    },
+    {
+      "file": "M7-syntax/normalized.json",
+      "sha256": "55153fb3b9c76844f81e0ec9f5aeebdd172b3541ce15269a15317e2044edd110"
+    },
+    {
+      "file": "M7-syntax/population.json",
+      "sha256": "6057ef2476dcce753667b95747f7adb6409c1bebd3520ac50c45352d83ab2ffb"
+    },
+    {
+      "file": "M7-unresolved/comparator.invocation.json",
+      "sha256": "f95e0669083f247a89cf2398993e93c98d1f92913753cfda65b131d18c44f3e9"
+    },
+    {
+      "file": "M7-unresolved/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-unresolved/comparator.stdout.txt",
+      "sha256": "25887e13ecd2eb022e891e906504cb4f9ff6af819ea9267c16d2a3eb0a714909"
+    },
+    {
+      "file": "M7-unresolved/dependency-cruiser.json",
+      "sha256": "a4217e9e3524a4b962de18d91c127d7b39a326fa607da94bd89cf74a2964f60c"
+    },
+    {
+      "file": "M7-unresolved/guardian.invocation.json",
+      "sha256": "ce403ba31f3a8cd2a353bfcb65ebdec02d7811c5c1d81f20a87687fdb1c67ad5"
+    },
+    {
+      "file": "M7-unresolved/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M7-unresolved/guardian.stdout.txt",
+      "sha256": "e258efde25d5de9da63412567354026dc064ed8443c70affa633f54a5c2c248c"
+    },
+    {
+      "file": "M7-unresolved/normalized.json",
+      "sha256": "0fe0e890af3e6c9f535c23ed86e64fa1290246f6f8116fa0a503fad24da63856"
+    },
+    {
+      "file": "M7-unresolved/population.json",
+      "sha256": "6057ef2476dcce753667b95747f7adb6409c1bebd3520ac50c45352d83ab2ffb"
+    },
+    {
+      "file": "M8/comparator.invocation.json",
+      "sha256": "e35a357ae0f0c10c80b4c2d3943a7da29d736967e9dec5023ee8d729077a7d5f"
+    },
+    {
+      "file": "M8/comparator.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M8/comparator.stdout.txt",
+      "sha256": "a61a474433ff56c3b6c5829202ff7d0f4af2ec7cb2bbb433816e7da19c60e08e"
+    },
+    {
+      "file": "M8/dependency-cruiser.json",
+      "sha256": "58457ed5881807ce34847136bfc0e8d8f6d0e47631e1c766e7aefe57bf9f4bce"
+    },
+    {
+      "file": "M8/guardian.invocation.json",
+      "sha256": "f7987f85a50848aa33b7b60f06a17072199c166f19eb94ad7e1bb486eb8a5511"
+    },
+    {
+      "file": "M8/guardian.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "M8/guardian.stdout.txt",
+      "sha256": "bd2796bffbd0fe7d8fa1645add0f21cd178559e7e0d0f2e4e87a673bae48c6ac"
+    },
+    {
+      "file": "M8/normalized.json",
+      "sha256": "3429ba64388f4a0e9a9ee43a1fb8a16f9519a77be24c2b55b12948c71bf78813"
+    },
+    {
+      "file": "M8/population.json",
+      "sha256": "70bc4f10f3b797f2e9d0d9b15f49a78e593573fd92d47fa4296b9c5b32157724"
+    }
+  ]
+}

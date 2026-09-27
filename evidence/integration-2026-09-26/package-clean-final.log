@@ -1,0 +1,2 @@
+$ node scripts/package-install-e2e.mjs --evidence .artifacts/package-install.json
+PASS CLEAN PACKAGE INSTALL (darwin: packed whitelist, isolated pnpm prefix, PATH, version provenance, doctor, external-project validation, demo, dlx fallback and evidence)

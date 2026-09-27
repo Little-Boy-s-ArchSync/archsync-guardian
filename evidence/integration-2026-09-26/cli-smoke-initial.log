@@ -1,0 +1,19 @@
+$ node scripts/cli-smoke.mjs
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Core Model 0\.1\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/. Input:
+
+'ArchSync CLI 0.3.3 (Core Model 0.1.1, Guardian Analyzer 0.3, Git Gate 0.3; source 993127c37c41; source-tree)\n'
+
+    at file:///Users/andytran/Coding/Little%20Boy's/acsidan/archsync-guardian/scripts/cli-smoke.mjs:62:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'ArchSync CLI 0.3.3 (Core Model 0.1.1, Guardian Analyzer 0.3, Git Gate 0.3; source 993127c37c41; source-tree)\n',
+  expected: /Core Model 0\.1\.1, Guardian Analyzer 0\.2, Git Gate 0\.3/,
+  operator: 'match'
+}
+
+Node.js v22.16.0
+[ELIFECYCLE] Command failed with exit code 1.

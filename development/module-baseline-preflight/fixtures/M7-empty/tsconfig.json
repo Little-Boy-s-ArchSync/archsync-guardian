@@ -1,0 +1,1 @@
+{"extends":"../tsconfig.base.json","files":["src/only.d.ts"],"include":[]}

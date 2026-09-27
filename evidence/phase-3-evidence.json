@@ -23,7 +23,7 @@
       "cli_json": "1.0.0"
     },
     "guardian": {
-      "analyzer": "0.2",
+      "analyzer": "0.4",
       "observed_graph": "0.1",
       "finding": "0.1",
       "source_evidence": "0.1",
@@ -48,19 +48,19 @@
     "dependency_status": "upstream-integration-pr-merged"
   },
   "source_sha256": {
-    "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
+    "src/analyzer.ts": "b04fd26bbc7a0d43fd0b883b11a3b0f81eaa8154b172e1a55191f34654ad1df8",
     "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
     "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
-    "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
+    "src/contracts.ts": "fd98eaa5f08d5c2238ebcbf7b2b1d4012394e7cf867f924cf568f8dc000fbd74",
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
     "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
-    "src/index.ts": "b562444c1197553396be9d522a1b7112bf311905d2e7d4c7cd2585558885cbb8",
+    "src/index.ts": "7c94f4d2211f5e2d7cc8a10cd3929c395358bb5bc76e407ef05df64eded10ccb",
     "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
-    "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
-    "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
+    "src/phase3-git.ts": "9d3c087ea19528dbcf97b5161d230e950883ac0b53510e58c7a514ed3f055d83",
+    "src/phase3.ts": "768454f9cad10ac701113f362135c02220af1d22a8952c6034523ce5c9b958a7",
     "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
-    "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
+    "src/version.ts": "872c6dcfa0042ea4f1e3981cd10f63bea9c89848d035e3dfb2c411133ede0725"
   },
   "input_sha256": {
     "test/fixtures/architecture.yaml": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c",
@@ -71,7 +71,7 @@
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
-    "package.json": "252b3f3ef875e888e410cc73b6fdbe5337fc61ab6cbfbafc18caf490e31aac09",
+    "package.json": "2db10b806524723bbf715af3f711df633c8de132888ff6e62c8ca6bc49a440c4",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
@@ -318,85 +318,85 @@
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 391.18,
+      "cold_total_ms": 442.7,
       "warm_total_ms": [
-        267.99,
-        341.5,
-        272.25,
-        264.18,
-        325.48
+        270.65,
+        290.82,
+        271.33,
+        275.29,
+        277.83
       ],
       "warm_baseline_load_ms": [
-        30.58,
-        28.94,
-        27.23,
-        28.79,
-        29.27
+        29.1,
+        28.78,
+        29.73,
+        29.46,
+        28.07
       ],
       "warm_incremental_scan_ms": [
-        2.36,
-        3.81,
-        2.04,
-        1.73,
-        2.04
+        4.47,
+        6.07,
+        3.84,
+        3.73,
+        3.59
       ],
-      "warm_median_total_ms": 272.25,
-      "warm_median_baseline_load_ms": 28.94,
-      "warm_median_incremental_scan_ms": 2.04
+      "warm_median_total_ms": 275.29,
+      "warm_median_baseline_load_ms": 29.1,
+      "warm_median_incremental_scan_ms": 3.84
     },
     "violation": {
-      "cold_total_ms": 406.53,
+      "cold_total_ms": 418.19,
       "warm_total_ms": [
-        277.91,
-        259.03,
-        260.56,
-        264.58,
-        289.07
+        277.42,
+        284.31,
+        286.9,
+        282.63,
+        283.19
       ],
       "warm_baseline_load_ms": [
-        26.82,
-        26.58,
-        30.05,
-        27.69,
-        33.62
+        29.11,
+        30.01,
+        29.77,
+        28.81,
+        30.06
       ],
       "warm_incremental_scan_ms": [
-        1.99,
-        2.42,
-        2.93,
-        2.14,
-        2.38
+        3.43,
+        3.57,
+        3.38,
+        3.52,
+        4.36
       ],
-      "warm_median_total_ms": 264.58,
-      "warm_median_baseline_load_ms": 27.69,
-      "warm_median_incremental_scan_ms": 2.38
+      "warm_median_total_ms": 283.19,
+      "warm_median_baseline_load_ms": 29.77,
+      "warm_median_incremental_scan_ms": 3.52
     },
     "evolution": {
-      "cold_total_ms": 405.52,
+      "cold_total_ms": 428.35,
       "warm_total_ms": [
-        270.04,
-        320.06,
-        303.57,
-        291.15,
-        273.43
+        351.75,
+        291.98,
+        292.37,
+        288.13,
+        319.74
       ],
       "warm_baseline_load_ms": [
-        29.48,
-        35.75,
-        31.6,
-        28.68,
-        30.43
+        31.67,
+        31.76,
+        29.9,
+        31.57,
+        31.07
       ],
       "warm_incremental_scan_ms": [
-        2.04,
-        3.15,
-        2.28,
-        2.17,
-        2.52
+        3.46,
+        3.49,
+        3.68,
+        3.73,
+        3.45
       ],
-      "warm_median_total_ms": 291.15,
-      "warm_median_baseline_load_ms": 30.43,
-      "warm_median_incremental_scan_ms": 2.28
+      "warm_median_total_ms": 292.37,
+      "warm_median_baseline_load_ms": 31.57,
+      "warm_median_incremental_scan_ms": 3.49
     }
   }
 }

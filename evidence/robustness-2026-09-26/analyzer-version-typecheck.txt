@@ -1,0 +1,1 @@
+$ tsc -b --pretty false && tsc -p tsconfig.test.json --noEmit --pretty false

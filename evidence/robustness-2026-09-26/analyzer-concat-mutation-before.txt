@@ -1,0 +1,190 @@
+$ vitest run src/analyzer-adversarial.test.ts
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ❯ src/analyzer-adversarial.test.ts (26 tests | 7 failed) 165ms
+   ✓ does not invent an edge for type-only default import 30ms
+   ✓ does not invent an edge for type-only named import 7ms
+   ✓ does not invent an edge for type-only namespace import 6ms
+   ✓ does not invent an edge for pg protocol mismatch 8ms
+   ✓ does not invent an edge for redis protocol mismatch 5ms
+   ✓ does not invent an edge for fetch protocol mismatch 4ms
+   ✓ does not invent an edge for comparison is not URL 4ms
+   ✓ does not invent an edge for arithmetic is not URL 5ms
+   ✓ does not invent an edge for shadowed fetch parameter 7ms
+   ✓ does not invent an edge for shadowed process parameter 3ms
+   ✓ does not invent an edge for shadowed pg constructor 4ms
+   ✓ does not invent an edge for shadowed pg receiver 4ms
+   ✓ does not invent an edge for shadowed endpoint parameter 4ms
+   ✓ does not invent an edge for block-local endpoint leakage 3ms
+   ✓ separates same-named endpoints in sibling functions 12ms
+   ✓ preserves imported aliases and closures over valid resources 5ms
+   ✓ preserves an unshadowed global fetch beside a local binding 5ms
+   ✓ preserves a supported fallback with the same endpoint 4ms
+   × uses the parsed concatenated URL rather than a URL-looking suffix 10ms
+     → expected [ 'http|wrong' ] to deeply equal [ 'http|actual' ]
+   × rejects an invalid port produced by concatenation 6ms
+     → expected [ 'http|binary-left' ] to deeply equal []
+   ✓ preserves static URL and path aliases 5ms
+   × abstains from arbitrary addition with a URL operand 4ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × drops stale provenance after a resource reassignment 6ms
+     → expected [ 'data|wrong' ] to deeply equal []
+   × drops stale endpoint provenance after a compound assignment 4ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × keeps an unaffected binding beside a reassigned sibling 6ms
+     → expected [ 'data|actual', 'data|wrong' ] to deeply equal [ 'data|actual' ]
+   × conservatively abstains even for a use before reassignment 4ms
+     → expected [ 'http|actual' ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > uses the parsed concatenated URL rather than a URL-looking suffix
+AssertionError: expected [ 'http|wrong' ] to deeply equal [ 'http|actual' ]
+
+- Expected
++ Received
+
+  [
+-   "http|actual",
++   "http|wrong",
+  ]
+
+ ❯ src/analyzer-adversarial.test.ts:43:71
+     41| });
+     42| it('uses the parsed concatenated URL rather than a URL-looking suffix'…
+     43|   expect(await edges('fetch("https://actual/" + "https://wrong/");')).…
+       |                                                                       ^
+     44| });
+     45| it('rejects an invalid port produced by concatenation', async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > rejects an invalid port produced by concatenation
+AssertionError: expected [ 'http|binary-left' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "http|binary-left",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:46:88
+     44| });
+     45| it('rejects an invalid port produced by concatenation', async () => {
+     46|   expect(await edges('const suffix="v1"; fetch("http://binary-left:300…
+       |                                                                                        ^
+     47| });
+     48| it('preserves static URL and path aliases', async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > abstains from arbitrary addition with a URL operand
+AssertionError: expected [ 'http|wrong' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "http|wrong",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:52:66
+     50| });
+     51| it('abstains from arbitrary addition with a URL operand', async () => {
+     52|   expect(await edges('fetch(unknownValue + "https://wrong/");')).toEqu…
+       |                                                                  ^
+     53| });
+     54| it('drops stale provenance after a resource reassignment', async () =>…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > drops stale provenance after a resource reassignment
+AssertionError: expected [ 'data|wrong' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "data|wrong",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:55:144
+     53| });
+     54| it('drops stale provenance after a resource reassignment', async () =>…
+     55|   expect(await edges('import {Client} from "pg"; let db=new Client({co…
+       |                                                                                                                                                ^
+     56| });
+     57| it('drops stale endpoint provenance after a compound assignment', asyn…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > drops stale endpoint provenance after a compound assignment
+AssertionError: expected [ 'http|wrong' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "http|wrong",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:58:84
+     56| });
+     57| it('drops stale endpoint provenance after a compound assignment', asyn…
+     58|   expect(await edges('let url="https://wrong"; url += "bad suffix"; fe…
+       |                                                                                    ^
+     59| });
+     60| it('keeps an unaffected binding beside a reassigned sibling', async ()…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > keeps an unaffected binding beside a reassigned sibling
+AssertionError: expected [ 'data|actual', 'data|wrong' ] to deeply equal [ 'data|actual' ]
+
+- Expected
++ Received
+
+  [
+    "data|actual",
++   "data|wrong",
+  ]
+
+ ❯ src/analyzer-adversarial.test.ts:61:225
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > conservatively abstains even for a use before reassignment
+AssertionError: expected [ 'http|actual' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "http|actual",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:64:79
+     62| });
+     63| it('conservatively abstains even for a use before reassignment', async…
+     64|   expect(await edges('let url="https://actual"; fetch(url); url="unkno…
+       |                                                                               ^
+     65| });
+     66| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 19 passed (26)
+   Start at  12:56:04
+   Duration  866ms (transform 84ms, setup 0ms, collect 475ms, tests 165ms, environment 0ms, prepare 81ms)
+
+[ELIFECYCLE] Test failed. See above for more details.

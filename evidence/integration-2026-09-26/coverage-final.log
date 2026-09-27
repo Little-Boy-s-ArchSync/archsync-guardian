@@ -1,0 +1,101 @@
+$ vitest run --coverage
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+      Coverage enabled with v8
+
+ ✓ src/phase3-adversarial.test.ts (18 tests) 6936ms
+   ✓ incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads  433ms
+   ✓ incremental validity against full scans > matches a fresh full scan after add, with cold and warm caches  474ms
+   ✓ incremental validity against full scans > matches a fresh full scan after modify, with cold and warm caches  443ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete, with cold and warm caches  432ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-within, with cold and warm caches  543ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-across, with cold and warm caches  438ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete-component, with cold and warm caches  429ms
+   ✓ incremental validity against full scans > publishes concurrent cold cache writes without temporary-file collisions  467ms
+   ✓ incremental validity against full scans > invalidates the baseline when architecture rules change  498ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "café.ts"  301ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "café.ts"  365ms
+   ✓ incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model  524ms
+   ✓ incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted  458ms
+ ✓ src/phase3.test.ts (12 tests) 2880ms
+   ✓ Phase 3 Git diff architecture gate > passes an internal source change and reuses the baseline cache  375ms
+   ✓ Phase 3 Git diff architecture gate > rebuilds a corrupt custom baseline cache safely  365ms
+ ✓ src/benchmark.test.ts (12 tests) 597ms
+ ✓ src/repair-verification.test.ts (81 tests) 713ms
+ ✓ src/version.test.ts (6 tests) 320ms
+ ✓ src/phase4-integration.test.ts (2 tests) 261ms
+ ✓ src/compatibility.test.ts (8 tests) 152ms
+ ✓ src/model-cli.test.ts (7 tests) 183ms
+ ✓ src/guardian.test.ts (9 tests) 139ms
+ ✓ src/analyzer.test.ts (12 tests) 146ms
+ ✓ src/analyzer-adversarial.test.ts (29 tests) 173ms
+ ✓ src/iac.test.ts (1 test) 50ms
+ ✓ src/iac-kubernetes.test.ts (6 tests) 29ms
+ ✓ src/reasoner/provider.test.ts (18 tests) 28ms
+ ✓ src/runtime/collector.test.ts (5 tests) 19ms
+ ✓ src/doctor.test.ts (8 tests) 26ms
+ ✓ src/iac-terraform.test.ts (5 tests) 18ms
+ ✓ src/iac-normalize.test.ts (5 tests) 14ms
+ ✓ src/reasoner/explain.test.ts (4 tests) 13ms
+ ✓ src/runtime/graph.test.ts (3 tests) 15ms
+ ✓ src/evolution/scorecard.test.ts (3 tests) 13ms
+ ✓ src/reasoner/handoff.test.ts (6 tests) 14ms
+ ✓ src/iac-security.test.ts (3 tests) 15ms
+ ✓ src/reasoner/prompt.test.ts (1 test) 12ms
+ ✓ src/iac-governance.test.ts (3 tests) 5ms
+ ✓ src/reasoner/taxonomy.test.ts (9 tests) 6ms
+ ✓ src/reasoner/contracts.test.ts (6 tests) 5ms
+ ✓ src/phase3-git.test.ts (7 tests) 4ms
+ ✓ src/privacy.test.ts (2 tests) 3ms
+ ✓ src/reasoner/redaction.test.ts (3 tests) 4ms
+ ✓ src/evolution/approval.test.ts (5 tests) 4ms
+ ✓ src/reasoner/citations.test.ts (2 tests) 2ms
+
+ Test Files  32 passed (32)
+      Tests  301 passed (301)
+   Start at  12:57:37
+   Duration  23.50s (transform 442ms, setup 0ms, collect 3.87s, tests 12.80s, environment 4ms, prepare 1.82s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |     100 |      100 |     100 |     100 |                   
+ src               |     100 |      100 |     100 |     100 |                   
+  analyzer.ts      |     100 |      100 |     100 |     100 |                   
+  benchmark.ts     |     100 |      100 |     100 |     100 |                   
+  compatibility.ts |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  doctor.ts        |     100 |      100 |     100 |     100 |                   
+  guardian.ts      |     100 |      100 |     100 |     100 |                   
+  iac-contracts.ts |     100 |      100 |     100 |     100 |                   
+  ...kubernetes.ts |     100 |      100 |     100 |     100 |                   
+  iac-normalize.ts |     100 |      100 |     100 |     100 |                   
+  iac-security.ts  |     100 |      100 |     100 |     100 |                   
+  iac-terraform.ts |     100 |      100 |     100 |     100 |                   
+  iac.ts           |     100 |      100 |     100 |     100 |                   
+  model-cli.ts     |     100 |      100 |     100 |     100 |                   
+  phase3-git.ts    |     100 |      100 |     100 |     100 |                   
+  phase3.ts        |     100 |      100 |     100 |     100 |                   
+  privacy.ts       |     100 |      100 |     100 |     100 |                   
+  ...-isolation.ts |     100 |      100 |     100 |     100 |                   
+  ...rification.ts |     100 |      100 |     100 |     100 |                   
+  version.ts       |     100 |      100 |     100 |     100 |                   
+ src/evolution     |     100 |      100 |     100 |     100 |                   
+  approval.ts      |     100 |      100 |     100 |     100 |                   
+  scorecard.ts     |     100 |      100 |     100 |     100 |                   
+ src/reasoner      |     100 |      100 |     100 |     100 |                   
+  citations.ts     |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  explain.ts       |     100 |      100 |     100 |     100 |                   
+  handoff.ts       |     100 |      100 |     100 |     100 |                   
+  prompt.ts        |     100 |      100 |     100 |     100 |                   
+  provider.ts      |     100 |      100 |     100 |     100 |                   
+  redaction.ts     |     100 |      100 |     100 |     100 |                   
+  taxonomy.ts      |     100 |      100 |     100 |     100 |                   
+ src/runtime       |     100 |      100 |     100 |     100 |                   
+  canonical.ts     |     100 |      100 |     100 |     100 |                   
+  collector.ts     |     100 |      100 |     100 |     100 |                   
+  contracts.ts     |     100 |      100 |     100 |     100 |                   
+  graph.ts         |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------

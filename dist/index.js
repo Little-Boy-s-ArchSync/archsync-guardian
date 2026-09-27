@@ -14,6 +14,7 @@ export * from "./iac-security.js";
 export * from "./iac-terraform.js";
 export * from "./model-cli.js";
 export * from "./module-dependencies.js";
+export * from "./module-graph.js";
 export * from "./phase3.js";
 export * from "./privacy.js";
 export * from "./reasoner/index.js";

@@ -1,0 +1,19 @@
+{
+  "purpose": "Developer-authored assertions, not independent labels or research accuracy",
+  "groups": 8,
+  "cases": [
+    {"id":"M1","group":"M1","pairs":[["src/app.ts","src/default.ts"],["src/app.ts","src/star.ts"],["src/app.ts","src/value.ts"]],"status":"complete-within-scope"},
+    {"id":"M2","group":"M2","pairs":[["src/app.ts","src/types.ts"],["src/app.ts","src/unused.ts"]],"status":"complete-within-scope"},
+    {"id":"M3","group":"M3","pairs":[["src/app.ts","src/value.ts"]],"status":"complete-within-scope","location_lines":[1,2,3]},
+    {"id":"M4","group":"M4","pairs":[["src/a.ts","src/a.ts"],["src/a.ts","src/b.ts"],["src/b.ts","src/a.ts"]],"status":"complete-within-scope"},
+    {"id":"M5-files","group":"M5","pairs":[["src/app.ts","src/value.ts"]],"status":"complete-within-scope"},
+    {"id":"M5-alias","group":"M5","pairs":[["src/app.ts","src/domain/value.ts"]],"status":"complete-within-scope"},
+    {"id":"M5-nodenext","group":"M5","pairs":[["src/app.mts","src/value.ts"]],"status":"complete-within-scope"},
+    {"id":"M6","group":"M6","pairs":[["src/app.ts","src/value.ts"]],"status":"complete-within-scope","exclusions":["builtin","declaration-only","external-package"]},
+    {"id":"M7-unresolved","group":"M7","pairs":[],"status":"incomplete","issues":["unresolved-module"]},
+    {"id":"M7-outside","group":"M7","pairs":[],"status":"incomplete","issues":["target-outside-scope"]},
+    {"id":"M7-syntax","group":"M7","pairs":[],"status":"incomplete","issues":["syntax-error"]},
+    {"id":"M7-empty","group":"M7","pairs":[],"status":"incomplete","issues":["empty-scope"]},
+    {"id":"M8","group":"M8","pairs":[["src/app.ts","src/static.ts"]],"status":"incomplete","issues":["unsupported-commonjs","unsupported-dynamic-import","unsupported-import-type"]}
+  ]
+}

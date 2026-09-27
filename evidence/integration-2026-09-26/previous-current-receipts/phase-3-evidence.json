@@ -1,0 +1,402 @@
+{
+  "phase": 3,
+  "release": "v0.3",
+  "objective": "Git-diff architecture impact analysis, pull-request findings and deterministic merge decisions",
+  "contract_version": "0.1",
+  "contracts": {
+    "schema_version": 1,
+    "core": {
+      "architecture_model": {
+        "current": "0.1.1",
+        "previous": "0.1.0",
+        "legacy": "0.1",
+        "accepted": [
+          "0.1.1",
+          "0.1.0",
+          "0.1"
+        ]
+      },
+      "graph": "1.0.0",
+      "finding": "1.0.0",
+      "evidence": "1.0.0",
+      "conformance": "1.0.0",
+      "cli_json": "1.0.0"
+    },
+    "guardian": {
+      "analyzer": "0.2",
+      "observed_graph": "0.1",
+      "finding": "0.1",
+      "source_evidence": "0.1",
+      "source_evidence_version_carrier": "observed-or-finding-envelope",
+      "result": "0.1"
+    },
+    "ownership": {
+      "architecture_model_graph_and_decisions": "core",
+      "source_detection_observed_graph_and_enrichment": "guardian"
+    }
+  },
+  "core_dependency": {
+    "repository": "https://github.com/Little-Boy-s-ArchSync/archsync-core",
+    "repository_commit": "503b5fe97aa39a78d5e5de80b794a94508e106cc",
+    "source_pull_request": "https://github.com/Little-Boy-s-ArchSync/archsync-core/pull/3",
+    "included_source_commits": {
+      "contract_compatibility": "a1f0143aa8eb917aa0d93e28101b1893347453e2",
+      "quality_goals": "783716d7961690b1e8c1cda4acb956777977a853"
+    },
+    "vendored_package": "vendor/archsync-core-0.1.1-integration-503b5fe.tgz",
+    "vendored_package_sha256": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "dependency_status": "upstream-integration-pr-merged"
+  },
+  "source_sha256": {
+    "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
+    "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
+    "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
+    "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
+    "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
+    "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
+    "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
+    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
+    "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
+    "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
+    "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
+    "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
+    "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
+  },
+  "input_sha256": {
+    "test/fixtures/architecture.yaml": "fcc5c1b9f16882ee4b93f303548802815c67050d70c07a859e0d7e2a5e8eac6c",
+    "test/fixtures/baseline": "295859d70647b405b378341a4f1b9137168b25b21a3826698439e8742baed54e",
+    "test/fixtures/violation/frontend/src/database.ts": "5e508dcbb8d8a2d92bc33d53b069e83425f20e639b9f6a5b24915c542ba6109c"
+  },
+  "dependency_sha256": {
+    ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
+    "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
+    "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
+    "package.json": "252b3f3ef875e888e410cc73b6fdbe5337fc61ab6cbfbafc18caf490e31aac09",
+    "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
+    "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
+    "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
+    "scripts/phase3-evidence.mjs": "8467de3d042ad8ee3a07a0270c04a04b257af7568392b6f08fb79638359d6717",
+    "scripts/verify-clean-worktree.mjs": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7",
+    "scripts/verify-offline.mjs": "2d272385c59e7ad308f5f60aa22a3e3d1c4849e1bede66e14fec21f793fb73a3",
+    "src/privacy.test.ts": "53b3d28c3ed3d4997849e0c8fb77801ea269f0a7184bebbd1acb4a594f70a116",
+    "docs/OPERATIONS-PRIVACY.md": "4345ea2f42a0e13517a439a4e2e90a1a7a9b1af0139f64bd81ea15ddf8ee06c3",
+    "scripts/core-compatibility.mjs": "fb23bd739c5b3943d5ab0d9c0be5c103c03f0bb410e1c602e9751f4026b6ba4a",
+    "vendor/archsync-core-0.1.1-integration-503b5fe.provenance.json": "6b53de40a277692383b6407b428ee40f237fad2dc916229bac8060f8ce904507"
+  },
+  "strategy": {
+    "baseline": "Observed Graph cached by base commit, architecture contract and analyzer version",
+    "head": "Only source components touched by the Git diff are rescanned and merged into the cached baseline",
+    "decision": "New violations BLOCK, new non-forbidden topology REVIEW, no new drift PASS",
+    "pre_existing_findings": "Reported but do not block an unrelated diff"
+  },
+  "controlled_cases": {
+    "no-impact": {
+      "classification": "no-impact",
+      "decision": "PASS",
+      "changed_files": [
+        {
+          "path": "service/src/internal.ts",
+          "status": "added",
+          "additions": 1,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 1
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "service"
+      ],
+      "architecture_delta": {
+        "added_nodes": [],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [],
+        "removed_edges": []
+      },
+      "introduced_findings": [],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
+    },
+    "violation": {
+      "classification": "violation",
+      "decision": "BLOCK",
+      "changed_files": [
+        {
+          "path": "frontend/src/database.ts",
+          "status": "added",
+          "additions": 7,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 7
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "frontend"
+      ],
+      "architecture_delta": {
+        "added_nodes": [],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [
+          "frontend|data|postgres"
+        ],
+        "removed_edges": []
+      },
+      "introduced_findings": [
+        {
+          "id": "ARCH-001",
+          "kind": "deny-rule",
+          "rule_id": "ARCH-001",
+          "edge": "frontend|data|postgres",
+          "source_evidence": [
+            {
+              "file": "frontend/src/database.ts",
+              "line": 6,
+              "column": 9,
+              "detector": "typescript-pg"
+            }
+          ]
+        },
+        {
+          "id": "EVOLUTION-001",
+          "kind": "architecture-evolution",
+          "edge": "frontend|data|postgres",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "frontend/src/database.ts",
+              "line": 6,
+              "column": 9,
+              "detector": "typescript-pg"
+            }
+          ]
+        }
+      ],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
+    },
+    "evolution": {
+      "classification": "evolution",
+      "decision": "REVIEW",
+      "changed_files": [
+        {
+          "path": "service/src/cache.ts",
+          "status": "added",
+          "additions": 3,
+          "deletions": 0,
+          "changed_lines": [
+            {
+              "start": 1,
+              "end": 3
+            }
+          ]
+        }
+      ],
+      "affected_components": [
+        "service"
+      ],
+      "architecture_delta": {
+        "added_nodes": [
+          "redis"
+        ],
+        "removed_nodes": [],
+        "changed_nodes": [],
+        "added_edges": [
+          "service|data|redis"
+        ],
+        "removed_edges": []
+      },
+      "introduced_findings": [
+        {
+          "id": "EVOLUTION-001",
+          "kind": "architecture-evolution",
+          "component": "redis",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "service/src/cache.ts",
+              "line": 3,
+              "column": 39,
+              "detector": "typescript-redis"
+            }
+          ]
+        },
+        {
+          "id": "EVOLUTION-002",
+          "kind": "architecture-evolution",
+          "edge": "service|data|redis",
+          "change": "added",
+          "source_evidence": [
+            {
+              "file": "service/src/cache.ts",
+              "line": 3,
+              "column": 39,
+              "detector": "typescript-redis"
+            }
+          ]
+        }
+      ],
+      "resolved_findings": [],
+      "pre_existing_findings": 0,
+      "analyzed_components": 1,
+      "baseline_scanned_files": 3,
+      "incremental_scanned_files": 2,
+      "head_scanned_files": 4
+    }
+  },
+  "gates": {
+    "pull_request_decisions": [
+      "PASS",
+      "BLOCK",
+      "REVIEW"
+    ],
+    "exact_file_line_annotations": true,
+    "machine_readable_json": true,
+    "markdown_report": true,
+    "baseline_cache_required": true,
+    "component_incremental_scan_required": true,
+    "coverage_thresholds_percent": {
+      "statements": 100,
+      "branches": 100,
+      "functions": 100,
+      "lines": 100
+    },
+    "measured_engine_coverage": {
+      "statements": {
+        "complete": true,
+        "percent": 100,
+        "all_items_covered": true
+      },
+      "branches": {
+        "complete": true,
+        "percent": 100,
+        "all_items_covered": true
+      },
+      "functions": {
+        "complete": true,
+        "percent": 100,
+        "all_items_covered": true
+      },
+      "lines": {
+        "complete": true,
+        "percent": 100,
+        "all_items_covered": true
+      }
+    },
+    "coverage_count_policy": "Raw V8 item counts are verified covered=total at runtime but omitted because they vary across supported Node majors",
+    "cli_smoke_checks": 23,
+    "clean_package_install": "required on Windows, macOS and Linux"
+  },
+  "exclusions": [
+    "Automatic architecture baseline updates",
+    "Automatic repair or merge",
+    "IaC and runtime evidence",
+    "LLM authority over deterministic rules"
+  ],
+  "environment": {
+    "platform": "darwin",
+    "os_release": "27.0.0",
+    "node": "v22.16.0",
+    "cpu": "Apple M1 Pro",
+    "logical_cpus": 10
+  },
+  "performance": {
+    "no-impact": {
+      "cold_total_ms": 129.36,
+      "warm_total_ms": [
+        70.93,
+        66.15,
+        68.02,
+        66.02,
+        77.7
+      ],
+      "warm_baseline_load_ms": [
+        6.66,
+        7.27,
+        6.59,
+        6.37,
+        7.09
+      ],
+      "warm_incremental_scan_ms": [
+        1.77,
+        2.12,
+        2.09,
+        1.92,
+        2.22
+      ],
+      "warm_median_total_ms": 68.02,
+      "warm_median_baseline_load_ms": 6.66,
+      "warm_median_incremental_scan_ms": 2.09
+    },
+    "violation": {
+      "cold_total_ms": 109.38,
+      "warm_total_ms": [
+        79.07,
+        73.51,
+        69.37,
+        77.46,
+        82.47
+      ],
+      "warm_baseline_load_ms": [
+        8.39,
+        6.65,
+        6.99,
+        8.7,
+        7.66
+      ],
+      "warm_incremental_scan_ms": [
+        2.34,
+        1.72,
+        2.28,
+        4.3,
+        1.88
+      ],
+      "warm_median_total_ms": 77.46,
+      "warm_median_baseline_load_ms": 7.66,
+      "warm_median_incremental_scan_ms": 2.28
+    },
+    "evolution": {
+      "cold_total_ms": 112.54,
+      "warm_total_ms": [
+        72.98,
+        64.83,
+        68.13,
+        66.3,
+        67.43
+      ],
+      "warm_baseline_load_ms": [
+        7.26,
+        6.08,
+        7.46,
+        7.83,
+        8.24
+      ],
+      "warm_incremental_scan_ms": [
+        1.88,
+        1.92,
+        1.9,
+        2.01,
+        2.19
+      ],
+      "warm_median_total_ms": 67.43,
+      "warm_median_baseline_load_ms": 7.46,
+      "warm_median_incremental_scan_ms": 1.92
+    }
+  }
+}

@@ -1,0 +1,48 @@
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ❯ src/phase3-adversarial.test.ts (18 tests | 1 failed | 17 skipped) 272ms
+   × incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads 272ms
+     → expected 'PASS' to be 'BLOCK' // Object.is equality
+   ↓ incremental validity against full scans > matches a fresh full scan after add, with cold and warm caches
+   ↓ incremental validity against full scans > matches a fresh full scan after modify, with cold and warm caches
+   ↓ incremental validity against full scans > matches a fresh full scan after delete, with cold and warm caches
+   ↓ incremental validity against full scans > matches a fresh full scan after rename-within, with cold and warm caches
+   ↓ incremental validity against full scans > matches a fresh full scan after rename-across, with cold and warm caches
+   ↓ incremental validity against full scans > matches a fresh full scan after delete-component, with cold and warm caches
+   ↓ incremental validity against full scans > publishes concurrent cold cache writes without temporary-file collisions
+   ↓ incremental validity against full scans > invalidates the baseline when architecture rules change
+   ↓ incremental validity against full scans > detects an untracked violation with literal filename "café.ts"
+   ↓ incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts"
+   ↓ incremental validity against full scans > detects an untracked violation with literal filename "line\nfile.ts"
+   ↓ incremental validity against full scans > detects a tracked violation with literal filename "café.ts"
+   ↓ incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts"
+   ↓ incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts"
+   ↓ incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model
+   ↓ incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted
+   ↓ incremental validity against full scans > preserves evidence from a nested component when only its parent component changes
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads
+AssertionError: expected 'PASS' to be 'BLOCK' // Object.is equality
+
+Expected: "BLOCK"
+Received: "PASS"
+
+ ❯ src/phase3-adversarial.test.ts:34:34
+     32|     const full = evaluateObservedArchitecture(testArchitecture(), awai…
+     33|     expect(full.decision).toBe("BLOCK");
+     34|     expect(result.head.decision).toBe(full.decision);
+       |                                  ^
+     35|     expect(result.decision).toBe("BLOCK");
+     36|     expect(result.repository.worktree_dirty).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 skipped (18)
+   Start at  12:49:54
+   Duration  962ms (transform 94ms, setup 0ms, collect 494ms, tests 272ms, environment 0ms, prepare 47ms)
+

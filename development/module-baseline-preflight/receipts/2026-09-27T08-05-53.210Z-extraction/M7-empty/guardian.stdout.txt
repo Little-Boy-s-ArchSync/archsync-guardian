@@ -1,0 +1,34 @@
+{
+  "purpose": "development-preflight-not-independent-evaluation",
+  "graph": {
+    "schema_version": "0.1.0",
+    "adapter": "archsync-static-esm",
+    "adapter_version": "0.1.0",
+    "typescript_version": "5.9.3",
+    "scope": "configured-internal-typescript-static-esm",
+    "status": "incomplete",
+    "modules": [],
+    "edges": [],
+    "exclusions": [],
+    "issues": [
+      {
+        "file": "tsconfig.json",
+        "line": 1,
+        "column": 1,
+        "code": "empty-scope",
+        "message": "No eligible TypeScript source files were selected."
+      }
+    ],
+    "inputs": [
+      {
+        "file": "../tsconfig.base.json",
+        "sha256": "714964a8e5c1d93a32b4da9a15286ace89a3f8f8be083fc62d999e588e05f8ed"
+      },
+      {
+        "file": "tsconfig.json",
+        "sha256": "f7593100e6a93536edd29dd2a3b4358e9e1cb55c80021c54dc4944e2731dfdbe"
+      }
+    ]
+  },
+  "architecture": null
+}

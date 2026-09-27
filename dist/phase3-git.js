@@ -13,7 +13,9 @@ export function sourceComponent(file, expected) {
     return known ?? file.split("/")[0];
 }
 export function repositoryRelativePath(gitPath, repositoryRelative) {
-    const normalized = portablePath(gitPath);
+    // Git's -z records and decoded patch paths already use '/'. A backslash in
+    // this format is a literal filename byte, not a Windows path separator.
+    const normalized = gitPath;
     if (!repositoryRelative)
         return normalized;
     const prefix = `${repositoryRelative}/`;
@@ -30,8 +32,19 @@ function statusName(value) {
 }
 export function parseNameStatus(output, repositoryRelative) {
     const files = new Map();
-    for (const line of output.split(/\r?\n/u).filter(Boolean)) {
-        const [rawStatus, first, second] = line.split("\t");
+    const rows = [];
+    if (output.includes("\0")) {
+        const fields = output.split("\0");
+        for (let index = 0; index < fields.length - 1;) {
+            const status = fields[index++];
+            const first = fields[index++];
+            rows.push([status, first, ...(status.startsWith("R") ? [fields[index++]] : [])]);
+        }
+    }
+    else {
+        rows.push(...output.split(/\r?\n/u).filter(Boolean).map((line) => line.split("\t")));
+    }
+    for (const [rawStatus, first, second] of rows) {
         if (!rawStatus || !first)
             continue;
         const renamed = rawStatus.startsWith("R") && second;
@@ -53,9 +66,26 @@ export function parseNameStatus(output, repositoryRelative) {
     return files;
 }
 export function parseNumStat(output, repositoryRelative, files) {
-    for (const line of output.split(/\r?\n/u).filter(Boolean)) {
-        const [added, deleted, ...pathParts] = line.split("\t");
-        const rawPath = pathParts.at(-1);
+    const rows = [];
+    if (output.includes("\0")) {
+        const fields = output.split("\0");
+        for (let index = 0; index < fields.length - 1; index++) {
+            const match = fields[index].match(/^([^\t]+)\t([^\t]+)\t([\s\S]*)$/u);
+            if (!match)
+                continue;
+            let path = match[3];
+            // With -z a rename has an empty path followed by old and new paths.
+            if (!path) {
+                index++;
+                path = fields[++index];
+            }
+            rows.push([match[1], match[2], path]);
+        }
+    }
+    else {
+        rows.push(...output.split(/\r?\n/u).filter(Boolean).map((line) => line.split("\t")));
+    }
+    for (const [added, deleted, rawPath] of rows) {
         if (!rawPath)
             continue;
         const path = repositoryRelativePath(rawPath, repositoryRelative);
@@ -72,7 +102,7 @@ export function parseChangedLines(patch, repositoryRelative, files) {
     let currentPath;
     for (const line of patch.split(/\r?\n/u)) {
         if (line.startsWith("+++ ")) {
-            const raw = line.slice(4);
+            const raw = decodeGitQuotedPath(line.slice(4));
             currentPath = raw === "/dev/null"
                 ? undefined
                 : repositoryRelativePath(raw.replace(/^b\//u, ""), repositoryRelative);
@@ -88,5 +118,33 @@ export function parseChangedLines(patch, repositoryRelative, files) {
         if (count > 0)
             files.get(currentPath)?.changed_lines.push({ start, end: start + count - 1 });
     }
+}
+// Patch headers still use Git C-style quoting even when status/stat use -z.
+function decodeGitQuotedPath(value) {
+    if (!value.startsWith('"') || !value.endsWith('"'))
+        return value;
+    const bytes = [];
+    const body = value.slice(1, -1);
+    const escapes = { a: 7, b: 8, t: 9, n: 10, v: 11, f: 12, r: 13, '\\': 92, '"': 34 };
+    for (let index = 0; index < body.length;) {
+        if (body[index] === "\\") {
+            const octal = body.slice(index + 1).match(/^[0-7]{3}/u)?.[0];
+            if (octal) {
+                bytes.push(Number.parseInt(octal, 8));
+                index += 4;
+                continue;
+            }
+            const escaped = escapes[body[index + 1]];
+            if (escaped !== undefined) {
+                bytes.push(escaped);
+                index += 2;
+                continue;
+            }
+        }
+        const char = String.fromCodePoint(body.codePointAt(index));
+        bytes.push(...Buffer.from(char, "utf8"));
+        index += char.length;
+    }
+    return Buffer.from(bytes).toString("utf8");
 }
 //# sourceMappingURL=phase3-git.js.map

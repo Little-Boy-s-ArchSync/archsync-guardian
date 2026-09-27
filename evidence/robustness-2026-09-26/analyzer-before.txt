@@ -1,0 +1,183 @@
+$ vitest run src/analyzer-adversarial.test.ts
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ❯ src/analyzer-adversarial.test.ts (18 tests | 15 failed) 68ms
+   × does not invent an edge for type-only default import 20ms
+     → expected [ 'data|db' ] to deeply equal []
+   × does not invent an edge for type-only named import 5ms
+     → expected [ 'data|db' ] to deeply equal []
+   × does not invent an edge for type-only namespace import 3ms
+     → expected [ 'data|cache' ] to deeply equal []
+   × does not invent an edge for pg protocol mismatch 3ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × does not invent an edge for redis protocol mismatch 3ms
+     → expected [ 'data|wrong' ] to deeply equal []
+   × does not invent an edge for fetch protocol mismatch 2ms
+     → expected [ 'data|wrong' ] to deeply equal []
+   × does not invent an edge for comparison is not URL 2ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × does not invent an edge for arithmetic is not URL 3ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × does not invent an edge for shadowed fetch parameter 5ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   ✓ does not invent an edge for shadowed process parameter 2ms
+   × does not invent an edge for shadowed pg constructor 3ms
+     → expected [ 'data|wrong' ] to deeply equal []
+   × does not invent an edge for shadowed pg receiver 3ms
+     → expected [ 'data|wrong' ] to deeply equal []
+   × does not invent an edge for shadowed endpoint parameter 2ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × does not invent an edge for block-local endpoint leakage 2ms
+     → expected [ 'http|wrong' ] to deeply equal []
+   × separates same-named endpoints in sibling functions 3ms
+     → expected [ 'http|second' ] to deeply equal [ 'http|first', 'http|second' ]
+   ✓ preserves imported aliases and closures over valid resources 2ms
+   × preserves an unshadowed global fetch beside a local binding 3ms
+     → expected [ 'http|actual', 'http|wrong' ] to deeply equal [ 'http|actual' ]
+   ✓ preserves a supported fallback with the same endpoint 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for type-only default import
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for type-only named import
+AssertionError: expected [ 'data|db' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "data|db",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:29:94
+     27|   ['shadowed endpoint parameter', 'const url="https://wrong"; function…
+     28|   ['block-local endpoint leakage', '{const url="https://wrong";} fetch…
+     29| ])('does not invent an edge for %s', async (_label, source) => { expec…
+       |                                                                                              ^
+     30| it('separates same-named endpoints in sibling functions', async () => {
+     31|   expect(await edges('function a(){const url="https://first";fetch(url…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for type-only namespace import
+AssertionError: expected [ 'data|cache' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "data|cache",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:29:94
+     27|   ['shadowed endpoint parameter', 'const url="https://wrong"; function…
+     28|   ['block-local endpoint leakage', '{const url="https://wrong";} fetch…
+     29| ])('does not invent an edge for %s', async (_label, source) => { expec…
+       |                                                                                              ^
+     30| it('separates same-named endpoints in sibling functions', async () => {
+     31|   expect(await edges('function a(){const url="https://first";fetch(url…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for pg protocol mismatch
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for comparison is not URL
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for arithmetic is not URL
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for shadowed fetch parameter
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for shadowed endpoint parameter
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for block-local endpoint leakage
+AssertionError: expected [ 'http|wrong' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "http|wrong",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:29:94
+     27|   ['shadowed endpoint parameter', 'const url="https://wrong"; function…
+     28|   ['block-local endpoint leakage', '{const url="https://wrong";} fetch…
+     29| ])('does not invent an edge for %s', async (_label, source) => { expec…
+       |                                                                                              ^
+     30| it('separates same-named endpoints in sibling functions', async () => {
+     31|   expect(await edges('function a(){const url="https://first";fetch(url…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for redis protocol mismatch
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for fetch protocol mismatch
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for shadowed pg constructor
+ FAIL  src/analyzer-adversarial.test.ts > does not invent an edge for shadowed pg receiver
+AssertionError: expected [ 'data|wrong' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "data|wrong",
++ ]
+
+ ❯ src/analyzer-adversarial.test.ts:29:94
+     27|   ['shadowed endpoint parameter', 'const url="https://wrong"; function…
+     28|   ['block-local endpoint leakage', '{const url="https://wrong";} fetch…
+     29| ])('does not invent an edge for %s', async (_label, source) => { expec…
+       |                                                                                              ^
+     30| it('separates same-named endpoints in sibling functions', async () => {
+     31|   expect(await edges('function a(){const url="https://first";fetch(url…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > separates same-named endpoints in sibling functions
+AssertionError: expected [ 'http|second' ] to deeply equal [ 'http|first', 'http|second' ]
+
+- Expected
++ Received
+
+  [
+-   "http|first",
+    "http|second",
+  ]
+
+ ❯ src/analyzer-adversarial.test.ts:31:131
+     29| ])('does not invent an edge for %s', async (_label, source) => { expec…
+     30| it('separates same-named endpoints in sibling functions', async () => {
+     31|   expect(await edges('function a(){const url="https://first";fetch(url…
+       |                                                                                                                                   ^
+     32| });
+     33| it('preserves imported aliases and closures over valid resources', asy…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  src/analyzer-adversarial.test.ts > preserves an unshadowed global fetch beside a local binding
+AssertionError: expected [ 'http|actual', 'http|wrong' ] to deeply equal [ 'http|actual' ]
+
+- Expected
++ Received
+
+  [
+    "http|actual",
++   "http|wrong",
+  ]
+
+ ❯ src/analyzer-adversarial.test.ts:37:98
+     35| });
+     36| it('preserves an unshadowed global fetch beside a local binding', asyn…
+     37|   expect(await edges('function f(fetch:any){fetch("https://wrong");} f…
+       |                                                                                                  ^
+     38| });
+     39| it('preserves a supported fallback with the same endpoint', async () =…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed | 3 passed (18)
+   Start at  12:47:26
+   Duration  629ms (transform 64ms, setup 0ms, collect 365ms, tests 68ms, environment 0ms, prepare 56ms)
+
+[ELIFECYCLE] Test failed. See above for more details.
