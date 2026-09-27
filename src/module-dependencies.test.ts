@@ -88,4 +88,68 @@ describe("development-only module dependency adapter", () => {
     await writeFile(join(root, "tsconfig.json"), JSON.stringify({ compilerOptions: { moduleResolution: "not-a-resolution" } }));
     await expect(analyzeModuleDependencies(root, mapping)).rejects.toThrow(/Invalid TypeScript configuration/);
   });
+
+  it("does not treat lexically shadowed require calls as CommonJS dependencies", async () => {
+    const root = await fixture();
+    await writeFile(join(root, "src", "models", "shadowed-const.ts"), [
+      "const require = (value: string) => value;",
+      "require('../routers/route');",
+      "export {};",
+    ].join("\n"));
+    await writeFile(join(root, "src", "models", "shadowed-parameter.ts"), [
+      "export function parameter(require: (value: string) => string) { require('../routers/route'); }",
+    ].join("\n"));
+    await writeFile(join(root, "src", "models", "shadowed-function.ts"), [
+      "function require(value: string) { return value; }",
+      "require('../routers/route');",
+      "export {};",
+    ].join("\n"));
+    await writeFile(join(root, "src", "models", "shadowed-block.ts"), [
+      "{ const require = (value: string) => value; require('../routers/route'); }",
+      "export {};",
+    ].join("\n"));
+    const result = await analyzeModuleDependencies(root, [
+      { component: "api-models", prefix: "src/models/" },
+      { component: "api-routers", prefix: "src/routers/" },
+    ]);
+    expect(result.edges[0]?.evidence.filter((item) => item.file.includes("shadowed-"))).toEqual([]);
+  });
+
+  it("retains empty ESM clauses when verbatim module syntax preserves their side effects", async () => {
+    const root = await fixture();
+    await writeFile(join(root, "tsconfig.json"), JSON.stringify({ compilerOptions: {
+      target: "ES2022", module: "ESNext", moduleResolution: "Bundler", verbatimModuleSyntax: true,
+    } }));
+    await writeFile(join(root, "src", "models", "empty.ts"), [
+      "import {} from '../routers/route';",
+      "export {} from '../routers/route';",
+      "import { type Route } from '../routers/route';",
+      "export { type Route } from '../routers/route';",
+      "import type {} from '../routers/route';",
+      "export type {} from '../routers/route';",
+      "",
+    ].join("\n"));
+    const result = await analyzeModuleDependencies(root, [
+      { component: "api-models", prefix: "src/models/" },
+      { component: "api-routers", prefix: "src/routers/" },
+    ]);
+    expect(result.edges[0]?.evidence.filter((item) => item.file === "src/models/empty.ts").map((item) => item.syntax)).toEqual([
+      "import", "export", "import", "export",
+    ]);
+  });
+
+  it("accepts an unbound CommonJS require and compares BOM-stripped program text", async () => {
+    const root = await fixture();
+    await writeFile(join(root, "tsconfig.json"), JSON.stringify({ compilerOptions: {
+      target: "ES2022", module: "NodeNext", moduleResolution: "NodeNext", types: [],
+    } }));
+    await writeFile(join(root, "src", "models", "bom.ts"), "\uFEFFrequire('../routers/route');\n");
+    const result = await analyzeModuleDependencies(root, [
+      { component: "api-models", prefix: "src/models/" },
+      { component: "api-routers", prefix: "src/routers/" },
+    ]);
+    expect(result.edges[0]?.evidence.filter((item) => item.file === "src/models/bom.ts").map((item) => item.syntax)).toEqual([
+      "require",
+    ]);
+  });
 });

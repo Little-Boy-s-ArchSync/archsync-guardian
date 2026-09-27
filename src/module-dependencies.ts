@@ -63,30 +63,38 @@ function groupFor(path: string, mapping: readonly ModuleGroupMapping[]): string 
   return mapping.find((item) => path.startsWith(item.prefix))?.component ?? null;
 }
 
-function valueImport(statement: ts.ImportDeclaration): boolean {
+function valueImport(statement: ts.ImportDeclaration, options: ts.CompilerOptions): boolean {
   const clause = statement.importClause;
   if (!clause) return true;
   if (clause.isTypeOnly || clause.name) return !clause.isTypeOnly;
   const bindings = clause.namedBindings;
-  return !bindings || ts.isNamespaceImport(bindings) || bindings.elements.some((item) => !item.isTypeOnly);
+  return !bindings || ts.isNamespaceImport(bindings) || bindings.elements.some((item) => !item.isTypeOnly) ||
+    (options.verbatimModuleSyntax === true && bindings.elements.every((item) => item.isTypeOnly));
 }
 
-function valueExport(statement: ts.ExportDeclaration): boolean {
+function valueExport(statement: ts.ExportDeclaration, options: ts.CompilerOptions): boolean {
   if (statement.isTypeOnly) return false;
   const clause = statement.exportClause;
-  return !clause || !ts.isNamedExports(clause) || clause.elements.some((item) => !item.isTypeOnly);
+  return !clause || !ts.isNamedExports(clause) || clause.elements.some((item) => !item.isTypeOnly) ||
+    (options.verbatimModuleSyntax === true && clause.elements.every((item) => item.isTypeOnly));
 }
 
-function specifiers(file: ts.SourceFile): Array<{ node: ts.StringLiteral; syntax: ModuleDependencyEvidence["syntax"] }> {
+function locallyBound(identifier: ts.Identifier, checker: ts.TypeChecker, file: ts.SourceFile): boolean {
+  return checker.getSymbolAtLocation(identifier)?.declarations?.some((declaration) => declaration.getSourceFile() === file) ?? false;
+}
+
+function specifiers(file: ts.SourceFile, checker: ts.TypeChecker, options: ts.CompilerOptions): Array<{ node: ts.StringLiteral; syntax: ModuleDependencyEvidence["syntax"] }> {
   const found: Array<{ node: ts.StringLiteral; syntax: ModuleDependencyEvidence["syntax"] }> = [];
   const visit = (node: ts.Node): void => {
-    if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier) && valueImport(node)) {
+    if (ts.isImportDeclaration(node) && ts.isStringLiteral(node.moduleSpecifier) && valueImport(node, options)) {
       found.push({ node: node.moduleSpecifier, syntax: "import" });
-    } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier) && valueExport(node)) {
+    } else if (ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier) && valueExport(node, options)) {
       found.push({ node: node.moduleSpecifier, syntax: "export" });
     } else if (ts.isCallExpression(node) && node.arguments.length === 1 && ts.isStringLiteral(node.arguments[0]!)) {
       if (node.expression.kind === ts.SyntaxKind.ImportKeyword) found.push({ node: node.arguments[0] as ts.StringLiteral, syntax: "dynamic-import" });
-      if (ts.isIdentifier(node.expression) && node.expression.text === "require") found.push({ node: node.arguments[0] as ts.StringLiteral, syntax: "require" });
+      if (ts.isIdentifier(node.expression) && node.expression.text === "require" && !locallyBound(node.expression, checker, file)) {
+        found.push({ node: node.arguments[0] as ts.StringLiteral, syntax: "require" });
+      }
     }
     ts.forEachChild(node, visit);
   };
@@ -114,9 +122,10 @@ export async function analyzeModuleDependencies(repository: string, mappings: re
   await visit(root);
   const verified = new Set(files.map((file) => resolve(file)));
   const optionsCache = new Map<string, ts.CompilerOptions>();
+  const fallbackOptions: ts.CompilerOptions = { moduleResolution: ts.ModuleResolutionKind.NodeNext, module: ts.ModuleKind.NodeNext };
   const compilerOptions = (file: string): ts.CompilerOptions => {
     const config = ts.findConfigFile(dirname(file), ts.sys.fileExists, "tsconfig.json");
-    if (!config || !resolve(config).startsWith(`${root}${sep}`)) return { moduleResolution: ts.ModuleResolutionKind.NodeNext, module: ts.ModuleKind.NodeNext };
+    if (!config || !resolve(config).startsWith(`${root}${sep}`)) return fallbackOptions;
     const cached = optionsCache.get(config);
     if (cached) return cached;
     const read = ts.readConfigFile(config, ts.sys.readFile);
@@ -126,6 +135,24 @@ export async function analyzeModuleDependencies(repository: string, mappings: re
     optionsCache.set(config, parsed.options);
     return parsed.options;
   };
+  const optionsByFile = new Map(files.map((file) => [file, compilerOptions(file)]));
+  const grouped = new Map<ts.CompilerOptions, string[]>();
+  for (const file of files) {
+    const options = optionsByFile.get(file)!;
+    const group = grouped.get(options) ?? [];
+    group.push(file);
+    grouped.set(options, group);
+  }
+  const analysis = new Map<string, { file: ts.SourceFile; checker: ts.TypeChecker; options: ts.CompilerOptions }>();
+  for (const [options, rootNames] of grouped) {
+    const program = ts.createProgram({ rootNames, options: { ...options, allowJs: true } });
+    const checker = program.getTypeChecker();
+    for (const path of rootNames) {
+      const file = program.getSourceFile(path);
+      assert(file, `TypeScript could not load source: ${path}`);
+      analysis.set(path, { file, checker, options });
+    }
+  }
   const edges = new Map<string, ModuleDependencyEdge>();
   const unresolved: ModuleDependencyUnresolved[] = [];
   for (const path of files) {
@@ -135,11 +162,13 @@ export async function analyzeModuleDependencies(repository: string, mappings: re
     const name = posix(relative(root, path));
     const from = groupFor(name, mapping);
     if (!from) continue;
-    const parsed = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true);
-    for (const item of specifiers(parsed)) {
+    const current = analysis.get(path)!;
+    assert.equal(current.file.text, source.startsWith("\uFEFF") ? source.slice(1) : source, "Source changed while TypeScript program was created");
+    const parsed = current.file;
+    for (const item of specifiers(parsed, current.checker, current.options)) {
       const specifier = item.node.text;
       const location = parsed.getLineAndCharacterOfPosition(item.node.getStart(parsed));
-      const resolved = ts.resolveModuleName(specifier, path, compilerOptions(path), ts.sys).resolvedModule?.resolvedFileName;
+      const resolved = ts.resolveModuleName(specifier, path, current.options, ts.sys).resolvedModule?.resolvedFileName;
       if (!resolved) {
         unresolved.push({ file: name, line: location.line + 1, column: location.character + 1, specifier,
           reason: specifier.startsWith(".") || specifier.startsWith("/") ? "unresolved-local-target" : "unresolved-package-or-alias" });
@@ -155,8 +184,8 @@ export async function analyzeModuleDependencies(repository: string, mappings: re
       if (!to || to === from) continue;
       const key = `${from}\0${to}`;
       const evidence = { file: name, line: location.line + 1, column: location.character + 1, specifier, target_file: targetFile, syntax: item.syntax };
-      const current = edges.get(key);
-      if (current) current.evidence.push(evidence);
+      const edge = edges.get(key);
+      if (edge) edge.evidence.push(evidence);
       else edges.set(key, { from, to, type: "dependency", evidence: [evidence] });
     }
   }
