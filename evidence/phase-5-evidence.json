@@ -13,7 +13,7 @@
   "source_sha256": {
     "src/iac.ts": "c4dc64941014770ed7d4f26bc992df8c90c12fd27da6fae414d2ed07e360f34f",
     "src/iac-contracts.ts": "2ce13c6c575baa76b302633896d810c664c9741beb405e1bb5e1b5824126def0",
-    "src/index.ts": "606878c4d2fc63a9c1d7f8470e3aa66d4dafe6d0e5d9335e28201f1d115be09d",
+    "src/index.ts": "7c94f4d2211f5e2d7cc8a10cd3929c395358bb5bc76e407ef05df64eded10ccb",
     "src/iac-governance.test.ts": "95386eada7572ce88793bf017c62e297a4f9094a88b90c91c2c27cdc91584f34",
     "src/iac-kubernetes.ts": "25e1ceb8e4addfede55e91f46b1afe5f695423615e23564b934f355ecf49c4ed",
     "src/iac-normalize.ts": "1a5c0f0067bc1f5eb9a021a4bf487996eeb6adca4f5917b2c88f372f98cbfdb2",
@@ -25,12 +25,12 @@
     "src/iac-security.test.ts": "5fe6e216eb07df234c71312bb4165ff40e8321c23701662b596e78e85fa9d26e",
     "src/iac-terraform.test.ts": "04197ca741dda7787a17f5527d50a7ec58208ffa31fb25ee0fce2a6af576bc94"
   },
-  "generated_dist_sha256": "628d5584446764eb8a5514678c6f9cfab5e146131ffef4415e7cc26789fa241f",
+  "generated_dist_sha256": "101dab792430e740d1cef3a26f2614c93dfe773f794bc9449ba5c156bb4237ee",
   "input_sha256": {
     "test/fixtures/iac": "cb8d161a621b22d98982ea4a5853d5fc6d3093d5b4fc74022026f51adc58849f"
   },
   "governance_sha256": {
-    "README.md": "e2082e710e7e830786db23ee7a9e1c2ad0398c61681f8fe6ea1a7019d90e0878",
+    "README.md": "42a772d1f3a01349b27594ab799d7079d6cbc8cf8c416e0b1dd8bb1d57ffc4b4",
     "docs/BOUNDARY.md": "aed32740fbfa42629837e3393046c35dfb9ca6660d084df731c3553887425e3f",
     "docs/OPERATIONS-PRIVACY.md": "4345ea2f42a0e13517a439a4e2e90a1a7a9b1af0139f64bd81ea15ddf8ee06c3",
     "docs/phase-5.md": "0f09345e8e8e281486d030dae2e11dde7fb300f4a35957be0e451d85bc880fd6",
