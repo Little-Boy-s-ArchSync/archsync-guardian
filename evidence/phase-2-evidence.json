@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "d223d73c87836a149cde7e5939284a897aa2478b5ba41c209fbbb9176edba554",
+    "implementation_source_sha256": "57e1d6c9ecddf68a0a1b677024e6d7f1d9b12ac5df08e7e78812ac643f7ada06",
     "fixture_tree": {
       "files": [
         {
@@ -284,7 +284,7 @@
       },
       {
         "file": "src/module-graph.test.ts",
-        "sha256": "00b3bcc83a3fd7c20cccdc5e29d0cd04ef934ff52885de5af6292541a421f468"
+        "sha256": "f485aa07a0791de05a6e3ff00c7a33028ef5c3e2558cae281c776aae11efe24e"
       },
       {
         "file": "src/phase3-git.test.ts",
@@ -331,7 +331,7 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "01597424b78686fd97e3096136e039c91c93435df720d438209e46e8a3ec8fd4",
+    "verification_source_sha256": "203de0155a5bf6c2dbcb62b3266e060a29d9139ad8296b32109f7e068eccab73",
     "dependency_source": [
       {
         "file": "package.json",
@@ -413,7 +413,7 @@
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
-      "src/module-graph.ts": "7d650a269ffa8c9b692b2670134c95bf62f38a92c0150adb8149cd5f17b6fc47",
+      "src/module-graph.ts": "c455d50a8ebdc15750cdf7e17879cd41029df4ee694e1e63699beeef90b53310",
       "src/phase3-git.ts": "9d3c087ea19528dbcf97b5161d230e950883ac0b53510e58c7a514ed3f055d83",
       "src/phase3.ts": "768454f9cad10ac701113f362135c02220af1d22a8952c6034523ce5c9b958a7",
       "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
