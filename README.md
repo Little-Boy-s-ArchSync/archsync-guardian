@@ -22,6 +22,8 @@ does not claim P4-120 or any Phase 4/5 benchmark freeze.
 
 Guardian depends on `@archsync/core`. It does not own the Architecture Model schema and does not treat draw.io or runtime observations as a source of truth.
 
+**D3 module-dependency development adapter:** `analyzeModuleDependencies` is an opt-in, read-only API with version `0.1.0-development`. It observes direct value imports/re-exports and literal `require`/dynamic imports between explicitly mapped source groups; type-only, test and declaration files are excluded. It preserves unresolved imports and does not alter the existing runtime-signal analyzer, CLI or PASS/BLOCK/REVIEW gate. This is tested only on development fixtures. Package-export/alias coverage, pinned source reconstruction, fair dependency-cruiser comparison, D3 labels and official runs remain unverified; do not cite this API as D3 accuracy or a complete module conformance feature.
+
 ## Capabilities
 
 - Scan a TypeScript/Node.js repository into Observed Graph v0.1.
