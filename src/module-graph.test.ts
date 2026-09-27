@@ -224,4 +224,24 @@ describe("separate static ESM module adapter (development fixtures, not D3)", ()
     expect(graph.issues.map((issue) => issue.code)).toEqual(["source-alias"]);
     expect(graph.modules).toHaveLength(1);
   });
+
+  it("preserves source identities and evidence through a repository-directory alias", async () => {
+    const { root, config } = await project({ "src/a.ts": 'import "./b";', "src/b.ts": "export {};" });
+    const holder = await project({ "src/unrelated.ts": "export {};" });
+    const alias = join(holder.root, "linked-repository");
+    await symlink(root, alias, process.platform === "win32" ? "junction" : "dir");
+    const original = analyzeModuleProject(config);
+    const aliased = analyzeModuleProject(join(alias, "tsconfig.json"), alias);
+    expect(aliased).toEqual(original);
+    expect(aliased.modules.map((module) => module.file)).toEqual(["src/a.ts", "src/b.ts"]);
+    // Compiler-resolution inputs can legitimately include external packages.
+    // The declared repository's own sources/config must keep internal names.
+    expect(aliased.inputs.some((input) => input.file === "tsconfig.json")).toBe(true);
+    for (const module of aliased.modules) {
+      expect(aliased.inputs).toContainEqual({ file: module.file, sha256: module.sha256 });
+    }
+    expect(aliased.edges[0]!.evidence[0]!.file).toBe("src/a.ts");
+    expect(analyzeModuleProject(join(alias, "tsconfig.json"))).toEqual(original);
+    expect(analyzeModuleProject(config, alias)).toEqual(original);
+  });
 });

@@ -1,7 +1,7 @@
 import type { ArchitectureDocument } from "@archsync/core";
 import ts from "typescript";
 /** Separate from Guardian's service graph and its cache/version contract. */
-export declare const moduleAdapterVersion = "0.1.0";
+export declare const moduleAdapterVersion = "0.1.1";
 export interface ModuleLocation {
     file: string;
     line: number;

@@ -4,7 +4,7 @@ import { isBuiltin } from "node:module";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import ts from "typescript";
 /** Separate from Guardian's service graph and its cache/version contract. */
-export const moduleAdapterVersion = "0.1.0";
+export const moduleAdapterVersion = "0.1.1";
 function digest(text) {
     return createHash("sha256").update(text).digest("hex");
 }
@@ -35,8 +35,11 @@ export function moduleDiagnosticLocation(source, file, diagnostic) {
  */
 export function analyzeModuleProject(configPath, repositoryRoot = dirname(resolve(configPath))) {
     const root = realpathSync(repositoryRoot);
-    const config = resolve(configPath).replaceAll("\\", "/");
-    if (!isWithin(root, realpathSync(config)))
+    // Resolve the config's directory aliases too: on macOS /var is commonly a
+    // symlink to /private/var. Mixing lexical config paths with a physical root
+    // otherwise produces escaping identities for repository-contained modules.
+    const config = realpathSync(resolve(configPath)).replaceAll("\\", "/");
+    if (!isWithin(root, config))
         throw new Error("Module config must be inside repositoryRoot");
     const inputs = new Map();
     const readFile = (file) => {

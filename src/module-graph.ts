@@ -7,7 +7,7 @@ import type { ArchitectureDocument } from "@archsync/core";
 import ts from "typescript";
 
 /** Separate from Guardian's service graph and its cache/version contract. */
-export const moduleAdapterVersion = "0.1.0";
+export const moduleAdapterVersion = "0.1.1";
 
 export interface ModuleLocation {
   file: string;
@@ -72,8 +72,11 @@ export function moduleDiagnosticLocation(source: ts.SourceFile, file: string, di
  */
 export function analyzeModuleProject(configPath: string, repositoryRoot = dirname(resolve(configPath))): ModuleGraph {
   const root = realpathSync(repositoryRoot);
-  const config = resolve(configPath).replaceAll("\\", "/");
-  if (!isWithin(root, realpathSync(config))) throw new Error("Module config must be inside repositoryRoot");
+  // Resolve the config's directory aliases too: on macOS /var is commonly a
+  // symlink to /private/var. Mixing lexical config paths with a physical root
+  // otherwise produces escaping identities for repository-contained modules.
+  const config = realpathSync(resolve(configPath)).replaceAll("\\", "/");
+  if (!isWithin(root, config)) throw new Error("Module config must be inside repositoryRoot");
   const inputs = new Map<string, string>();
   const readFile = (file: string): string | undefined => {
     const content = ts.sys.readFile(file);
