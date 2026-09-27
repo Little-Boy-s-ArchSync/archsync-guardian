@@ -24,7 +24,9 @@ export function repositoryRelativePath(
   gitPath: string,
   repositoryRelative: string,
 ): string | undefined {
-  const normalized = portablePath(gitPath);
+  // Git's -z records and decoded patch paths already use '/'. A backslash in
+  // this format is a literal filename byte, not a Windows path separator.
+  const normalized = gitPath;
   if (!repositoryRelative) return normalized;
   const prefix = `${repositoryRelative}/`;
   return normalized.startsWith(prefix) ? normalized.slice(prefix.length) : undefined;

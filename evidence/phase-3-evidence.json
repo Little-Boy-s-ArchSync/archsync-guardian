@@ -55,10 +55,10 @@
     "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
     "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
     "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
-    "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
+    "src/index.ts": "606878c4d2fc63a9c1d7f8470e3aa66d4dafe6d0e5d9335e28201f1d115be09d",
     "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
-    "src/phase3-git.ts": "621e0644e09412f5b7b0a92cd7b754d8ce759e2f5ff0138245ed7679782e9001",
-    "src/phase3.ts": "2d400e0acdc94d368958275405ff6f33eaa0e5021d389c778fa9f9979a2b2156",
+    "src/phase3-git.ts": "9d3c087ea19528dbcf97b5161d230e950883ac0b53510e58c7a514ed3f055d83",
+    "src/phase3.ts": "768454f9cad10ac701113f362135c02220af1d22a8952c6034523ce5c9b958a7",
     "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
     "src/version.ts": "872c6dcfa0042ea4f1e3981cd10f63bea9c89848d035e3dfb2c411133ede0725"
   },
@@ -71,7 +71,7 @@
     ".github/workflows/ci.yml": "12719bf4e34cf1e1f9c1b9c229a9ea318676949dbc8d6c0dee8b4cc13fc5ece6",
     "pnpm-workspace.yaml": "e594202acb37cdb0e1108a887c325378b507f3aed400923f3ba3a9c6f7b132a5",
     "vendor/archsync-core-0.1.1-integration-503b5fe.tgz": "7f6c2db24888d8e4bf6eb6dd2cc2d0abaaf2fc908e2b43937aec40d163b05fc9",
-    "package.json": "252b3f3ef875e888e410cc73b6fdbe5337fc61ab6cbfbafc18caf490e31aac09",
+    "package.json": "2db10b806524723bbf715af3f711df633c8de132888ff6e62c8ca6bc49a440c4",
     "pnpm-lock.yaml": "3576b942065191f6c04a3dff98b474a7b09820a794edcc3906083bf4d185cf50",
     "scripts/package-install-e2e.mjs": "ae69944787d1759bdaec365b092fdf2ec29c735f917dfd3888c19cab405f2c1f",
     "scripts/package-provenance.mjs": "a751a5d847dd6d4015c97b54c59f69c0d612dff599bde71552c6c45af64289f7",
@@ -310,93 +310,93 @@
     "LLM authority over deterministic rules"
   ],
   "environment": {
-    "platform": "darwin",
-    "os_release": "27.0.0",
+    "platform": "win32",
+    "os_release": "10.0.26200",
     "node": "v22.16.0",
-    "cpu": "Apple M1 Pro",
-    "logical_cpus": 10
+    "cpu": "13th Gen Intel(R) Core(TM) i7-13650HX",
+    "logical_cpus": 20
   },
   "performance": {
     "no-impact": {
-      "cold_total_ms": 145.21,
+      "cold_total_ms": 475.4,
       "warm_total_ms": [
-        75.95,
-        80.73,
-        71.51,
-        73.68,
-        72.78
+        298.16,
+        350.89,
+        297.47,
+        285.81,
+        314.78
       ],
       "warm_baseline_load_ms": [
-        7.16,
-        7.82,
-        6.67,
-        7.19,
-        6.99
+        30.29,
+        34.01,
+        30.44,
+        32.29,
+        30.02
       ],
       "warm_incremental_scan_ms": [
-        4.47,
-        6.69,
-        3.1,
-        2.98,
-        2.96
+        5.56,
+        5.85,
+        3.92,
+        3.64,
+        3.84
       ],
-      "warm_median_total_ms": 73.68,
-      "warm_median_baseline_load_ms": 7.16,
-      "warm_median_incremental_scan_ms": 3.1
+      "warm_median_total_ms": 298.16,
+      "warm_median_baseline_load_ms": 30.44,
+      "warm_median_incremental_scan_ms": 3.92
     },
     "violation": {
-      "cold_total_ms": 147.25,
+      "cold_total_ms": 511.48,
       "warm_total_ms": [
-        84.57,
-        81.97,
-        79.19,
-        74.8,
-        70.7
+        306.1,
+        298.91,
+        293.22,
+        328.53,
+        337.56
       ],
       "warm_baseline_load_ms": [
-        7.44,
-        7.34,
-        7.11,
-        7.43,
-        7.04
+        31.39,
+        30.83,
+        30.19,
+        32.88,
+        36.45
       ],
       "warm_incremental_scan_ms": [
-        3.88,
-        3.04,
-        3.05,
-        2.98,
-        2.58
+        3.45,
+        3.33,
+        3.29,
+        5.2,
+        3.53
       ],
-      "warm_median_total_ms": 79.19,
-      "warm_median_baseline_load_ms": 7.34,
-      "warm_median_incremental_scan_ms": 3.04
+      "warm_median_total_ms": 306.1,
+      "warm_median_baseline_load_ms": 31.39,
+      "warm_median_incremental_scan_ms": 3.45
     },
     "evolution": {
-      "cold_total_ms": 112.35,
+      "cold_total_ms": 454.35,
       "warm_total_ms": [
-        77.42,
-        73.5,
-        71.28,
-        73.17,
-        73.15
+        325.39,
+        302.83,
+        296.67,
+        326.05,
+        440.55
       ],
       "warm_baseline_load_ms": [
-        8.98,
-        7.81,
-        6.96,
-        7,
-        7.36
+        33.91,
+        35.22,
+        30.06,
+        37.61,
+        51.15
       ],
       "warm_incremental_scan_ms": [
-        3.18,
-        2.78,
-        2.39,
-        2.81,
-        2.86
+        3.44,
+        4.65,
+        3.6,
+        6.28,
+        7.97
       ],
-      "warm_median_total_ms": 73.17,
-      "warm_median_baseline_load_ms": 7.36,
-      "warm_median_incremental_scan_ms": 2.81
+      "warm_median_total_ms": 325.39,
+      "warm_median_baseline_load_ms": 35.22,
+      "warm_median_incremental_scan_ms": 4.65
     }
   }
 }

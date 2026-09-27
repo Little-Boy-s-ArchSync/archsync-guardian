@@ -1,5 +1,10 @@
 # ArchSync Guardian
 
+An experimental static-ESM module adapter is available as a separate development
+preflight, without changing the service analyzer. See
+[Module comparison preflight](docs/MODULE-COMPARISON-PREFLIGHT.md) for its exact
+scope, failure accounting and the external-evaluation gates that remain open.
+
 `@archsync/guardian` is the deterministic TypeScript source analyzer and architecture conformance control plane for ArchSync Phases 2 and 3, with preparatory Phase 4 reasoning/repair-verification, Phase 5 Infrastructure-as-Evidence and Phase 6 runtime-awareness foundations.
 
 **Phase 3 status:** v0.3 Git-diff and pull-request gate implemented; v0.3.1 added the unified cross-platform CLI and professional demo runner; v0.3.2 hardened installable artifacts, PATH diagnostics and provenance; v0.3.3 binds the audited package to Core v0.1.1 and the corrected finding contract. This integration verifies exact Core integration pull request #3 commit `503b5fe97aa39a78d5e5de80b794a94508e106cc`, now merged into Core `main`, which combines the CORE-101 compatibility commit `a1f0143aa8eb917aa0d93e28101b1893347453e2` and proposed Phase 6 quality-goal commit `783716d7961690b1e8c1cda4acb956777977a853`. The merge status does not represent these changes as a registry release.

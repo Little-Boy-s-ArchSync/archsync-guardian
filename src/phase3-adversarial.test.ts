@@ -77,22 +77,27 @@ describe("incremental validity against full scans", () => {
     expect(result.baseline.decision).toBe("REVIEW");
   });
 
-  it.each(["café.ts", "tab\tfile.ts", "line\nfile.ts"])("detects an untracked violation with literal filename %j", async (name) => {
-    await baseline();
-    await writeFile(join(root, "frontend/src", name), bypass);
-    const result = await checkRepositoryDiff(testArchitecture(), root);
-    expect(result.decision).toBe("BLOCK");
-    expect(result.changed_files).toContainEqual(expect.objectContaining({ path: `frontend/src/${name}` }));
-    expect(result.head.decision).toBe(evaluateObservedArchitecture(testArchitecture(), await analyzeTypeScriptRepository(root, testArchitecture())).decision);
-  });
+  for (const name of ["café.ts", "tab\tfile.ts", "line\nfile.ts", "back\\slash.ts"]) {
+    // Windows disallows control characters and literal backslashes in names.
+    // Pure parser tests still exercise these names on every OS; filesystem
+    // cases run on POSIX. A platform skip is not a passed test.
+    it.skipIf(process.platform === "win32" && /[\t\n\\]/u.test(name))(`detects an untracked violation with literal filename ${JSON.stringify(name)}`, async () => {
+      await baseline();
+      await writeFile(join(root, "frontend/src", name), bypass);
+      const result = await checkRepositoryDiff(testArchitecture(), root);
+      expect(result.decision).toBe("BLOCK");
+      expect(result.changed_files).toContainEqual(expect.objectContaining({ path: `frontend/src/${name}` }));
+      expect(result.head.decision).toBe(evaluateObservedArchitecture(testArchitecture(), await analyzeTypeScriptRepository(root, testArchitecture())).decision);
+    });
 
-  it.each(["café.ts", "tab\tfile.ts", "line\nfile.ts"])("detects a tracked violation with literal filename %j", async (name) => {
-    await baseline({ ...baselineSources, [`frontend/src/${name}`]: "export const before = 1;\n" });
-    await writeFile(join(root, "frontend/src", name), bypass);
-    const result = await checkRepositoryDiff(testArchitecture(), root);
-    expect(result.decision).toBe("BLOCK");
-    expect(result.changed_files).toContainEqual(expect.objectContaining({ path: `frontend/src/${name}`, additions: 3, deletions: 1, changed_lines: [{start: 1, end: 3}] }));
-  });
+    it.skipIf(process.platform === "win32" && /[\t\n\\]/u.test(name))(`detects a tracked violation with literal filename ${JSON.stringify(name)}`, async () => {
+      await baseline({ ...baselineSources, [`frontend/src/${name}`]: "export const before = 1;\n" });
+      await writeFile(join(root, "frontend/src", name), bypass);
+      const result = await checkRepositoryDiff(testArchitecture(), root);
+      expect(result.decision).toBe("BLOCK");
+      expect(result.changed_files).toContainEqual(expect.objectContaining({ path: `frontend/src/${name}`, additions: 3, deletions: 1, changed_lines: [{start: 1, end: 3}] }));
+    });
+  }
 
   it("isolates baseline caches between subprojects sharing the same Git commit and model", async () => {
     const sources = Object.fromEntries(Object.entries(baselineSources).flatMap(([path, source]) => [[`a/${path}`, source], [`b/${path}`, source]]));

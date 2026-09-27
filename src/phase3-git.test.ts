@@ -43,6 +43,7 @@ describe("Phase 3 Git output parsing", () => {
     expect(repositoryRelativePath("service/src/app.ts", "")).toBe("service/src/app.ts");
     expect(repositoryRelativePath("packages/app/service/src/app.ts", "packages/app")).toBe("service/src/app.ts");
     expect(repositoryRelativePath("packages/other/src/app.ts", "packages/app")).toBeUndefined();
+    expect(repositoryRelativePath("packages/app/back\\slash.ts", "packages/app")).toBe("back\\slash.ts");
   });
 
   it("parses added, modified, deleted and renamed statuses while ignoring malformed or out-of-scope rows", () => {

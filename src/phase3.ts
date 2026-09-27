@@ -320,7 +320,7 @@ async function materializeBaseSnapshot(
   );
   for (const gitPath of files) {
     const path = repositoryRelativePath(gitPath, repositoryRelative)!;
-    const source = await git(gitRoot, ["show", `${baseSha}:${portablePath(gitPath)}`]);
+    const source = await git(gitRoot, ["show", `${baseSha}:${gitPath}`]);
     const outputPath = resolve(snapshot, ...path.split("/"));
     await mkdir(dirname(outputPath), { recursive: true });
     await writeFile(outputPath, source, "utf8");

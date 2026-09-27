@@ -155,7 +155,7 @@ async function materializeBaseSnapshot(gitRoot, repositoryRelative, baseSha) {
     const files = output.split("\0").filter((file) => sourceExtensions.some((extension) => file.endsWith(extension)) && !file.endsWith(".d.ts"));
     for (const gitPath of files) {
         const path = repositoryRelativePath(gitPath, repositoryRelative);
-        const source = await git(gitRoot, ["show", `${baseSha}:${portablePath(gitPath)}`]);
+        const source = await git(gitRoot, ["show", `${baseSha}:${gitPath}`]);
         const outputPath = resolve(snapshot, ...path.split("/"));
         await mkdir(dirname(outputPath), { recursive: true });
         await writeFile(outputPath, source, "utf8");
