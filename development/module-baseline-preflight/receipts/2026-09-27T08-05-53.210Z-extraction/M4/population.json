@@ -1,0 +1,8 @@
+{
+  "source": "TypeScript configuration file selection, not either graph output",
+  "files": [
+    "src/a.ts",
+    "src/b.ts",
+    "src/isolated.ts"
+  ]
+}

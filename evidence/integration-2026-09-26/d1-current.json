@@ -1,0 +1,806 @@
+{
+  "contract_version": "0.1",
+  "benchmark": "order-platform",
+  "valid": true,
+  "issues": [],
+  "baseline": {
+    "components": 5,
+    "relationships": 5,
+    "deterministic": true,
+    "classification": "no-impact"
+  },
+  "metrics": {
+    "full_graph_nodes": {
+      "true_positive": 105,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "full_graph_edges": {
+      "true_positive": 108,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "changed_nodes": {
+      "true_positive": 5,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "changed_edges": {
+      "true_positive": 12,
+      "false_positive": 0,
+      "false_negative": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1
+    },
+    "classification_accuracy": 1,
+    "evidence_file_accuracy": 1,
+    "evidence_line_accuracy": 1,
+    "deterministic_cases": 20,
+    "total_cases": 20
+  },
+  "cases": [
+    {
+      "id": "case-01",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/pricing.ts",
+          "line": 2
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-02",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/validation.ts",
+          "line": 2
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-03",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/format.ts",
+          "line": 2
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-04",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "payment-service/src/retry.ts",
+          "line": 1
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-05",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "gateway/src/logger.ts",
+          "line": 1
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-06",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-001"
+      ],
+      "actual_rule_ids": [
+        "ARCH-001"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "frontend|http|payment-service"
+      ],
+      "actual_added_edges": [
+        "frontend|http|payment-service"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/app.ts",
+          "line": 14
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "frontend/src/app.ts",
+          "line": 14,
+          "column": 26,
+          "snippet": "fetch(`${paymentServiceUrl}/payments`, {",
+          "detector": "typescript-fetch",
+          "confidence": 1
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-07",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-002"
+      ],
+      "actual_rule_ids": [
+        "ARCH-002"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "frontend|data|postgres"
+      ],
+      "actual_added_edges": [
+        "frontend|data|postgres"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/app.ts",
+          "line": 7
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "frontend/src/app.ts",
+          "line": 7,
+          "column": 24,
+          "snippet": "database.query(\"select * from orders where id = $1\", [id])",
+          "detector": "typescript-pg",
+          "confidence": 0.99
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-08",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-004"
+      ],
+      "actual_rule_ids": [
+        "ARCH-004"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [
+        "order-service|http|payment-service"
+      ],
+      "actual_removed_edges": [
+        "order-service|http|payment-service"
+      ],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/service.ts",
+          "line": 8
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "order-service/src/service.ts",
+          "line": 8,
+          "column": 3,
+          "snippet": "await saveOrder(order);",
+          "detector": "component-root",
+          "confidence": 1
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-09",
+      "expected": "evolution",
+      "actual": "evolution",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [
+        "redis"
+      ],
+      "actual_added_nodes": [
+        "redis"
+      ],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "order-service|data|redis"
+      ],
+      "actual_added_edges": [
+        "order-service|data|redis"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/cache.ts",
+          "line": 8
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "order-service/src/cache.ts",
+          "line": 12,
+          "column": 9,
+          "snippet": "redis.set(JSON.stringify(order), \"1\", { EX: 60 })",
+          "detector": "typescript-redis",
+          "confidence": 0.99
+        },
+        {
+          "kind": "source-location",
+          "file": "order-service/src/cache.ts",
+          "line": 8,
+          "column": 17,
+          "snippet": "redis.get(JSON.stringify(order))",
+          "detector": "typescript-redis",
+          "confidence": 0.99
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-10",
+      "expected": "evolution",
+      "actual": "evolution",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [
+        "order-events",
+        "order-worker"
+      ],
+      "actual_added_nodes": [
+        "order-events",
+        "order-worker"
+      ],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "order-events|async|order-worker",
+        "order-service|async|order-events"
+      ],
+      "actual_added_edges": [
+        "order-events|async|order-worker",
+        "order-service|async|order-events"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/events.ts",
+          "line": 8
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "order-service/src/events.ts",
+          "line": 8,
+          "column": 3,
+          "snippet": "channel.publish(\"orders\", topic, Buffer.from(JSON.stringify(payload)))",
+          "detector": "typescript-amqp-publish",
+          "confidence": 0.98
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-11",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/notes.ts",
+          "line": 1
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-12",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/db-types.ts",
+          "line": 3
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-13",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/local-cache.ts",
+          "line": 7
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-14",
+      "expected": "no-impact",
+      "actual": "no-impact",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "gateway/src/events-log.ts",
+          "line": 7
+        }
+      ],
+      "actual_evidence": [],
+      "deterministic": true
+    },
+    {
+      "id": "case-15",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-003",
+        "ARCH-005"
+      ],
+      "actual_rule_ids": [
+        "ARCH-003",
+        "ARCH-005"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "gateway|data|postgres"
+      ],
+      "actual_added_edges": [
+        "gateway|data|postgres"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "gateway/src/server.ts",
+          "line": 7
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "gateway/src/server.ts",
+          "line": 7,
+          "column": 24,
+          "snippet": "database.query(\"select * from orders where id = $1\", [id])",
+          "detector": "typescript-pg",
+          "confidence": 0.99
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-16",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-005"
+      ],
+      "actual_rule_ids": [
+        "ARCH-005"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "gateway|http|payment-service"
+      ],
+      "actual_added_edges": [
+        "gateway|http|payment-service"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "gateway/src/server.ts",
+          "line": 5
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "gateway/src/server.ts",
+          "line": 5,
+          "column": 10,
+          "snippet": "fetch(`${paymentServiceUrl}/payments`, { method: \"POST\", body: JSON.stringify(payload) })",
+          "detector": "typescript-fetch",
+          "confidence": 1
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-17",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-006"
+      ],
+      "actual_rule_ids": [
+        "ARCH-006"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [],
+      "actual_added_edges": [],
+      "expected_removed_edges": [
+        "frontend|http|gateway"
+      ],
+      "actual_removed_edges": [
+        "frontend|http|gateway"
+      ],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/app.ts",
+          "line": 2
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "frontend/src/app.ts",
+          "line": 2,
+          "column": 3,
+          "snippet": "return payload;",
+          "detector": "component-root",
+          "confidence": 1
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-18",
+      "expected": "violation",
+      "actual": "violation",
+      "classification_match": true,
+      "expected_rule_ids": [
+        "ARCH-002"
+      ],
+      "actual_rule_ids": [
+        "ARCH-002"
+      ],
+      "rule_match": true,
+      "expected_added_nodes": [],
+      "actual_added_nodes": [],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "frontend|data|postgres"
+      ],
+      "actual_added_edges": [
+        "frontend|data|postgres"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "frontend/src/app.ts",
+          "line": 7
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "frontend/src/app.ts",
+          "line": 7,
+          "column": 24,
+          "snippet": "reportingDatabase.query(\"select * from orders where id = $1\", [id])",
+          "detector": "typescript-pg",
+          "confidence": 0.99
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-19",
+      "expected": "evolution",
+      "actual": "evolution",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [
+        "fraud-service"
+      ],
+      "actual_added_nodes": [
+        "fraud-service"
+      ],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "order-service|http|fraud-service"
+      ],
+      "actual_added_edges": [
+        "order-service|http|fraud-service"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "order-service/src/fraud.ts",
+          "line": 4
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "order-service/src/fraud.ts",
+          "line": 4,
+          "column": 9,
+          "snippet": "fetch(`${fraudServiceUrl}/assess`, {",
+          "detector": "typescript-fetch",
+          "confidence": 1
+        }
+      ],
+      "deterministic": true
+    },
+    {
+      "id": "case-20",
+      "expected": "evolution",
+      "actual": "evolution",
+      "classification_match": true,
+      "expected_rule_ids": [],
+      "actual_rule_ids": [],
+      "rule_match": true,
+      "expected_added_nodes": [
+        "payment-cache"
+      ],
+      "actual_added_nodes": [
+        "payment-cache"
+      ],
+      "expected_removed_nodes": [],
+      "actual_removed_nodes": [],
+      "expected_added_edges": [
+        "payment-service|data|payment-cache"
+      ],
+      "actual_added_edges": [
+        "payment-service|data|payment-cache"
+      ],
+      "expected_removed_edges": [],
+      "actual_removed_edges": [],
+      "evidence_file_match": true,
+      "evidence_line_match": true,
+      "expected_evidence": [
+        {
+          "file": "payment-service/src/risk-cache.ts",
+          "line": 6
+        }
+      ],
+      "actual_evidence": [
+        {
+          "kind": "source-location",
+          "file": "payment-service/src/risk-cache.ts",
+          "line": 6,
+          "column": 9,
+          "snippet": "paymentCache.hSet(\"risk\", id, JSON.stringify(value))",
+          "detector": "typescript-redis",
+          "confidence": 0.99
+        }
+      ],
+      "deterministic": true
+    }
+  ]
+}

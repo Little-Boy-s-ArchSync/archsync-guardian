@@ -1,0 +1,28 @@
+{
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "args": [
+    "D:\\Little Boys\\ArchSync\\.worktrees\\archsync-guardian-module-preflight-20260927\\development\\module-baseline-preflight\\comparator\\node_modules\\dependency-cruiser\\bin\\dependency-cruiser.mjs",
+    "--config",
+    "D:\\Little Boys\\ArchSync\\.worktrees\\archsync-guardian-module-preflight-20260927\\development\\module-baseline-preflight\\receipts\\2026-09-27T08-05-53.210Z-extraction\\M7-syntax\\dependency-cruiser.json",
+    "--output-type",
+    "json",
+    "src/app.ts"
+  ],
+  "cwd": "D:/Little Boys/ArchSync/.worktrees/archsync-guardian-module-preflight-20260927/development/module-baseline-preflight/fixtures/M7-syntax",
+  "started_utc": "2026-09-27T08:06:07.720Z",
+  "ended_utc": "2026-09-27T08:06:08.331Z",
+  "exit_code": 0,
+  "signal": null,
+  "timeout": false,
+  "launch_error": null,
+  "stdout": {
+    "file": "comparator.stdout.txt",
+    "sha256": "bd8bba535573a16ca9e6b3737d0ae1cdbcb32b67ba7e92951cc3a8493421289d",
+    "bytes": 4815
+  },
+  "stderr": {
+    "file": "comparator.stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

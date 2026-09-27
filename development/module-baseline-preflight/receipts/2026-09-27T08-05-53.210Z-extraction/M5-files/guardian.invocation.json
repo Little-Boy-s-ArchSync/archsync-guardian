@@ -1,0 +1,25 @@
+{
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "args": [
+    "D:\\Little Boys\\ArchSync\\.worktrees\\archsync-guardian-module-preflight-20260927\\scripts\\module-preflight.mjs",
+    "D:\\Little Boys\\ArchSync\\.worktrees\\archsync-guardian-module-preflight-20260927\\development\\module-baseline-preflight\\fixtures\\M5-files\\tsconfig.json",
+    "D:\\Little Boys\\ArchSync\\.worktrees\\archsync-guardian-module-preflight-20260927\\development\\module-baseline-preflight\\fixtures\\M5-files"
+  ],
+  "cwd": "D:/Little Boys/ArchSync/.worktrees/archsync-guardian-module-preflight-20260927/development/module-baseline-preflight/fixtures/M5-files",
+  "started_utc": "2026-09-27T08:05:59.452Z",
+  "ended_utc": "2026-09-27T08:06:00.098Z",
+  "exit_code": 0,
+  "signal": null,
+  "timeout": false,
+  "launch_error": null,
+  "stdout": {
+    "file": "guardian.stdout.txt",
+    "sha256": "9032bef493735e030f02c2c1ca43da4d4dc1f12eb11eb8e4d715ccdbaca4ed34",
+    "bytes": 23188
+  },
+  "stderr": {
+    "file": "guardian.stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

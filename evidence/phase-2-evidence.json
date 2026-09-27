@@ -3,7 +3,7 @@
   "release": "v0.2",
   "objective": "Deterministic TypeScript source analysis into evidence-rich observed architecture findings",
   "provenance": {
-    "implementation_source_sha256": "6d84229f2ea59c6787e12089653452b40f66e2f51ecaf4ffada2439352c8e434",
+    "implementation_source_sha256": "57e1d6c9ecddf68a0a1b677024e6d7f1d9b12ac5df08e7e78812ac643f7ada06",
     "fixture_tree": {
       "files": [
         {
@@ -220,11 +220,19 @@
       },
       {
         "file": "scripts/cli-smoke.mjs",
-        "sha256": "092127ced2da12491365649111af9e67feb4db34f0c1f55255ec48a610b8c507"
+        "sha256": "0ffca9fd42a83228561df7ae169c5eebf5102e8e2442f2665eefd215c647673e"
       },
       {
         "file": "scripts/core-compatibility.mjs",
         "sha256": "fb23bd739c5b3943d5ab0d9c0be5c103c03f0bb410e1c602e9751f4026b6ba4a"
+      },
+      {
+        "file": "scripts/module-preflight.mjs",
+        "sha256": "0d6c2e565682034f8f4a6f1d90c90290b53734c47668503f459a9c1994aada08"
+      },
+      {
+        "file": "scripts/module-preflight.node-tests.mjs",
+        "sha256": "07ccf55c17cb63c974da0b9259117b32df1f332e34807972984aefbebceb1310"
       },
       {
         "file": "scripts/package-install-e2e.mjs",
@@ -236,11 +244,15 @@
       },
       {
         "file": "scripts/phase2-evidence.mjs",
-        "sha256": "07f4ab307b43a762aac617e5c51bf7fdc419579c62b14d30a089bb7dcb8c9533"
+        "sha256": "70f15a3946b2b78a8c9fab71740e736644caaa416c3c1370517b212329234d9c"
       },
       {
         "file": "scripts/verify-clean-worktree.mjs",
         "sha256": "112fcda3e41dbc268c02be9db5a3b6454c9812f1ff96e7b3e7c837298d7375e7"
+      },
+      {
+        "file": "scripts/verify-module-development.mjs",
+        "sha256": "654ed73c66166dc03f83f957a7faa6637efdae4ca9ad5f80d8758ee46bd4de95"
       },
       {
         "file": "scripts/verify-offline.mjs",
@@ -248,7 +260,7 @@
       },
       {
         "file": "src/analyzer.test.ts",
-        "sha256": "05487e352f18b862410deff73c24adbd1d9417f28cc1da265c705f61d7f4b08f"
+        "sha256": "b7a7a858e960bce76d5c74af24faae40d489c4c39bea689463bb10c3c9516422"
       },
       {
         "file": "src/benchmark.test.ts",
@@ -256,7 +268,7 @@
       },
       {
         "file": "src/compatibility.test.ts",
-        "sha256": "315d838752ed520a4a0e5c13c325393d957e9fec57e8c1d31a6233212c04c54a"
+        "sha256": "2b6d69093ee6c928e91ffc83556f8bc33a6a97132aa59cd50fd16d187cdcc47a"
       },
       {
         "file": "src/doctor.test.ts",
@@ -264,19 +276,23 @@
       },
       {
         "file": "src/guardian.test.ts",
-        "sha256": "85789dd5287b51925647597ad8b817693e96d8902a2ec514f3dfa5c82d62fc19"
+        "sha256": "3f1ca7f227665440e0b4a26179a4486e4c768d8322e835eabc61ad61fa994fe2"
       },
       {
         "file": "src/model-cli.test.ts",
         "sha256": "f7604eda90e5dbb69646baacfc064ce1751644817aa147d49901440c3c61e65d"
       },
       {
+        "file": "src/module-graph.test.ts",
+        "sha256": "f485aa07a0791de05a6e3ff00c7a33028ef5c3e2558cae281c776aae11efe24e"
+      },
+      {
         "file": "src/phase3-git.test.ts",
-        "sha256": "20bf6a791445df28733a0840d4eb53ca340250d765856eee481130ab38fe713c"
+        "sha256": "49dcd5747814e5bc400eaba44d321ea3e50c073fa87908c17bc84898e4aa107d"
       },
       {
         "file": "src/phase3.test.ts",
-        "sha256": "cd8906f42b30e00bf05afdc2e15e05bedb6d6a08c8e497ed31ec8bcd81d49e6f"
+        "sha256": "6a2a028a25561f6705337ed26aef96c9f91be235783b55459e3ee8d9b5046d36"
       },
       {
         "file": "src/privacy.test.ts",
@@ -288,7 +304,19 @@
       },
       {
         "file": "src/version.test.ts",
-        "sha256": "f8a55b33c088fb22722bb86f3b522c33ea46916083ae282c5c98b8a83467610a"
+        "sha256": "ac82058447ee957477356a441c7dbb11232c8aad85ab577f0550823121a25912"
+      },
+      {
+        "file": "test/module-preflight/src/app.ts",
+        "sha256": "977ec92a9a5520f18a2e4df595eb71cd315b0e4469089805f0d1d2daf4b10163"
+      },
+      {
+        "file": "test/module-preflight/src/pricing.ts",
+        "sha256": "f14db59a1d43467dbe081777fa3d53593aa1384481ed062f51f8c9585b79f3cc"
+      },
+      {
+        "file": "test/module-preflight/tsconfig.json",
+        "sha256": "5ef09b8dc071214bc4c7dea342651ab96dd42b46aa8d12cc652471d036d228fb"
       },
       {
         "file": "tsconfig.json",
@@ -303,11 +331,11 @@
         "sha256": "5b0e177eae88cfba1fa7e71b4decd34e954cea600b1b91690e131be560e5e289"
       }
     ],
-    "verification_source_sha256": "c45844b2cfb5b91971fdb164d1b8896d467d70fc1bb6d7d85e5c93d17b3f81ad",
+    "verification_source_sha256": "203de0155a5bf6c2dbcb62b3266e060a29d9139ad8296b32109f7e068eccab73",
     "dependency_source": [
       {
         "file": "package.json",
-        "sha256": "252b3f3ef875e888e410cc73b6fdbe5337fc61ab6cbfbafc18caf490e31aac09"
+        "sha256": "2db10b806524723bbf715af3f711df633c8de132888ff6e62c8ca6bc49a440c4"
       },
       {
         "file": "pnpm-lock.yaml",
@@ -338,7 +366,7 @@
         "sha256": "550051461cbd6774b8f92df82ba923c3c9a0b95d82cfe4a8f7f49e21c3697a13"
       }
     ],
-    "dependency_source_sha256": "d0590000680fa802440f27aa9165fb9ed6e5a13aec84978178acfc1a2818cefc"
+    "dependency_source_sha256": "686f4b0dbf6215a213ec6a4b4582c3a00cba3dd4b2fcab4be56bbc7b3ca002b7"
   },
   "contracts": {
     "observed_graph_version": "0.1",
@@ -363,7 +391,7 @@
         "cli_json": "1.0.0"
       },
       "guardian": {
-        "analyzer": "0.2",
+        "analyzer": "0.4",
         "observed_graph": "0.1",
         "finding": "0.1",
         "source_evidence": "0.1",
@@ -376,20 +404,21 @@
       }
     },
     "source_sha256": {
-      "src/contracts.ts": "5fa1f984e4215d9faf5125515b44a8f81cc7d85254b327ab31b12cb0b887b4f2",
+      "src/contracts.ts": "fd98eaa5f08d5c2238ebcbf7b2b1d4012394e7cf867f924cf568f8dc000fbd74",
       "src/compatibility.ts": "665f6cd3e76cf9285f601565c1276662e2ed421bce15c0c5c97d856c544d0e9a",
-      "src/analyzer.ts": "71611e82b4915a676a148c322a0265213ec109c3f804bcb226ba9774d30e0ec6",
+      "src/analyzer.ts": "b04fd26bbc7a0d43fd0b883b11a3b0f81eaa8154b172e1a55191f34654ad1df8",
       "src/guardian.ts": "46b0e2b442a8e5d7d15ade5c206cd25c33e25ff2feace98f39fd9627183a04ef",
       "src/benchmark.ts": "76ca27ec37cb557bca67fdf74ac76b64c6d2cf238cb8e9a8b96183aa629bb550",
       "src/bin.ts": "ca81069b8b3f1724a137dca08a772951500300326997e241206bf3dc1fb57e96",
       "src/demo.ts": "6bb8db08e06fab29342271f217f873c1c3b90915c8ee0d56c26ee278a6741921",
       "src/doctor.ts": "7350acc483abc2015f0e5f8269553617745d1b1114eeffddcd9f9a5eee42ed71",
       "src/model-cli.ts": "1605093d72dbb19fa44ff417a53e4400b5df50a5c7d94922aee386b964686d7c",
-      "src/phase3-git.ts": "0492e6a27e3ce654d190acd165996dba5817000b45612a666655552f5716d267",
-      "src/phase3.ts": "966aba4e2ea0e6215a570705d5d60de2a3ed639c17ae647bf96b5c1ee0ae9f1c",
+      "src/module-graph.ts": "c455d50a8ebdc15750cdf7e17879cd41029df4ee694e1e63699beeef90b53310",
+      "src/phase3-git.ts": "9d3c087ea19528dbcf97b5161d230e950883ac0b53510e58c7a514ed3f055d83",
+      "src/phase3.ts": "768454f9cad10ac701113f362135c02220af1d22a8952c6034523ce5c9b958a7",
       "src/privacy.ts": "48f045ce60fccc27bc6820d09ed0ee8143b8c09ccd22b8c18ea1141d483b634c",
-      "src/index.ts": "deb5c3cc73f26604c6923bf36c7039b852dbd163c8cb2a20b335126a35415262",
-      "src/version.ts": "59f209267b91646ad4cd62d96d8fa610ef81415153a9ad52bdf222df8347a7fe"
+      "src/index.ts": "606878c4d2fc63a9c1d7f8470e3aa66d4dafe6d0e5d9335e28201f1d115be09d",
+      "src/version.ts": "872c6dcfa0042ea4f1e3981cd10f63bea9c89848d035e3dfb2c411133ede0725"
     }
   },
   "core_dependency": {
@@ -411,7 +440,7 @@
   },
   "analyzer": {
     "id": "archsync-typescript",
-    "version": "0.2",
+    "version": "0.4",
     "stack": "typescript-node",
     "supported_detectors": [
       "component-root",
@@ -433,12 +462,12 @@
       "gateway|http|service",
       "service|data|postgres"
     ],
-    "normalized_observed_sha256": "bfce42e50fcd35d3444942f02608a6314c9e16f273373f9daec55882f3659a93"
+    "normalized_observed_sha256": "7b7f1734d7a6e0731479e75d9dd06918abef9959ac7d45d0eb9fe271c9359245"
   },
   "compatibility_replay": {
     "current_core_architecture_model": "0.1.1",
     "previous_core_architecture_model": "0.1.0",
-    "normalized_guardian_result_sha256": "9fabbc1afe6a823761eff699fe3ece79e121a41e78ad5555260099cb210757b0",
+    "normalized_guardian_result_sha256": "3b202299e02795e440d48cd33412d8824d740e64c322fde71c338051c9c28849",
     "exact_current_previous_match": true,
     "unsupported_version": "9.0.0",
     "unsupported_message": "Unsupported architecture contract version '9.0.0'. Supported versions: 0.1.1, 0.1.0, 0.1."
@@ -554,7 +583,7 @@
         ]
       }
     ],
-    "normalized_observed_sha256": "53cff9ef5024abfe01acf01252210f82aad9d99e23415213c9189d7cdf2cd41b"
+    "normalized_observed_sha256": "b5d6571645cd657229fe1ff5ae892010948e1019604abdad37708a11cb358841"
   },
   "finding_demo": {
     "classification": "violation",
@@ -570,7 +599,7 @@
         "confidence": 0.99
       }
     ],
-    "normalized_result_sha256": "0216f68fbe8f06979430078d9240e8d8e196f4b9c7db134a64fc51d606241d95"
+    "normalized_result_sha256": "52562ca4c498830903d448bc605fce97c1a4c21abbdae791ecd68b8e64083aca"
   },
   "enforced_gates": {
     "coverage_thresholds_percent": {

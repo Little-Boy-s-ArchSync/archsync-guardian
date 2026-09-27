@@ -1,0 +1,18 @@
+{
+  "forbidden": [],
+  "options": {
+    "moduleSystems": [
+      "es6"
+    ],
+    "tsPreCompilationDeps": true,
+    "exclude": {
+      "dynamic": true
+    },
+    "tsConfig": {
+      "fileName": "tsconfig.json"
+    },
+    "doNotFollow": {
+      "path": "^(?!(?:src/app\\.mts|src/value\\.ts)$)"
+    }
+  }
+}

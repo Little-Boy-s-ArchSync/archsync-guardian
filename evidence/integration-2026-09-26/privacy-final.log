@@ -1,0 +1,2 @@
+$ node scripts/verify-offline.mjs
+PASS OFFLINE CONTRACT (no runtime network modules; production dependencies allowlisted)

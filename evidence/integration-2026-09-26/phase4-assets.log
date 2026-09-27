@@ -1,0 +1,559 @@
+$ node scripts/verify-phase4-assets.mjs && pnpm isolation:verify && pnpm provider:evidence:verify
+PASS PHASE 4 ASSETS (1 prompt; 2 schemas; case-06 replay; 20-case/25-finding taxonomy; 12-case deterministic safety corpus; human gates preserved)
+$ node --test scripts/isolation/backend-contracts.mjs scripts/isolation/workspace-contracts.mjs scripts/isolation/workspace-git-contracts.mjs scripts/isolation/repaired-execution-contracts.mjs
+TAP version 13
+# Subtest: normal verification binds the checked-in fixed fixture and policy bytes
+ok 1 - normal verification binds the checked-in fixed fixture and policy bytes
+  ---
+  duration_ms: 14.996084
+  type: 'test'
+  ...
+# Subtest: policy changes cannot silently enable privilege, a moving image, mounts or production capability
+ok 2 - policy changes cannot silently enable privilege, a moving image, mounts or production capability
+  ---
+  duration_ms: 2.581208
+  type: 'test'
+  ...
+# Subtest: daemon endpoints reject network transports, malformed Unix paths and traversal
+ok 3 - daemon endpoints reject network transports, malformed Unix paths and traversal
+  ---
+  duration_ms: 1.005708
+  type: 'test'
+  ...
+# Subtest: engine and exact image validation fail before any fixture is run
+ok 4 - engine and exact image validation fail before any fixture is run
+  ---
+  duration_ms: 10.82225
+  type: 'test'
+  ...
+# Subtest: Docker invocation is fixed, uses no host mount/port/privilege and preserves no host environment
+ok 5 - Docker invocation is fixed, uses no host mount/port/privilege and preserves no host environment
+  ---
+  duration_ms: 0.639167
+  type: 'test'
+  ...
+# Subtest: stopped-container validation rejects actual privilege and mount drift before start
+ok 6 - stopped-container validation rejects actual privilege and mount drift before start
+  ---
+  duration_ms: 33.124542
+  type: 'test'
+  ...
+# Subtest: zero, real fixture failure and Docker/client infrastructure statuses remain distinct
+ok 7 - zero, real fixture failure and Docker/client infrastructure statuses remain distinct
+  ---
+  duration_ms: 0.347583
+  type: 'test'
+  ...
+# Subtest: real controller subprocess output, deadline and cancellation are bounded
+ok 8 - real controller subprocess output, deadline and cancellation are bounded
+  ---
+  duration_ms: 482.184125
+  type: 'test'
+  ...
+# Subtest: timeout cleanup kills the owned container and descendants, observes no late marker, removes and verifies absence
+ok 9 - timeout cleanup kills the owned container and descendants, observes no late marker, removes and verifies absence
+  ---
+  duration_ms: 3.36
+  type: 'test'
+  ...
+# Subtest: cleanup never deletes an unowned container or treats daemon errors as absence
+ok 10 - cleanup never deletes an unowned container or treats daemon errors as absence
+  ---
+  duration_ms: 3.994042
+  type: 'test'
+  ...
+# Subtest: missing/late descendant evidence and failed removal remain inconclusive
+ok 11 - missing/late descendant evidence and failed removal remain inconclusive
+  ---
+  duration_ms: 15.726834
+  type: 'test'
+  ...
+# Subtest: authored npm timeout, signal and spawn error never become a passing fixture
+ok 12 - authored npm timeout, signal and spawn error never become a passing fixture
+  ---
+  duration_ms: 0.227458
+  type: 'test'
+  ...
+# Subtest: a failed later inspect still attempts narrow cleanup of a previously verified immutable CID
+ok 13 - a failed later inspect still attempts narrow cleanup of a previously verified immutable CID
+  ---
+  duration_ms: 0.299708
+  type: 'test'
+  ...
+# Subtest: preparation binds exact repaired bytes and commit without reading or changing the live workspace
+ok 14 - preparation binds exact repaired bytes and commit without reading or changing the live workspace
+  ---
+  duration_ms: 691.239
+  type: 'test'
+  ...
+# Subtest: unsupported projects, replacements, stale bytes and dependency changes fail before Docker
+ok 15 - unsupported projects, replacements, stale bytes and dependency changes fail before Docker
+  ---
+  duration_ms: 1284.621166
+  type: 'test'
+  ...
+# Subtest: execution observations reject committed-base substitution, spoofed later lines and missing/mismatched npm outcomes
+ok 16 - execution observations reject committed-base substitution, spoofed later lines and missing/mismatched npm outcomes
+  ---
+  duration_ms: 565.70225
+  type: 'test'
+  ...
+# Subtest: pre-start cancellation creates no container and never produces an approval
+ok 17 - pre-start cancellation creates no container and never produces an approval
+  ---
+  duration_ms: 376.972917
+  type: 'test'
+  ...
+# Subtest: live collection feeds the same sealed runner on Linux and refuses other platforms
+ok 18 - live collection feeds the same sealed runner on Linux and refuses other platforms
+  ---
+  duration_ms: 257.639083
+  type: 'test'
+  ...
+# Subtest: snapshot binds exact explicit file bytes, paths, ordering and binary contents
+ok 19 - snapshot binds exact explicit file bytes, paths, ordering and binary contents
+  ---
+  duration_ms: 2.36575
+  type: 'test'
+  ...
+# Subtest: snapshot refuses traversal, aliases, credentials, links and alternate file types before transfer
+ok 20 - snapshot refuses traversal, aliases, credentials, links and alternate file types before transfer
+  ---
+  duration_ms: 7.446542
+  type: 'test'
+  ...
+# Subtest: duplicate, case-colliding and file/directory snapshots fail closed
+ok 21 - duplicate, case-colliding and file/directory snapshots fail closed
+  ---
+  duration_ms: 0.325208
+  type: 'test'
+  ...
+# Subtest: changed digests, bytes, lengths, encoding and unexpected packet metadata are rejected
+ok 22 - changed digests, bytes, lengths, encoding and unexpected packet metadata are rejected
+  ---
+  duration_ms: 11.414041
+  type: 'test'
+  ...
+# Subtest: snapshot count, per-file bytes, total bytes and path depth are bounded
+ok 23 - snapshot count, per-file bytes, total bytes and path depth are bounded
+  ---
+  duration_ms: 11.523334
+  type: 'test'
+  ...
+# Subtest: restricted network profile preserves pinned upstream controls and removes socket access
+ok 24 - restricted network profile preserves pinned upstream controls and removes socket access
+  ---
+  duration_ms: 9.771917
+  type: 'test'
+  ...
+# Subtest: container inspection refuses absent, changed or unconfined seccomp before execution
+ok 25 - container inspection refuses absent, changed or unconfined seccomp before execution
+  ---
+  duration_ms: 4.772375
+  type: 'test'
+  ...
+# Subtest: collector reads committed files using explicit allowlisted paths and returns object identity metadata
+ok 26 - collector reads committed files using explicit allowlisted paths and returns object identity metadata
+  ---
+  duration_ms: 411.751875
+  type: 'test'
+  ...
+# Subtest: collector preserves and indexes __proto__ filenames with explicit allowlist
+ok 27 - collector preserves and indexes __proto__ filenames with explicit allowlist
+  ---
+  duration_ms: 482.926417
+  type: 'test'
+  ...
+# Subtest: collector rejects malformed or absent commit identifiers
+ok 28 - collector rejects malformed or absent commit identifiers
+  ---
+  duration_ms: 230.283375
+  type: 'test'
+  ...
+# Subtest: collector does not read paths outside the exact allowlist or pathspec tricks
+ok 29 - collector does not read paths outside the exact allowlist or pathspec tricks
+  ---
+  duration_ms: 375.114875
+  type: 'test'
+  ...
+# Subtest: collector rejects files that are symlink, tree or submodule entries
+ok 30 - collector rejects files that are symlink, tree or submodule entries
+  ---
+  duration_ms: 712.7945
+  type: 'test'
+  ...
+# Subtest: collector verifies commit trees and prevents loose blob tampering with same-length payload
+ok 31 - collector verifies commit trees and prevents loose blob tampering with same-length payload
+  ---
+  duration_ms: 316.953958
+  type: 'test'
+  ...
+# Subtest: collector verifies ancestor tree objects before resolving nested paths
+ok 32 - collector verifies ancestor tree objects before resolving nested paths
+  ---
+  duration_ms: 273.198292
+  type: 'test'
+  ...
+# Subtest: collector rejects duplicate tree entries during tree parsing
+ok 33 - collector rejects duplicate tree entries during tree parsing
+  ---
+  duration_ms: 316.726333
+  type: 'test'
+  ...
+# Subtest: repository helper reads declared root HEAD and dirty state despite inherited GIT_DIR/GIT_WORK_TREE
+ok 34 - repository helper reads declared root HEAD and dirty state despite inherited GIT_DIR/GIT_WORK_TREE
+  ---
+  duration_ms: 277.556
+  type: 'test'
+  ...
+# Subtest: collector ignores inherited GIT_DIR and binds repository argument
+ok 35 - collector ignores inherited GIT_DIR and binds repository argument
+  ---
+  duration_ms: 331.833459
+  type: 'test'
+  ...
+# Preparing worktree (detached HEAD 6bd7e87)
+# Subtest: collector resolves linked-worktree repositories via gitdir file
+ok 36 - collector resolves linked-worktree repositories via gitdir file
+  ---
+  duration_ms: 405.96325
+  type: 'test'
+  ...
+# Subtest: collector enforces count and file-size limits before returning a workspace snapshot
+ok 37 - collector enforces count and file-size limits before returning a workspace snapshot
+  ---
+  duration_ms: 384.846375
+  type: 'test'
+  ...
+# Subtest: dirty working-tree changes do not affect committed artifact collection
+ok 38 - dirty working-tree changes do not affect committed artifact collection
+  ---
+  duration_ms: 166.800125
+  type: 'test'
+  ...
+# Subtest: repaired bytes execute the intended change and bind both snapshots without changing Git
+ok 39 - repaired bytes execute the intended change and bind both snapshots without changing Git
+  ---
+  duration_ms: 233.824125
+  type: 'test'
+  ...
+# Subtest: repaired collector snapshots caller buffers and manifests before asynchronous Git lookup
+ok 40 - repaired collector snapshots caller buffers and manifests before asynchronous Git lookup
+  ---
+  duration_ms: 215.713542
+  type: 'test'
+  ...
+# Subtest: malformed repaired requests fail before repository lookup
+ok 41 - malformed repaired requests fail before repository lookup
+  ---
+  duration_ms: 6.820084
+  type: 'test'
+  ...
+# Subtest: repaired collector rejects stale base, no-op, additions, deletions and over-budget final snapshots
+ok 42 - repaired collector rejects stale base, no-op, additions, deletions and over-budget final snapshots
+  ---
+  duration_ms: 691.127875
+  type: 'test'
+  ...
+# Subtest: live repaired collector fails closed on hosts without descriptor-relative Linux opens
+ok 43 - live repaired collector fails closed on hosts without descriptor-relative Linux opens
+  ---
+  duration_ms: 0.565291
+  type: 'test'
+  ...
+# Subtest: Linux live repaired workspace captures real uncommitted bytes with original source identity
+ok 44 - Linux live repaired workspace captures real uncommitted bytes with original source identity # SKIP
+  ---
+  duration_ms: 0.028417
+  type: 'test'
+  ...
+# Subtest: Linux live repaired workspace refuses leaf and parent symlinks, root aliases and hardlinks
+ok 45 - Linux live repaired workspace refuses leaf and parent symlinks, root aliases and hardlinks # SKIP
+  ---
+  duration_ms: 0.018459
+  type: 'test'
+  ...
+# Subtest: Linux live repaired workspace rejects unexpected changes, stale expectations, missing and special files
+ok 46 - Linux live repaired workspace rejects unexpected changes, stale expectations, missing and special files # SKIP
+  ---
+  duration_ms: 0.014917
+  type: 'test'
+  ...
+# Subtest: Linux live repaired workspace detects a file replacement during read and closes held descriptors
+ok 47 - Linux live repaired workspace detects a file replacement during read and closes held descriptors # SKIP
+  ---
+  duration_ms: 0.01725
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 5924.373625
+$ node --test scripts/provider-evidence.node-tests.mjs scripts/provider-runner-evidence.node-tests.mjs scripts/provider-run-evidence-intake.node-tests.mjs
+TAP version 13
+# Subtest: round-trips exact supplied bytes, metadata and timestamps without asserting approval
+ok 1 - round-trips exact supplied bytes, metadata and timestamps without asserting approval
+  ---
+  duration_ms: 5.106708
+  type: 'test'
+  ...
+# Subtest: preserves failed responses, unavailable measurements and every retry
+ok 2 - preserves failed responses, unavailable measurements and every retry
+  ---
+  duration_ms: 0.604875
+  type: 'test'
+  ...
+# Subtest: allows explicit unverified origin and a failed attempt followed by supplied success
+ok 3 - allows explicit unverified origin and a failed attempt followed by supplied success
+  ---
+  duration_ms: 0.521125
+  type: 'test'
+  ...
+# Subtest: rejects secret and PII patterns including escaped JSON credential keys and nested strings
+ok 4 - rejects secret and PII patterns including escaped JSON credential keys and nested strings
+  ---
+  duration_ms: 2.393584
+  type: 'test'
+  ...
+# Subtest: accepts explicitly redacted JSON without modifying its bytes
+ok 5 - accepts explicitly redacted JSON without modifying its bytes
+  ---
+  duration_ms: 0.180125
+  type: 'test'
+  ...
+# Subtest: rejects original duplicate JSON members and escaped aliases during creation and verification
+ok 6 - rejects original duplicate JSON members and escaped aliases during creation and verification
+  ---
+  duration_ms: 2.036875
+  type: 'test'
+  ...
+# Subtest: duplicate-key scanner handles escaped strings and independent nested object scopes
+ok 7 - duplicate-key scanner handles escaped strings and independent nested object scopes
+  ---
+  duration_ms: 0.338834
+  type: 'test'
+  ...
+# Subtest: token-shaped run identifiers fail creation and verification
+ok 8 - token-shaped run identifiers fail creation and verification
+  ---
+  duration_ms: 0.208166
+  type: 'test'
+  ...
+# Subtest: sparse attempts cannot create a packet that its own verifier would reject
+ok 9 - sparse attempts cannot create a packet that its own verifier would reject
+  ---
+  duration_ms: 0.483625
+  type: 'test'
+  ...
+# Subtest: rejects invalid shape, identifiers, controls, UTF-8 and excessive content
+ok 10 - rejects invalid shape, identifiers, controls, UTF-8 and excessive content
+  ---
+  duration_ms: 1.493083
+  type: 'test'
+  ...
+# Subtest: rejects incomplete retries, fabricated outcomes and inconsistent timestamps
+ok 11 - rejects incomplete retries, fabricated outcomes and inconsistent timestamps
+  ---
+  duration_ms: 0.493208
+  type: 'test'
+  ...
+# Subtest: enforces aggregate response limits across failed attempts
+ok 12 - enforces aggregate response limits across failed attempts
+  ---
+  duration_ms: 63.955542
+  type: 'test'
+  ...
+# Subtest: requires the externally retained digest and rejects internally rewritten metadata
+ok 13 - requires the externally retained digest and rejects internally rewritten metadata
+  ---
+  duration_ms: 0.452375
+  type: 'test'
+  ...
+# Subtest: rejects tampered byte digests, encodings and schema even with a recalculated outer digest
+ok 14 - rejects tampered byte digests, encodings and schema even with a recalculated outer digest
+  ---
+  duration_ms: 2.079708
+  type: 'test'
+  ...
+# Subtest: publishes a read-only owner-only artifact and snapshots mutable input before awaiting
+ok 15 - publishes a read-only owner-only artifact and snapshots mutable input before awaiting
+  ---
+  duration_ms: 14.186209
+  type: 'test'
+  ...
+# Subtest: never overwrites an existing run and cleans unpublished temporary files
+ok 16 - never overwrites an existing run and cleans unpublished temporary files
+  ---
+  duration_ms: 15.397125
+  type: 'test'
+  ...
+# Subtest: concurrent writers publish exactly one complete artifact
+ok 17 - concurrent writers publish exactly one complete artifact
+  ---
+  duration_ms: 8.025959
+  type: 'test'
+  ...
+# Subtest: refuses unsafe directories and existing destination symlinks without touching their targets
+ok 18 - refuses unsafe directories and existing destination symlinks without touching their targets
+  ---
+  duration_ms: 48.83225
+  type: 'test'
+  ...
+# Subtest: invalid or unsafe inputs create no files
+ok 19 - invalid or unsafe inputs create no files
+  ---
+  duration_ms: 2.094458
+  type: 'test'
+  ...
+# Subtest: intake binds exact raw response/request/configuration/journal without production authority
+ok 20 - intake binds exact raw response/request/configuration/journal without production authority
+  ---
+  duration_ms: 8.152417
+  type: 'test'
+  ...
+# Subtest: all retry usage is retained, including HTTP errors and unknown transport usage
+ok 21 - all retry usage is retained, including HTTP errors and unknown transport usage
+  ---
+  duration_ms: 5.602542
+  type: 'test'
+  ...
+# Subtest: official replay preserves budget, malformed response, HTTP and transport failures
+ok 22 - official replay preserves budget, malformed response, HTTP and transport failures
+  ---
+  duration_ms: 16.989333
+  type: 'test'
+  ...
+# Subtest: secondary retry-backoff failure remains in the complete journal
+ok 23 - secondary retry-backoff failure remains in the complete journal
+  ---
+  duration_ms: 0.995791
+  type: 'test'
+  ...
+# Subtest: every independent binding rejects a different run or changed packet
+ok 24 - every independent binding rejects a different run or changed packet
+  ---
+  duration_ms: 3.592083
+  type: 'test'
+  ...
+# Subtest: generic byte-valid packets cannot splice identities, config, prompts or success claims
+ok 25 - generic byte-valid packets cannot splice identities, config, prompts or success claims
+  ---
+  duration_ms: 9.735625
+  type: 'test'
+  ...
+# Subtest: failed attempt histories cannot be erased or changed under retained external bindings
+ok 26 - failed attempt histories cannot be erased or changed under retained external bindings
+  ---
+  duration_ms: 2.068458
+  type: 'test'
+  ...
+# Subtest: unsupported envelopes and unbounded replay policy fail closed
+ok 27 - unsupported envelopes and unbounded replay policy fail closed
+  ---
+  duration_ms: 4.394084
+  type: 'test'
+  ...
+# Subtest: input buffers and expected bindings are snapshotted; returned receipt is deeply immutable
+ok 28 - input buffers and expected bindings are snapshotted; returned receipt is deeply immutable
+  ---
+  duration_ms: 1.309541
+  type: 'test'
+  ...
+# Subtest: runner derives success and binds exact received bytes, request, configuration and IDs
+ok 29 - runner derives success and binds exact received bytes, request, configuration and IDs
+  ---
+  duration_ms: 7.023584
+  type: 'test'
+  ...
+# Subtest: records HTTP failure, thrown transport failure and a successful retry in order
+ok 30 - records HTTP failure, thrown transport failure and a successful retry in order
+  ---
+  duration_ms: 2.211875
+  type: 'test'
+  ...
+# Subtest: retains over-budget response bytes and measured usage but cannot label them success
+ok 31 - retains over-budget response bytes and measured usage but cannot label them success
+  ---
+  duration_ms: 1.038834
+  type: 'test'
+  ...
+# Subtest: HTTP success cannot fabricate valid JSON, content, usage or missing cost
+ok 32 - HTTP success cannot fabricate valid JSON, content, usage or missing cost
+  ---
+  duration_ms: 9.15025
+  type: 'test'
+  ...
+# Subtest: caller outcome flags and pre-parsed response substitutes are refused
+ok 33 - caller outcome flags and pre-parsed response substitutes are refused
+  ---
+  duration_ms: 3.043333
+  type: 'test'
+  ...
+# Subtest: unsafe, duplicate-key, non-UTF-8 and oversized received bytes fail closed without an artifact
+ok 34 - unsafe, duplicate-key, non-UTF-8 and oversized received bytes fail closed without an artifact
+  ---
+  duration_ms: 1.206291
+  type: 'test'
+  ...
+# Subtest: request privacy checks, attempt caps and data-only configuration apply before transport
+ok 35 - request privacy checks, attempt caps and data-only configuration apply before transport
+  ---
+  duration_ms: 1.1615
+  type: 'test'
+  ...
+# Subtest: configuration and response snapshots survive later caller mutation
+ok 36 - configuration and response snapshots survive later caller mutation
+  ---
+  duration_ms: 5.809417
+  type: 'test'
+  ...
+# Subtest: timeout aborts the attempt, preserves its retry and ignores a late response
+ok 37 - timeout aborts the attempt, preserves its retry and ignores a late response
+  ---
+  duration_ms: 12.079792
+  type: 'test'
+  ...
+# Subtest: cancellation during transport and retry backoff preserves failures without extra transport
+ok 38 - cancellation during transport and retry backoff preserves failures without extra transport
+  ---
+  duration_ms: 2.820541
+  type: 'test'
+  ...
+# Subtest: zero-attempt preflight failures retain the runner manifest without inventing an attempt
+ok 39 - zero-attempt preflight failures retain the runner manifest without inventing an attempt
+  ---
+  duration_ms: 0.722
+  type: 'test'
+  ...
+# Subtest: transport diagnostics are redacted in failed evidence
+ok 40 - transport diagnostics are redacted in failed evidence
+  ---
+  duration_ms: 8.639667
+  type: 'test'
+  ...
+# Subtest: persistence uses the existing immutable POSIX packet boundary and cannot overwrite
+ok 41 - persistence uses the existing immutable POSIX packet boundary and cannot overwrite
+  ---
+  duration_ms: 27.1815
+  type: 'test'
+  ...
+# Subtest: rejected capture never publishes a partial or successful packet
+ok 42 - rejected capture never publishes a partial or successful packet
+  ---
+  duration_ms: 1.439833
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 260.215459

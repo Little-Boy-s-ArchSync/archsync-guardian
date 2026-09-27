@@ -1,0 +1,72 @@
+{
+  "case": "M7-unresolved",
+  "group": "M7",
+  "purpose": "development-engineering-assertions-not-accuracy",
+  "checks": {
+    "guardian_output_present": true,
+    "guardian_status_expected": true,
+    "guardian_exit_expected": true,
+    "guardian_source_population_exact": true,
+    "guardian_developer_asserted_pairs": true,
+    "guardian_required_issues_present": true,
+    "guardian_architecture_null_when_incomplete": true,
+    "guardian_exclusions": true,
+    "guardian_locations": true,
+    "comparator_executed": true,
+    "comparator_exit_zero": true,
+    "comparator_graph_present": true,
+    "comparator_source_population_exact": true,
+    "scoped_pair_sets_equal": true
+  },
+  "guardian_exit": 2,
+  "guardian_status": "incomplete",
+  "guardian_issues": [
+    "unresolved-module"
+  ],
+  "guardian_pairs": [],
+  "comparator_pairs": [],
+  "comparator_exit": 0,
+  "comparator_parse_error": null,
+  "comparator_outside_source_dependencies": [],
+  "comparator_unresolved_dependencies": [
+    {
+      "from": "src/app.ts",
+      "dependency": {
+        "dynamic": false,
+        "module": "./missing",
+        "moduleSystem": "es6",
+        "exoticallyRequired": false,
+        "dependencyTypes": [
+          "unknown"
+        ],
+        "resolved": "./missing",
+        "coreModule": false,
+        "followable": false,
+        "couldNotResolve": true,
+        "matchesDoNotFollow": true,
+        "circular": false,
+        "valid": true
+      }
+    }
+  ],
+  "comparator_outside_source_modules": [
+    {
+      "source": "./missing",
+      "followable": false,
+      "coreModule": false,
+      "couldNotResolve": true,
+      "matchesDoNotFollow": true,
+      "dependencyTypes": [
+        "unknown"
+      ],
+      "dependencies": [],
+      "dependents": [
+        "src/app.ts"
+      ],
+      "orphan": false,
+      "valid": true
+    }
+  ],
+  "eligible_for_later_comparison": false,
+  "note": "Native exit 0 without rules is not an architecture PASS; incomplete/unsupported cases must not be scored as complete successes."
+}

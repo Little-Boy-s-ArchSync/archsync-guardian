@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   appendFile,
   mkdir,
@@ -23,6 +23,7 @@ import {
 
 import { analyzeTypeScriptRepository } from "./analyzer.js";
 import {
+  guardianAnalyzerVersion,
   type GuardianFinding,
   type ObservedArchitecture,
   type SourceEvidence,
@@ -116,6 +117,7 @@ interface CacheEnvelope {
   key: string;
   base_sha: string;
   architecture_sha256: string;
+  observed_sha256: string;
   observed: ObservedArchitecture;
 }
 
@@ -175,15 +177,6 @@ function evidenceFromComponents(
   return files.size;
 }
 
-function evidenceBelongsToAffectedSource(
-  evidence: SourceEvidence,
-  affected: Set<string>,
-): boolean {
-  return [...affected].some((component) =>
-    evidence.file === component || evidence.file.startsWith(`${component}/`),
-  );
-}
-
 export function mergeIncrementalObservedArchitecture(
   baseline: ObservedArchitecture,
   partial: ObservedArchitecture,
@@ -192,11 +185,21 @@ export function mergeIncrementalObservedArchitecture(
   const affected = new Set(affectedComponents);
   const components = new Map<string, ObservedArchitecture["components"][string]>();
   const relationships = new Map<string, ObservedArchitecture["relationships"][number]>();
+  // Exact ownership is necessary when component roots overlap (service and
+  // service/nested). Directory-prefix removal would erase unchanged children.
+  const sourceOwners = new Map<string, string>();
+  for (const [id, component] of Object.entries(baseline.components)) {
+    for (const evidence of component.evidence) {
+      if (evidence.detector === "component-root") sourceOwners.set(evidence.file, id);
+    }
+  }
+  const isAffected = (evidence: SourceEvidence): boolean => {
+    return affected.has(sourceOwners.get(evidence.file)!);
+  };
 
   for (const [id, component] of Object.entries(baseline.components)) {
-    if (affected.has(id)) continue;
     const evidence = component.evidence.filter((item) =>
-      !evidenceBelongsToAffectedSource(item, affected),
+      !isAffected(item),
     );
     if (evidence.length > 0) {
       components.set(id, { component: component.component, evidence: uniqueEvidence(evidence) });
@@ -205,7 +208,7 @@ export function mergeIncrementalObservedArchitecture(
 
   for (const relationship of baseline.relationships) {
     const evidence = relationship.evidence.filter((item) =>
-      !evidenceBelongsToAffectedSource(item, affected),
+      !isAffected(item),
     );
     if (evidence.length > 0) {
       relationships.set(edgeKey(relationship), { ...relationship, evidence: uniqueEvidence(evidence) });
@@ -248,10 +251,19 @@ async function addUntrackedFiles(
   gitRoot: string,
   repositoryRelative: string,
   files: Map<string, ChangedFile>,
-): Promise<void> {
+): Promise<boolean> {
   const pathspec = repositoryRelative || ".";
-  const output = await git(gitRoot, ["ls-files", "--others", "--exclude-standard", "--", pathspec]);
-  for (const raw of output.split(/\r?\n/u).filter(Boolean)) {
+  const [output, ignored] = await Promise.all([
+    git(gitRoot, ["ls-files", "-z", "--others", "--exclude-standard", "--", pathspec]),
+    git(gitRoot, ["ls-files", "-z", "--others", "--ignored", "--exclude-standard", "--", pathspec,
+      ...[".git", "coverage", "dist", "node_modules", "tmp"].map((directory) => `:(exclude)**/${directory}/**`)]),
+  ]);
+  // Full analysis reads gitignored source outside its excluded directories.
+  // Enumerate that source too, so a dirty local run cannot silently PASS it.
+  const ignoredSources = ignored.split("\0").filter((file) =>
+    sourceExtensions.some((extension) => file.endsWith(extension)) && !file.endsWith(".d.ts"),
+  );
+  for (const raw of [...new Set([...output.split("\0").filter(Boolean), ...ignoredSources])]) {
     const path = repositoryRelativePath(raw, repositoryRelative)!;
     const absolute = resolve(repositoryPath, ...path.split("/"));
     const source = await readFile(absolute, "utf8");
@@ -266,6 +278,7 @@ async function addUntrackedFiles(
       changed_lines: additions > 0 ? [{ start: 1, end: additions }] : [],
     });
   }
+  return ignoredSources.length > 0;
 }
 
 async function changedFiles(
@@ -273,15 +286,15 @@ async function changedFiles(
   gitRoot: string,
   repositoryRelative: string,
   baseSha: string,
-): Promise<ChangedFile[]> {
+): Promise<{ files: ChangedFile[]; ignoredSourceFiles: boolean }> {
   const pathspec = repositoryRelative || ".";
   const args = [baseSha, "--", pathspec];
   const files = parseNameStatus(
-    await git(gitRoot, ["diff", "--name-status", "--find-renames", ...args]),
+    await git(gitRoot, ["diff", "--name-status", "-z", "--find-renames", ...args]),
     repositoryRelative,
   );
   parseNumStat(
-    await git(gitRoot, ["diff", "--numstat", "--find-renames", ...args]),
+    await git(gitRoot, ["diff", "--numstat", "-z", "--find-renames", ...args]),
     repositoryRelative,
     files,
   );
@@ -290,8 +303,8 @@ async function changedFiles(
     repositoryRelative,
     files,
   );
-  await addUntrackedFiles(repositoryPath, gitRoot, repositoryRelative, files);
-  return [...files.values()].sort((a, b) => a.path.localeCompare(b.path));
+  const ignoredSourceFiles = await addUntrackedFiles(repositoryPath, gitRoot, repositoryRelative, files);
+  return { files: [...files.values()].sort((a, b) => a.path.localeCompare(b.path)), ignoredSourceFiles };
 }
 
 async function materializeBaseSnapshot(
@@ -307,7 +320,7 @@ async function materializeBaseSnapshot(
   );
   for (const gitPath of files) {
     const path = repositoryRelativePath(gitPath, repositoryRelative)!;
-    const source = await git(gitRoot, ["show", `${baseSha}:${portablePath(gitPath)}`]);
+    const source = await git(gitRoot, ["show", `${baseSha}:${gitPath}`]);
     const outputPath = resolve(snapshot, ...path.split("/"));
     await mkdir(dirname(outputPath), { recursive: true });
     await writeFile(outputPath, source, "utf8");
@@ -325,7 +338,7 @@ async function baselineObserved(
 ): Promise<{ observed: ObservedArchitecture; cacheHit: boolean; cacheKey: string }> {
   const expectedHash = architectureHash(expected);
   const cacheKey = createHash("sha256")
-    .update(`${baseSha}\0${expectedHash}\0archsync-typescript@0.2`)
+    .update(`${baseSha}\0${repositoryRelative}\0${expectedHash}\0archsync-typescript@${guardianAnalyzerVersion}\0cache-v2`)
     .digest("hex");
   const gitCachePath = (await git(gitRoot, ["rev-parse", "--git-path", "archsync-cache"])).trim();
   const cacheDirectory = options.cache_dir
@@ -341,7 +354,8 @@ async function baselineObserved(
         cached.key === cacheKey &&
         cached.base_sha === baseSha &&
         cached.architecture_sha256 === expectedHash &&
-        cached.observed?.analyzer?.version === "0.2"
+        cached.observed?.analyzer?.version === guardianAnalyzerVersion &&
+        cached.observed_sha256 === createHash("sha256").update(JSON.stringify(cached.observed)).digest("hex")
       ) {
         return { observed: cached.observed, cacheHit: true, cacheKey };
       }
@@ -359,10 +373,11 @@ async function baselineObserved(
         key: cacheKey,
         base_sha: baseSha,
         architecture_sha256: expectedHash,
+        observed_sha256: createHash("sha256").update(JSON.stringify(observed)).digest("hex"),
         observed,
       };
       await mkdir(cacheDirectory, { recursive: true });
-      const temporary = `${cachePath}.${process.pid}.tmp`;
+      const temporary = `${cachePath}.${process.pid}.${randomUUID()}.tmp`;
       await writeFile(temporary, `${JSON.stringify(envelope, null, 2)}\n`, "utf8");
       await rename(temporary, cachePath);
     }
@@ -409,7 +424,7 @@ export async function checkRepositoryDiff(
     : (await git(gitRoot, ["merge-base", baseRef, "HEAD"])).trim();
   const pathspec = repositoryRelative || ".";
   const worktreeDirty = (await git(gitRoot, ["status", "--porcelain", "--untracked-files=all", "--", pathspec])).trim().length > 0;
-  const files = await changedFiles(repository, gitRoot, repositoryRelative, baseSha);
+  const { files, ignoredSourceFiles } = await changedFiles(repository, gitRoot, repositoryRelative, baseSha);
   const affectedComponents = [...new Set(files.flatMap((file) => {
     const current = sourceComponent(file.path, expected);
     const previous = file.previous_path ? sourceComponent(file.previous_path, expected) : undefined;
@@ -470,7 +485,7 @@ export async function checkRepositoryDiff(
       base_ref: baseRef,
       base_sha: baseSha,
       head_sha: headSha,
-      worktree_dirty: worktreeDirty,
+      worktree_dirty: worktreeDirty || ignoredSourceFiles,
     },
     changed_files: files,
     affected_components: affectedComponents,

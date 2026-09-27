@@ -1,0 +1,6 @@
+# Preserve exact source and raw-output bytes bound by MBP-001 hashes.
+fixtures/** -text
+receipts/** -text
+# Native CLI help/output whitespace is retained, not editorial source code.
+receipts/**/*.stdout.txt -whitespace
+receipts/**/*.stderr.txt -whitespace

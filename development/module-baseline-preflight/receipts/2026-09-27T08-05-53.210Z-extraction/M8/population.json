@@ -1,0 +1,11 @@
+{
+  "source": "TypeScript configuration file selection, not either graph output",
+  "files": [
+    "src/app.ts",
+    "src/common.ts",
+    "src/dynamic.ts",
+    "src/equals.ts",
+    "src/static.ts",
+    "src/type-expression.ts"
+  ]
+}

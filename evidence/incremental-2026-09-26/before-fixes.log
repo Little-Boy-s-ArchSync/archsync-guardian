@@ -1,0 +1,204 @@
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+
+ ❯ src/phase3-adversarial.test.ts (9 tests | 9 failed) 2021ms
+   × incremental validity against full scans > detects an untracked violation with literal filename "café.ts" 170ms
+     → ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-UH28YX/"frontend/src/caf\303\251.ts"'
+   × incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts" 205ms
+     → ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-yHW5HW/"frontend/src/tab\tfile.ts"'
+   × incremental validity against full scans > detects an untracked violation with literal filename "line\nfile.ts" 204ms
+     → ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-pc0ucu/"frontend/src/line\nfile.ts"'
+   × incremental validity against full scans > detects a tracked violation with literal filename "café.ts" 245ms
+     → expected 'PASS' to be 'BLOCK' // Object.is equality
+   × incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts" 229ms
+     → expected 'PASS' to be 'BLOCK' // Object.is equality
+   × incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts" 249ms
+     → expected 'PASS' to be 'BLOCK' // Object.is equality
+   × incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model 317ms
+     → expected 'BLOCK' to be 'PASS' // Object.is equality
+   × incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted 301ms
+     → Cannot read properties of null (reading 'map')
+   × incremental validity against full scans > preserves evidence from a nested component when only its parent component changes 99ms
+     → expected { version: '0.1', …(4) } to deeply equal { version: '0.1', …(4) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects an untracked violation with literal filename "café.ts"
+Error: ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-UH28YX/"frontend/src/caf\303\251.ts"'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts"
+Error: ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-yHW5HW/"frontend/src/tab\tfile.ts"'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects an untracked violation with literal filename "line\nfile.ts"
+Error: ENOENT: no such file or directory, open '/var/folders/mt/zhvthc515kgg9pxt4wjcjpyr0000gn/T/archsync-incremental-adversarial-pc0ucu/"frontend/src/line\nfile.ts"'
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects a tracked violation with literal filename "café.ts"
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts"
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts"
+AssertionError: expected 'PASS' to be 'BLOCK' // Object.is equality
+
+Expected: "BLOCK"
+Received: "PASS"
+
+ ❯ src/phase3-adversarial.test.ts:41:29
+     39|     await writeFile(join(root, "frontend/src", name), bypass);
+     40|     const result = await checkRepositoryDiff(testArchitecture(), root);
+     41|     expect(result.decision).toBe("BLOCK");
+       |                             ^
+     42|     expect(result.changed_files).toContainEqual(expect.objectContainin…
+     43|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model
+AssertionError: expected 'BLOCK' to be 'PASS' // Object.is equality
+
+Expected: "PASS"
+Received: "BLOCK"
+
+ ❯ src/phase3-adversarial.test.ts:52:33
+     50|     const b = await checkRepositoryDiff(testArchitecture(), join(root,…
+     51|     expect(a.baseline.decision).toBe("BLOCK");
+     52|     expect(b.baseline.decision).toBe("PASS");
+       |                                 ^
+     53|     expect(b.cache.key).not.toBe(a.cache.key);
+     54|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted
+TypeError: Cannot read properties of null (reading 'map')
+ ❯ toArchitectureDocument src/contracts.ts:105:43
+    103|       Object.entries(observed.components).map(([id, value]) => [id, va…
+    104|     ),
+    105|     relationships: observed.relationships.map(({ evidence: _evidence, …
+       |                                           ^
+    106|   };
+    107| }
+ ❯ evaluateObservedArchitecture src/guardian.ts:94:28
+ ❯ checkRepositoryDiff src/phase3.ts:439:26
+ ❯ src/phase3-adversarial.test.ts:63:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > preserves evidence from a nested component when only its parent component changes
+AssertionError: expected { version: '0.1', …(4) } to deeply equal { version: '0.1', …(4) }
+
+- Expected
++ Received
+
+@@ -46,19 +46,10 @@
+            "file": "gateway/src/server.ts",
+            "kind": "source-location",
+            "line": 3,
+            "snippet": "await fetch(`${serviceUrl}/orders`);",
+          },
+-         {
+-           "column": 40,
+-           "confidence": 1,
+-           "detector": "typescript-fetch",
+-           "file": "service/nested/main.ts",
+-           "kind": "source-location",
+-           "line": 1,
+-           "snippet": "fetch(\"http://gateway:3000\")",
+-         },
+        ],
+      },
+      "postgres": {
+        "component": {
+          "layer": "data",
+@@ -83,47 +74,21 @@
+          "name": "Service",
+          "type": "service",
+        },
+        "evidence": [
+          {
+-           "column": 9,
+-           "confidence": 1,
+-           "detector": "typescript-fetch",
+-           "file": "gateway/src/server.ts",
+-           "kind": "source-location",
+-           "line": 3,
+-           "snippet": "fetch(`${serviceUrl}/orders`)",
+-         },
+-         {
+            "column": 3,
+            "confidence": 1,
+            "detector": "component-root",
+            "file": "service/src/service.ts",
+            "kind": "source-location",
+            "line": 4,
+            "snippet": "await database.query(\"insert into items(payload) values ($1)\", [value]);",
+          },
+        ],
+      },
+-     "service/nested": {
+-       "component": {
+-         "layer": "domain",
+-         "type": "service",
+    },
+-       "evidence": [
+-         {
+-           "column": 34,
+-           "confidence": 1,
+-           "detector": "component-root",
+-           "file": "service/nested/main.ts",
+-           "kind": "source-location",
+-           "line": 1,
+-           "snippet": "await fetch(\"http://gateway:3000\");",
+-         },
+-       ],
+-     },
+-   },
+    "metadata": {
+      "name": "guardian-test-observed",
+      "scanned_files": 4,
+    },
+    "relationships": [
+@@ -155,26 +120,10 @@
+            "snippet": "fetch(`${serviceUrl}/orders`)",
+          },
+        ],
+        "from": "gateway",
+        "to": "service",
+-       "type": "http",
+-     },
+-     {
+-       "evidence": [
+-         {
+-           "column": 40,
+-           "confidence": 1,
+-           "detector": "typescript-fetch",
+-           "file": "service/nested/main.ts",
+-           "kind": "source-location",
+-           "line": 1,
+-           "snippet": "fetch(\"http://gateway:3000\")",
+-         },
+-       ],
+-       "from": "service/nested",
+-       "to": "gateway",
+        "type": "http",
+      },
+      {
+        "evidence": [
+          {
+
+ ❯ src/phase3-adversarial.test.ts:77:20
+     75|     const merged = mergeIncrementalObservedArchitecture(before, partia…
+     76|     const full = await analyzeTypeScriptRepository(root, expected);
+     77|     expect(merged).toEqual(full);
+       |                    ^
+     78|   });
+     79| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  12:46:27
+   Duration  2.79s (transform 99ms, setup 0ms, collect 565ms, tests 2.02s, environment 0ms, prepare 54ms)
+

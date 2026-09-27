@@ -1,0 +1,84 @@
+$ vitest run --coverage
+
+ RUN  v3.2.7 /Users/andytran/Coding/Little Boy's/acsidan/archsync-guardian
+      Coverage enabled with v8
+
+ ❯ src/phase3-adversarial.test.ts (18 tests | 1 failed) 5140ms
+   × incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads 259ms
+     → expected 'PASS' to be 'BLOCK' // Object.is equality
+   ✓ incremental validity against full scans > matches a fresh full scan after add, with cold and warm caches  558ms
+   ✓ incremental validity against full scans > matches a fresh full scan after modify, with cold and warm caches 295ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete, with cold and warm caches  534ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-within, with cold and warm caches  333ms
+   ✓ incremental validity against full scans > matches a fresh full scan after rename-across, with cold and warm caches 295ms
+   ✓ incremental validity against full scans > matches a fresh full scan after delete-component, with cold and warm caches  320ms
+   ✓ incremental validity against full scans > publishes concurrent cold cache writes without temporary-file collisions 293ms
+   ✓ incremental validity against full scans > invalidates the baseline when architecture rules change  307ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "café.ts" 190ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "tab\tfile.ts" 192ms
+   ✓ incremental validity against full scans > detects an untracked violation with literal filename "line\nfile.ts" 216ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "café.ts" 211ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "tab\tfile.ts" 204ms
+   ✓ incremental validity against full scans > detects a tracked violation with literal filename "line\nfile.ts" 193ms
+   ✓ incremental validity against full scans > isolates baseline caches between subprojects sharing the same Git commit and model  343ms
+   ✓ incremental validity against full scans > rebuilds a valid-JSON cache whose observed graph is corrupted  312ms
+   ✓ incremental validity against full scans > preserves evidence from a nested component when only its parent component changes 85ms
+ ✓ src/phase3.test.ts (12 tests) 2596ms
+   ✓ Phase 3 Git diff architecture gate > passes an internal source change and reuses the baseline cache  346ms
+   ✓ Phase 3 Git diff architecture gate > rebuilds a corrupt custom baseline cache safely  459ms
+ ✓ src/repair-verification.test.ts (81 tests) 541ms
+ ✓ src/benchmark.test.ts (12 tests) 853ms
+ ✓ src/version.test.ts (6 tests) 330ms
+ ✓ src/phase4-integration.test.ts (2 tests) 270ms
+ ✓ src/analyzer.test.ts (12 tests) 151ms
+ ✓ src/model-cli.test.ts (7 tests) 142ms
+ ✓ src/guardian.test.ts (9 tests) 127ms
+ ✓ src/compatibility.test.ts (8 tests) 154ms
+ ✓ src/analyzer-adversarial.test.ts (18 tests) 103ms
+ ✓ src/iac-kubernetes.test.ts (6 tests) 32ms
+ ✓ src/reasoner/provider.test.ts (18 tests) 27ms
+ ✓ src/iac.test.ts (1 test) 25ms
+ ✓ src/doctor.test.ts (8 tests) 16ms
+ ✓ src/runtime/collector.test.ts (5 tests) 18ms
+ ✓ src/iac-terraform.test.ts (5 tests) 18ms
+ ✓ src/iac-normalize.test.ts (5 tests) 15ms
+ ✓ src/reasoner/explain.test.ts (4 tests) 16ms
+ ✓ src/runtime/graph.test.ts (3 tests) 14ms
+ ✓ src/evolution/scorecard.test.ts (3 tests) 12ms
+ ✓ src/iac-security.test.ts (3 tests) 11ms
+ ✓ src/reasoner/handoff.test.ts (6 tests) 13ms
+ ✓ src/reasoner/prompt.test.ts (1 test) 11ms
+ ✓ src/iac-governance.test.ts (3 tests) 4ms
+ ✓ src/reasoner/taxonomy.test.ts (9 tests) 5ms
+ ✓ src/reasoner/redaction.test.ts (3 tests) 4ms
+ ✓ src/phase3-git.test.ts (5 tests) 4ms
+ ✓ src/evolution/approval.test.ts (5 tests) 5ms
+ ✓ src/reasoner/contracts.test.ts (6 tests) 4ms
+ ✓ src/privacy.test.ts (2 tests) 3ms
+ ✓ src/reasoner/citations.test.ts (2 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/phase3-adversarial.test.ts > incremental validity against full scans > includes ignored untracked TypeScript that the full analyzer reads
+AssertionError: expected 'PASS' to be 'BLOCK' // Object.is equality
+
+Expected: "BLOCK"
+Received: "PASS"
+
+ ❯ src/phase3-adversarial.test.ts:34:34
+     32|     const full = evaluateObservedArchitecture(testArchitecture(), awai…
+     33|     expect(full.decision).toBe("BLOCK");
+     34|     expect(result.head.decision).toBe(full.decision);
+       |                                  ^
+     35|     expect(result.decision).toBe("BLOCK");
+     36|     expect(result.repository.worktree_dirty).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 31 passed (32)
+      Tests  1 failed | 287 passed (288)
+   Start at  12:50:01
+   Duration  20.69s (transform 391ms, setup 0ms, collect 3.35s, tests 10.67s, environment 4ms, prepare 1.88s)
+
+[ELIFECYCLE] Command failed with exit code 1.
