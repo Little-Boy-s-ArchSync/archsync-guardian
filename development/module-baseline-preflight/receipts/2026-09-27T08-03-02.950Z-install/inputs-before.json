@@ -1,0 +1,224 @@
+{
+  "purpose": "development-only-not-D3",
+  "node": "v22.16.0",
+  "platform": "win32",
+  "arch": "x64",
+  "files": [
+    {
+      "file": "capture.mjs",
+      "sha256": "710f5e615cca3eb508730087a1c86a2d136445e563a06365ea090c60265fb0f3"
+    },
+    {
+      "file": "cases.json",
+      "sha256": "d0ed3be9b9e37c1dcfb193a2fd701e93c62913837644ad8b5d3ef432595f803f"
+    },
+    {
+      "file": "comparator/package.json",
+      "sha256": "c5954f78a9628fe7d5cfad3a17fb93afecb5a80aabaf7bffcf46d36aa952759e"
+    },
+    {
+      "file": "fixtures/M1/src/app.ts",
+      "sha256": "37a8f73a082aef9c25b84a6a74564fefa53e0017c276a42252714ee233d6a413"
+    },
+    {
+      "file": "fixtures/M1/src/default.ts",
+      "sha256": "38b5a31fa5dd51d6f1eb8c3ec5fd65f8fba0930db22b2dc5468d8d3b991dfb42"
+    },
+    {
+      "file": "fixtures/M1/src/star.ts",
+      "sha256": "eb07b23ad829ed65957b647fc290a8178cad6f5c72f2173a8beabe2ee4f627b5"
+    },
+    {
+      "file": "fixtures/M1/src/value.ts",
+      "sha256": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29"
+    },
+    {
+      "file": "fixtures/M1/tsconfig.json",
+      "sha256": "0bc752b8458a7e0123de16089f49b809c244404b1db30b08933fc39329bf85e7"
+    },
+    {
+      "file": "fixtures/M2/src/app.ts",
+      "sha256": "98c2e1595e4ea39d260a79661f1d30bc6458b457928b18711314155a2ce6715e"
+    },
+    {
+      "file": "fixtures/M2/src/types.ts",
+      "sha256": "d5183f16803af2b9d5e61e92437a115d77aea04863ce7ff4297af90f78c88cbd"
+    },
+    {
+      "file": "fixtures/M2/src/unused.ts",
+      "sha256": "7b7b35eb29057d316ca783bd8cd1bae690a5a2c46126b1976c68761fb871f6c6"
+    },
+    {
+      "file": "fixtures/M2/tsconfig.json",
+      "sha256": "0bc752b8458a7e0123de16089f49b809c244404b1db30b08933fc39329bf85e7"
+    },
+    {
+      "file": "fixtures/M3/src/app.ts",
+      "sha256": "6901bf171d0c1b3b1652a0556bb6b703c5a1461f2156d72e5ea20d6dc85305f0"
+    },
+    {
+      "file": "fixtures/M3/src/value.ts",
+      "sha256": "5d8f65d2774e206bc9f7a7a4ad39ca2dc563b5c31e46ab57ef4874961237ce29"
+    },
+    {
+      "file": "fixtures/M3/tsconfig.json",
+      "sha256": "0bc752b8458a7e0123de16089f49b809c244404b1db30b08933fc39329bf85e7"
+    },
+    {
+      "file": "fixtures/M4/src/a.ts",
+      "sha256": "babf8e887d3e9fe7c1d91c7f3975a0e6db41ff068f12434432a56349f7f05e74"
+    },
+    {
+      "file": "fixtures/M4/src/b.ts",
+      "sha256": "a25bd48ec9db6c335c74a18df364ce5d5c13cae8ca4e40f939b6572590fa2582"
+    },
+    {
+      "file": "fixtures/M4/src/isolated.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M4/tsconfig.json",
+      "sha256": "0bc752b8458a7e0123de16089f49b809c244404b1db30b08933fc39329bf85e7"
+    },
+    {
+      "file": "fixtures/M5-alias/src/app.ts",
+      "sha256": "57b9b3f934b831d5b235c8b66523377c019215bfa58b39011511fdb8e24d7fab"
+    },
+    {
+      "file": "fixtures/M5-alias/src/domain/value.ts",
+      "sha256": "24d35aa530be9f3bc9442219e8421e3aa38354fc6b25544e9eb201d63d2c452a"
+    },
+    {
+      "file": "fixtures/M5-alias/src/excluded/noise.ts",
+      "sha256": "7e185b825fa845ca5e4dbf3e32c2b80f8f9a9f495867199d56e69f3681a54f08"
+    },
+    {
+      "file": "fixtures/M5-alias/tsconfig.base.json",
+      "sha256": "281a595e82aaee0c7514858e1597169565595639c3ee79c77fe89c92782fdf01"
+    },
+    {
+      "file": "fixtures/M5-alias/tsconfig.json",
+      "sha256": "59c87ab5aa339bf78071fe0f7edb32959f1789b561b42e45aff3e8123a72daf1"
+    },
+    {
+      "file": "fixtures/M5-files/src/app.ts",
+      "sha256": "c9f3cf99edd31495c60eab83008fc715089f2c638860f9ecbca6b304dd703c34"
+    },
+    {
+      "file": "fixtures/M5-files/src/not-selected.ts",
+      "sha256": "e9b67da5736ddd6f802a25c695e123c0e31218c98bc55f4e559c6400d9928c7d"
+    },
+    {
+      "file": "fixtures/M5-files/src/value.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M5-files/tsconfig.json",
+      "sha256": "97d66f5b51ded6fa969862edf6777a273e78934c66f04568ad20f7b12d59b72f"
+    },
+    {
+      "file": "fixtures/M5-nodenext/src/app.mts",
+      "sha256": "8564951bc463fdd02bc38759aeff91d014e367aff2d8ae55278f4baaf0680620"
+    },
+    {
+      "file": "fixtures/M5-nodenext/src/value.ts",
+      "sha256": "24d35aa530be9f3bc9442219e8421e3aa38354fc6b25544e9eb201d63d2c452a"
+    },
+    {
+      "file": "fixtures/M5-nodenext/tsconfig.json",
+      "sha256": "c831759f78a9529b76c01194ce49edf2846172c83e3661029838efc850346e4c"
+    },
+    {
+      "file": "fixtures/M6/src/app.ts",
+      "sha256": "2e583626d990cf7bafa192011f26e08bbab412a8046e5b1aaa31d1feb39efa74"
+    },
+    {
+      "file": "fixtures/M6/src/declarations.d.ts",
+      "sha256": "d5183f16803af2b9d5e61e92437a115d77aea04863ce7ff4297af90f78c88cbd"
+    },
+    {
+      "file": "fixtures/M6/src/value.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M6/tsconfig.json",
+      "sha256": "c19c2ce59ed56d52f3906ca30f8370d3330edebd988290f04f37eb39794b040c"
+    },
+    {
+      "file": "fixtures/M7-empty/src/only.d.ts",
+      "sha256": "d5183f16803af2b9d5e61e92437a115d77aea04863ce7ff4297af90f78c88cbd"
+    },
+    {
+      "file": "fixtures/M7-empty/tsconfig.json",
+      "sha256": "f7593100e6a93536edd29dd2a3b4358e9e1cb55c80021c54dc4944e2731dfdbe"
+    },
+    {
+      "file": "fixtures/M7-outside/other/value.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M7-outside/src/app.ts",
+      "sha256": "16a2bf498f48f39ddc4b2dd7d1691d0e65653f80e5fa20333e35ba85fc2415ec"
+    },
+    {
+      "file": "fixtures/M7-outside/tsconfig.json",
+      "sha256": "cfc0acea6e5a25c498b8a30e1e7cf5fb40f34a037b6833197edac86c506ab3e9"
+    },
+    {
+      "file": "fixtures/M7-syntax/src/app.ts",
+      "sha256": "4d5d38ecc649718aefc8e9f00d8172f8563d41a394ab25fa7f1be28771384dd5"
+    },
+    {
+      "file": "fixtures/M7-syntax/tsconfig.json",
+      "sha256": "c19c2ce59ed56d52f3906ca30f8370d3330edebd988290f04f37eb39794b040c"
+    },
+    {
+      "file": "fixtures/M7-unresolved/src/app.ts",
+      "sha256": "fdd1b8e09f49025f764f8377a68e3908cdc901a4bdf1213f5b22ebac2f716c70"
+    },
+    {
+      "file": "fixtures/M7-unresolved/tsconfig.json",
+      "sha256": "c19c2ce59ed56d52f3906ca30f8370d3330edebd988290f04f37eb39794b040c"
+    },
+    {
+      "file": "fixtures/M8/src/app.ts",
+      "sha256": "a427948b712264b0de559a4f72a7bd1a9debc7052b9499a0debd21fb244d0175"
+    },
+    {
+      "file": "fixtures/M8/src/common.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M8/src/dynamic.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M8/src/equals.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M8/src/static.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "file": "fixtures/M8/src/type-expression.ts",
+      "sha256": "57b040b2cf411da3c770fea084e9f393c774d1989aab747d9b29a48d7f0a0383"
+    },
+    {
+      "file": "fixtures/M8/tsconfig.json",
+      "sha256": "c19c2ce59ed56d52f3906ca30f8370d3330edebd988290f04f37eb39794b040c"
+    },
+    {
+      "file": "fixtures/package.json",
+      "sha256": "68ccfcf8c6f82d332fa057f44ea9b151f07062dcfba55b221c1613443c7887c0"
+    },
+    {
+      "file": "fixtures/tsconfig.base.json",
+      "sha256": "714964a8e5c1d93a32b4da9a15286ace89a3f8f8be083fc62d999e588e05f8ed"
+    },
+    {
+      "file": "install.mjs",
+      "sha256": "50bd3a8729caa3a39277eaa1ed278892b00c615ebf82d53d31c7087dea9b8778"
+    }
+  ]
+}

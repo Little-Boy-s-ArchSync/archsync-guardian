@@ -1,0 +1,24 @@
+{
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "args": [
+    "--test",
+    "development/module-baseline-preflight/verify.node-tests.mjs"
+  ],
+  "cwd": "D:/Little Boys/ArchSync/.worktrees/archsync-guardian-module-preflight-20260927",
+  "started_utc": "2026-09-27T08:09:34.299Z",
+  "ended_utc": "2026-09-27T08:09:34.535Z",
+  "exit_code": 0,
+  "signal": null,
+  "timeout": false,
+  "launch_error": null,
+  "stdout": {
+    "file": "node-tests.stdout.txt",
+    "sha256": "242a30fdfd4fb6a04f9c311fe9c0a245b47171fa4ab9d894a12b068088f7b9ef",
+    "bytes": 789
+  },
+  "stderr": {
+    "file": "node-tests.stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "source": "TypeScript configuration file selection, not either graph output",
+  "files": [
+    "src/app.ts",
+    "src/default.ts",
+    "src/star.ts",
+    "src/value.ts"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "archsync-mbp001-isolated-comparator",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Development-only comparator dependencies. Not an independent experiment.",
+  "dependencies": {
+    "dependency-cruiser": "18.3.0",
+    "typescript": "5.9.3"
+  }
+}

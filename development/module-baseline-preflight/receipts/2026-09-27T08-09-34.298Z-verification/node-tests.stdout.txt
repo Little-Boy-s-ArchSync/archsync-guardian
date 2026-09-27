@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: retained output is verified without rerunning either tool
+ok 1 - retained output is verified without rerunning either tool
+  ---
+  duration_ms: 14.6991
+  type: 'test'
+  ...
+# Subtest: tampered native graph is rejected
+ok 2 - tampered native graph is rejected
+  ---
+  duration_ms: 43.7933
+  type: 'test'
+  ...
+# Subtest: relabelling engineering run as D3 is rejected
+ok 3 - relabelling engineering run as D3 is rejected
+  ---
+  duration_ms: 35.5877
+  type: 'test'
+  ...
+# Subtest: dropping an incomplete configuration from summary is rejected
+ok 4 - dropping an incomplete configuration from summary is rejected
+  ---
+  duration_ms: 35.3828
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 188.0446

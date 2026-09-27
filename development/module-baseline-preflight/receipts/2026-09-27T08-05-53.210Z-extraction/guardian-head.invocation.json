@@ -1,0 +1,24 @@
+{
+  "executable": "git",
+  "args": [
+    "rev-parse",
+    "HEAD"
+  ],
+  "cwd": "D:/Little Boys/ArchSync/.worktrees/archsync-guardian-module-preflight-20260927",
+  "started_utc": "2026-09-27T08:05:53.254Z",
+  "ended_utc": "2026-09-27T08:05:53.289Z",
+  "exit_code": 0,
+  "signal": null,
+  "timeout": false,
+  "launch_error": null,
+  "stdout": {
+    "file": "guardian-head.stdout.txt",
+    "sha256": "5ed1b341679352f483502c0c10a45ab33aef79b38235c89385d2a9adffc45d34",
+    "bytes": 41
+  },
+  "stderr": {
+    "file": "guardian-head.stderr.txt",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  }
+}

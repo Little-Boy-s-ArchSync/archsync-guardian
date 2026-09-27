@@ -1,0 +1,3 @@
+# Preserve exact source and raw-output bytes bound by MBP-001 hashes.
+fixtures/** -text
+receipts/** -text

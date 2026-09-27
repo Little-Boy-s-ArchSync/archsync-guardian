@@ -77,7 +77,7 @@ repository/environment manifest: absent resolution candidates and unread files
 are not captured. A research run additionally requires the full tree, lockfile,
 installed package versions/hashes, OS/runtime and approval records.
 
-## Proposed dependency-cruiser alignment - not yet executed
+## Proposed dependency-cruiser alignment and bounded development execution
 
 Official options documentation was read on 2026-09-27:
 https://github.com/sverweij/dependency-cruiser/blob/main/doc/options-reference.md
@@ -97,16 +97,24 @@ against a pinned release before use:
   dependency-cruiser's additional rules are not automatically equivalent.
 
 Documentation establishes a candidate mapping, not proven tool equivalence.
-No dependency-cruiser output was inspected for this implementation. The formal
-protocol's approval and frozen-common-subset gates still apply before execution.
+No dependency-cruiser output was inspected when the initial adapter was written.
+After the owner's explicit MBP-001 approval, the separate development preflight
+in development/module-baseline-preflight/ executed the eight approved groups
+on dependency-cruiser 18.3.0. Its first outputs and unsupported/failure mapping
+are retained; no production adapter behavior was changed to match those outputs.
+In particular import-type expressions are not filtered like dynamic runtime
+imports, and comparator exit 0 is not conformance or syntactic validity.
+The formal protocol's approval and frozen-common-subset gates still apply
+before an official research execution.
 Do not reject D3 repositories after seeing adapter failures: retain those cases
 in execution accounting, and define exclusions before looking at predictions.
 
 ## Scientific and delivery boundary
 
 The module tests and example here are developer-authored synthetic regression
-fixtures, explicitly outside D3. There is no independent label set, selected
-D3 repository, comparator result, effect estimate or publication-ready table.
+fixtures, explicitly outside D3. Bounded comparator development outputs now
+exist separately, but there is no independent label set, selected D3 repository,
+official comparative experiment, effect estimate or publication-ready table.
 The existing service benchmark's historical results remain unchanged.
 
 Current engineering receipts under `evidence/phase-*-evidence.json` are rebuilt
